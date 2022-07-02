@@ -44,13 +44,13 @@ export default {
     res.send({
       success: true,
       data: {
-        name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+        name: 'lihuia.com',
+        avatar: 'http://lihuia.com/wp-content/uploads/2018/03/hebe.jpg',
         userid: '00000001',
-        email: 'antdesign@alipay.com',
-        signature: '海纳百川，有容乃大',
-        title: '交互专家',
-        group: '蚂蚁金服－某某某事业群－某某平台部－某某技术部－UED',
+        email: 'seven@lihuia.com',
+        signature: '在青春迷失的咖啡馆',
+        title: '打杂',
+        group: '钱塘江边',
         tags: [
           {
             key: '0',
