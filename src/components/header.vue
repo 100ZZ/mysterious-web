@@ -33,7 +33,7 @@
 import { onMounted } from 'vue';
 import { useSidebarStore } from '../store/sidebar';
 import { useRouter } from 'vue-router';
-import dmurl from '../assets/img/dm.png';
+import dmurl from '../assets/img/jmeter.png';
 
 const username: string | null = localStorage.getItem('ms_username');
 const message: number = 2;
