@@ -58,6 +58,40 @@ import { useRoute } from 'vue-router';
 const items = [
   {
     icon: 'Warning',
+    index: '/testcase',
+    title: '用例管理',
+    permiss: '1'
+  },
+  {
+    icon: 'Warning',
+    index: '/jmx',
+    title: '脚本管理',
+    permiss: '1'
+  },
+  {
+    icon: 'Warning',
+    index: '/csv',
+    title: '数据管理',
+    permiss: '1'
+  },
+  {
+    icon: 'Warning',
+    index: '/jar',
+    title: '依赖管理',
+    permiss: '1'
+  },  {
+    icon: 'Warning',
+    index: '/node',
+    title: '节点管理',
+    permiss: '1'
+  },  {
+    icon: 'Warning',
+    index: '/config',
+    title: '配置管理',
+    permiss: '1'
+  },
+  {
+    icon: 'Warning',
     index: '/user',
     title: '用户管理',
     permiss: '1'

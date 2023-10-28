@@ -68,7 +68,6 @@ import { ref, reactive } from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete } from '@element-plus/icons-vue';
 import {addUser, deleteUser, getUserList} from "../api/user";
-import {deleteApply} from "../api/product-apply";
 
 interface UserItem {
   id: number;
