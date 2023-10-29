@@ -5,13 +5,22 @@ import Home from '../views/home.vue';
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        redirect: '/user',
+        redirect: '/config',
     },
     {
         path: '/',
         name: 'Home',
         component: Home,
         children: [
+            {
+                path: '/config',
+                name: 'Config',
+                meta: {
+                    title: '配置管理',
+                    permiss: '1',
+                },
+                component: () => import('../views/config.vue'),
+            },
             {
                 path: '/user',
                 name: 'User',
