@@ -57,6 +57,12 @@ import { useRoute } from 'vue-router';
 
 const items = [
   {
+    icon: 'PieChart',
+    index: '/config',
+    title: '配置管理',
+    permiss: '1'
+  },
+  {
     icon: 'Odometer',
     index: '/testcase',
     title: '用例管理',
@@ -84,12 +90,6 @@ const items = [
     icon: 'Warning',
     index: '/node',
     title: '节点管理',
-    permiss: '1'
-  },
-  {
-    icon: 'PieChart',
-    index: '/config',
-    title: '配置管理',
     permiss: '1'
   },
   {
