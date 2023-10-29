@@ -1,7 +1,19 @@
 # mysterious-web
 ```
-分布式压测平台前端服务，提供性能相关的服务
+分布式压测平台前端服务，Vue3+TypeScript，提供性能相关的服务
 ```
+<br> 
+
+**依赖**
+<br>
+后端服务：https://github.com/100ZZ/mysterious
+<br>
+前端服务：https://github.com/100ZZ/mysterious-web
+<br>
+JMeter工具包：https://github.com/100ZZ/mysterious-jmeter
+<br>
+数据库：MySQL，Redis，Nginx
+
 <br> 
 
 **启动**
@@ -9,6 +21,8 @@
 1. npm install
 2. npm run dev
 ```
+
+<br> 
 
 **说明**
 <br>
