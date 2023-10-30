@@ -19,24 +19,30 @@
         <el-table-column prop="port" label="登录端口"></el-table-column>
         <el-table-column prop="username" label="登录用户"></el-table-column>
         <el-table-column prop="password" label="登录密码"></el-table-column>
-        <el-table-column prop="status" label="节点状态" :formatter="nodeStatusFormat"></el-table-column>
+        <el-table-column prop="status" label="节点状态" align="center">
+          <template #default="scope">
+            <el-tag :type="scope.row.status === 1 ? 'success' : scope.row.status === 0 ? 'danger' : -1">
+              {{ statusEnum(scope.row.status) }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>
         <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
 
-        <el-table-column label="操作" width="220" align="center">
+        <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button text :icon="Edit" class="blue"  v-permiss="1">
-              启用
+            <el-button style="margin-left: 0" text :icon="Top" class="green" @click="handleButtonClick(scope.$index)" v-permiss="1">
+              {{buttonText}}
             </el-button>
-            <el-button text :icon="Edit" class="blue" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Refresh" class="blue" v-permiss="1">
               同步
             </el-button>
-            <el-button text :icon="Edit" class="blue" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Edit" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
               编辑
             </el-button>
-            <el-button text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -134,11 +140,12 @@
 </template>
 
 <script setup lang="ts" name="baseNode">
-import { ref, reactive } from 'vue';
+import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import { Plus, Search, Delete, Edit } from '@element-plus/icons-vue';
-import {addNode, deleteNode, getNodeList, updateNode} from "../api/node";
+import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
+import {addNode, deleteNode, disableNode, enableNode, getNodeList, updateNode} from "../api/node";
 import {codeToNodeStatus, codeToNodeType, nodeTypeToCode} from "../common/convert";
+import {deleteConfig} from "../api/config";
 
 interface NodeItem {
   id: number;
@@ -161,6 +168,17 @@ const nodeTypeFormat = (row: any) => {
 
 const nodeStatusFormat = (row: any) => {
   return codeToNodeStatus(row.status)
+}
+
+const statusEnum = (code: number) => {
+  switch (code) {
+    case 0:
+      return "禁用中";
+    case 1:
+      return "启用中";
+    default:
+      return "禁用中";
+  }
 }
 
 const query = reactive({
@@ -288,6 +306,46 @@ const saveEdit = async () => {
     await getList(); // 等待getList()执行完再继续
   }
 };
+
+const isButtonActive = ref(false);
+const buttonText = computed(() => {
+  return isButtonActive.value ? '禁用' : '启用';
+});
+
+const handleButtonClick = (index: number) => {
+  console.log(index);
+  if (isButtonActive.value) {
+    // 执行停止操作
+    disableAction(nodeData.value[index].id);
+  } else {
+    // 执行启动操作
+    enableAction(nodeData.value[index].id);
+  }
+  isButtonActive.value = !isButtonActive.value;
+};
+
+const enableAction = async (id: number) => {
+  // 启动操作的代码
+  const res = await enableNode(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("启用成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+};
+
+const disableAction = async (id: number) => {
+  // 停止操作的代码
+  const res = await disableNode(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("禁用成功");
+    await getList(); // 等待getList()执行完再继续
+  }};
 
 </script>
 
