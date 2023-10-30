@@ -2,18 +2,24 @@
   <div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="query.configKey" placeholder="配置字段" class="handle-input mr10"></el-input>
+        <el-input v-model="query.name" placeholder="节点名称" class="handle-input mr10"></el-input>
+        <el-input v-model="query.host" placeholder="节点地址" class="handle-input mr10"></el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
         <el-button type="primary" :icon="Search" @click="handleReset">重置</el-button>
         <el-button type="primary" :icon="Plus" @click="handleInsert">新增</el-button>
       </div>
 
-      <el-table :data="configData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
+      <el-table :data="nodeData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="configKey" label="配置字段"></el-table-column>
-        <el-table-column prop="configValue" label="字段值"></el-table-column>
-        <el-table-column prop="description" label="字段描述"></el-table-column>
+        <el-table-column prop="name" label="节点名称"></el-table-column>
+        <el-table-column prop="description" label="节点描述"></el-table-column>
+        <el-table-column prop="type" label="节点类型" :formatter="nodeTypeFormat"></el-table-column>
+        <el-table-column prop="host" label="登录地址"></el-table-column>
+        <el-table-column prop="port" label="登录端口"></el-table-column>
+        <el-table-column prop="username" label="登录用户"></el-table-column>
+        <el-table-column prop="password" label="登录密码"></el-table-column>
+        <el-table-column prop="status" label="节点状态" :formatter="nodeStatusFormat"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>
@@ -21,6 +27,12 @@
 
         <el-table-column label="操作" width="220" align="center">
           <template #default="scope">
+            <el-button text :icon="Edit" class="blue"  v-permiss="1">
+              启用
+            </el-button>
+            <el-button text :icon="Edit" class="blue" v-permiss="1">
+              同步
+            </el-button>
             <el-button text :icon="Edit" class="blue" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
               编辑
             </el-button>
@@ -47,14 +59,29 @@
     <!-- 新增弹出框 -->
     <el-dialog title="新增" v-model="insertVisible" width="30%">
       <el-form label-width="70px">
-        <el-form-item label="配置字段">
-          <el-input v-model="insertForm.configKey" placeholder="配置字段"></el-input>
+        <el-form-item label="节点名称">
+          <el-input v-model="insertForm.name" placeholder="节点名称"></el-input>
         </el-form-item>
-        <el-form-item label="字段值">
-          <el-input v-model="insertForm.configValue" placeholder="字段值"></el-input>
+        <el-form-item label="节点描述">
+          <el-input v-model="insertForm.description" placeholder="节点描述"></el-input>
         </el-form-item>
-        <el-form-item label="字段描述">
-          <el-input v-model="insertForm.description" placeholder="字段描述"></el-input>
+        <el-form-item label="节点类型">
+          <el-select v-model="insertForm.type" placeholder="节点类型">
+            <el-option key="0" label="Slave" value="0"></el-option>
+            <el-option key="1" label="Master" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="登录地址">
+          <el-input v-model="insertForm.host" placeholder="节点IP地址"></el-input>
+        </el-form-item>
+        <el-form-item label="登录端口">
+          <el-input v-model="insertForm.port" placeholder="ssh端口"></el-input>
+        </el-form-item>
+        <el-form-item label="登录用户">
+          <el-input v-model="insertForm.username" placeholder="ssh用户"></el-input>
+        </el-form-item>
+        <el-form-item label="登录密码">
+          <el-input v-model="insertForm.password" placeholder="登录密码"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -71,14 +98,29 @@
         <el-form-item label="ID">
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
-        <el-form-item label="配置字段">
-          <el-input v-model="editForm.configKey"></el-input>
+        <el-form-item label="节点名称">
+          <el-input v-model="editForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="字段值">
-          <el-input v-model="editForm.configValue"></el-input>
-        </el-form-item>
-        <el-form-item label="字段描述">
+        <el-form-item label="节点描述">
           <el-input v-model="editForm.description"></el-input>
+        </el-form-item>
+        <el-form-item label="节点类型">
+          <el-select v-model="editForm.type" placeholder="节点类型">
+            <el-option key="0" label="Slave" value="0"></el-option>
+            <el-option key="1" label="Master" value="1"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="登录地址">
+          <el-input v-model="editForm.host" placeholder="节点IP地址"></el-input>
+        </el-form-item>
+        <el-form-item label="登录端口">
+          <el-input v-model="editForm.port" placeholder="ssh端口"></el-input>
+        </el-form-item>
+        <el-form-item label="登录用户">
+          <el-input v-model="editForm.username" placeholder="ssh用户"></el-input>
+        </el-form-item>
+        <el-form-item label="登录密码">
+          <el-input v-model="editForm.password" placeholder="登录密码"></el-input>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -91,39 +133,53 @@
   </div>
 </template>
 
-<script setup lang="ts" name="baseConfig">
+<script setup lang="ts" name="baseNode">
 import { ref, reactive } from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit } from '@element-plus/icons-vue';
-import {addConfig, deleteConfig, getConfigList, updateConfig} from "../api/config";
+import {addNode, deleteNode, getNodeList, updateNode} from "../api/node";
+import {codeToNodeStatus, codeToNodeType, nodeTypeToCode} from "../common/convert";
 
-interface ConfigItem {
+interface NodeItem {
   id: number;
-  configKey: string;
-  configValue: string;
+  name: string;
   description: string;
+  type: number;
+  host: string;
+  port: number;
+  username: string;
+  password: string;
   creator: string;
   modifier: string;
   createTime: string;
   modifyTime: string;
 }
 
+const nodeTypeFormat = (row: any) => {
+  return codeToNodeType(row.type)
+}
+
+const nodeStatusFormat = (row: any) => {
+  return codeToNodeStatus(row.status)
+}
+
 const query = reactive({
-  configKey: null,
+  name: null,
+  host: null,
   page: 1,
   size: 10
 });
 
-const configData = ref<ConfigItem[]>([]);
+const nodeData = ref<NodeItem[]>([]);
 const total = ref(0);
 const getList = () => {
-  getConfigList(query).then(res => {
+  getNodeList(query).then(res => {
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
       return false;
     }
-    configData.value = res.data.data.list;
+    nodeData.value = res.data.data.list;
     total.value = res.data.data.total || 50;
   });
 };
@@ -136,7 +192,8 @@ const handleSearch = () => {
 };
 
 const handleReset = () => {
-  query.configKey = null;
+  query.name = null;
+  query.host = null;
   getList();
 };
 
@@ -149,9 +206,13 @@ const handlePageChange = (val: number) => {
 // 表格新增时弹窗和保存
 const insertVisible = ref(false);
 let insertForm = reactive({
-  configKey: null,
-  configValue: null,
-  description: null
+  name: null,
+  description: null,
+  type: null,
+  host: null,
+  port: null,
+  username: null,
+  password: null
 });
 
 const handleInsert = () => {
@@ -160,7 +221,7 @@ const handleInsert = () => {
 
 const saveInsert = async () => {
   insertVisible.value = false;
-  const res = await addConfig(insertForm);
+  const res = await addNode(insertForm);
 
   const code = res.data.code;
   if (code !== 0) {
@@ -176,7 +237,7 @@ const handleDelete = async (index: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await deleteConfig(configData.value[index].id);
+  const res = await deleteNode(nodeData.value[index].id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
@@ -190,25 +251,34 @@ const handleDelete = async (index: number) => {
 const editVisible = ref(false);
 let editForm = reactive({
   id: null,
-  configKey: null,
-  configValue: null,
+  name: null,
   description: null,
+  type: null,
+  host: null,
+  port: null,
+  username: null,
+  password: null
 });
 
 let idx: number = -1
 const handleEdit = (index: number, row : any) => {
   idx = index;
   editForm.id = row.id;
-  editForm.configKey = row.configKey;
-  editForm.configValue = row.configValue;
+  editForm.name = row.name;
   editForm.description = row.description;
+  editForm.type = codeToNodeType(row.type);
+  editForm.host = row.host;
+  editForm.port = row.port;
+  editForm.username = row.username;
+  editForm.password = row.password;
   editVisible.value = true;
 };
 
 const saveEdit = async () => {
   editVisible.value = false;
 
-  const res = await updateConfig(configData.value[idx].id, editForm);
+  editForm.type = nodeTypeToCode(editForm.type);
+  const res = await updateNode(nodeData.value[idx].id, editForm);
 
   const code = res.data.code
   if (code != 0) {

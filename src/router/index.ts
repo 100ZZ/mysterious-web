@@ -22,6 +22,15 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('../views/config.vue'),
             },
             {
+                path: '/node',
+                name: 'Node',
+                meta: {
+                    title: '节点管理',
+                    permiss: '1',
+                },
+                component: () => import('../views/node.vue'),
+            },
+            {
                 path: '/user',
                 name: 'User',
                 meta: {

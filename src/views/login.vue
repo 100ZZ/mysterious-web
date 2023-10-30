@@ -88,7 +88,6 @@ import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { Lock, User } from '@element-plus/icons-vue';
 import {addUser, login} from "../api/user";
-import {codeToTeam} from "../common/convert";
 
 interface LoginInfo {
 	username: string;
@@ -140,9 +139,6 @@ let insertForm = reactive({
 });
 
 const handleInsert = (row: any) => {
-  insertForm.username  = row.username;
-  insertForm.password = row.password;
-  insertForm.realName = row.realName;
   insertVisible.value = true;
 };
 

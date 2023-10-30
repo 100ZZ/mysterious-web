@@ -127,9 +127,6 @@ let insertForm = reactive({
 });
 
 const handleInsert = (row: any) => {
-  insertForm.username  = row.username;
-  insertForm.password = row.password;
-  insertForm.realName = row.realName;
   insertVisible.value = true;
 };
 
