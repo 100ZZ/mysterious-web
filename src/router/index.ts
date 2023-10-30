@@ -22,6 +22,15 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('../views/config.vue'),
             },
             {
+                path: '/jmx',
+                name: 'Jmx',
+                meta: {
+                    title: '脚本管理',
+                    permiss: '1',
+                },
+                component: () => import('../views/jmx.vue'),
+            },
+            {
                 path: '/node',
                 name: 'Node',
                 meta: {

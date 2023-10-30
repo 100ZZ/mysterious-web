@@ -21,7 +21,7 @@
         <el-table-column prop="password" label="登录密码"></el-table-column>
         <el-table-column prop="status" label="节点状态" align="center">
           <template #default="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : scope.row.status === 0 ? 'danger' : -1">
+            <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
               {{ statusEnum(scope.row.status) }}
             </el-tag>
           </template>
@@ -313,7 +313,6 @@ const buttonText = computed(() => {
 });
 
 const handleButtonClick = (index: number) => {
-  console.log(index);
   if (isButtonActive.value) {
     // 执行停止操作
     disableAction(nodeData.value[index].id);
