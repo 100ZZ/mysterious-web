@@ -15,9 +15,9 @@ export const deleteJmx = (id: number) => {
     });
 }
 
-export const uploadJmx = (id: number, body: any) => {
+export const uploadJmx = (testCaseId: number, body: any) => {
     return request({
-        url: '/upload/' + id,
+        url: '/jmx/upload/' + testCaseId,
         method: 'post',
         data: body
     })
