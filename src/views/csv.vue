@@ -2,19 +2,19 @@
   <div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="query.srcName" placeholder="脚本名称" class="handle-input mr10"></el-input>
+        <el-input v-model="query.srcName" placeholder="数据名称" class="handle-input mr10"></el-input>
         <el-input v-model="query.testCaseId" placeholder="用例ID" class="handle-input mr10"></el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
         <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
       </div>
 
-      <el-table :data="jmxData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
+      <el-table :data="csvData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="srcName" label="脚本名称"></el-table-column>
-        <el-table-column prop="description" label="脚本描述"></el-table-column>
+        <el-table-column prop="srcName" label="数据名称"></el-table-column>
+        <el-table-column prop="description" label="数据描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="jmxDir" label="脚本路径"></el-table-column>
+        <el-table-column prop="csvDir" label="数据路径"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>
@@ -51,14 +51,14 @@
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
-import {deleteJmx, getJmxList} from "../api/jmx";
+import {deleteCsv, getCsvList} from "../api/csv";
 
-interface JmxItem {
+interface CsvItem {
   id: number;
   srcName: string;
   dstName: string;
   description: string;
-  jmxDir: string;
+  csvDir: string;
   testCaseId: number;
   jmeterScriptType: number;
   creator: string;
@@ -74,16 +74,16 @@ const query = reactive({
   size: 10
 });
 
-const jmxData = ref<JmxItem[]>([]);
+const csvData = ref<CsvItem[]>([]);
 const total = ref(0);
 const getList = () => {
-  getJmxList(query).then(res => {
+  getCsvList(query).then(res => {
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
       return false;
     }
-    jmxData.value = res.data.data.list;
+    csvData.value = res.data.data.list;
     total.value = res.data.data.total || 50;
   });
 };
@@ -112,7 +112,7 @@ const handleDelete = async (index: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await deleteJmx(jmxData.value[index].id);
+  const res = await deleteCsv(csvData.value[index].id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);

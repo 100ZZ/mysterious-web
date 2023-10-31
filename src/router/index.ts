@@ -31,6 +31,24 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('../views/jmx.vue'),
             },
             {
+                path: '/csv',
+                name: 'Csv',
+                meta: {
+                    title: '文件管理',
+                    permiss: '1',
+                },
+                component: () => import('../views/csv.vue'),
+            },
+            {
+                path: '/jar',
+                name: 'Jar',
+                meta: {
+                    title: '依赖管理',
+                    permiss: '1',
+                },
+                component: () => import('../views/jar.vue'),
+            },
+            {
                 path: '/node',
                 name: 'Node',
                 meta: {

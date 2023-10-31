@@ -6,7 +6,7 @@
         <el-input v-model="query.realName" placeholder="姓名" class="handle-input mr10"></el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button type="primary" :icon="Search" @click="handleReset">重置</el-button>
+        <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
         <el-button type="primary" :icon="Plus" @click="handleInsert">新增</el-button>
       </div>
 
@@ -66,7 +66,7 @@
 <script setup lang="ts" name="baseUser">
 import { ref, reactive } from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import { Plus, Search, Delete } from '@element-plus/icons-vue';
+import { Plus, Search, Delete, Refresh } from '@element-plus/icons-vue';
 import {addUser, deleteUser, getUserList} from "../api/user";
 
 interface UserItem {

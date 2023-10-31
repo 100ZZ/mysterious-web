@@ -5,7 +5,7 @@
         <el-input v-model="query.configKey" placeholder="配置字段" class="handle-input mr10"></el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button type="primary" :icon="Search" @click="handleReset">重置</el-button>
+        <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
         <el-button type="primary" :icon="Plus" @click="handleInsert">新增</el-button>
       </div>
 
@@ -94,7 +94,7 @@
 <script setup lang="ts" name="baseConfig">
 import { ref, reactive } from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import { Plus, Search, Delete, Edit } from '@element-plus/icons-vue';
+import { Plus, Search, Delete, Edit, Refresh } from '@element-plus/icons-vue';
 import {addConfig, deleteConfig, getConfigList, updateConfig} from "../api/config";
 
 interface ConfigItem {

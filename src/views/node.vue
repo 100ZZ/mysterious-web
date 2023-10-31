@@ -6,7 +6,7 @@
         <el-input v-model="query.host" placeholder="节点地址" class="handle-input mr10"></el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-        <el-button type="primary" :icon="Search" @click="handleReset">重置</el-button>
+        <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
         <el-button type="primary" :icon="Plus" @click="handleInsert">新增</el-button>
       </div>
 
