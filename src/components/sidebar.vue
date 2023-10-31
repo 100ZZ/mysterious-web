@@ -87,6 +87,12 @@ const items = [
     permiss: '1'
   },
   {
+    icon: 'PieChart',
+    index: '/report',
+    title: '报告管理',
+    permiss: '1'
+  },
+  {
     icon: 'Warning',
     index: '/node',
     title: '节点管理',
