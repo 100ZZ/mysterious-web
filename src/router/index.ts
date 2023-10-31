@@ -49,6 +49,15 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('../views/jar.vue'),
             },
             {
+                path: '/report',
+                name: 'Report',
+                meta: {
+                    title: '报告管理',
+                    permiss: '1',
+                },
+                component: () => import('../views/report.vue'),
+            },
+            {
                 path: '/node',
                 name: 'Node',
                 meta: {

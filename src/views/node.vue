@@ -34,7 +34,7 @@
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Top" @click="handleButtonClick(scope.$index)" v-permiss="1">
-              {{buttonText}}
+              操作
             </el-button>
             <el-button style="margin-left: 0" text :icon="Refresh" class="green" v-permiss="1">
               同步
@@ -145,7 +145,6 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {addNode, deleteNode, disableNode, enableNode, getNodeList, updateNode} from "../api/node";
 import {codeToNodeStatus, codeToNodeType, nodeTypeToCode} from "../common/convert";
-import {deleteConfig} from "../api/config";
 
 interface NodeItem {
   id: number;
