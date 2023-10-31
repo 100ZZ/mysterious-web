@@ -154,7 +154,10 @@ let insertForm = reactive({
   description: null
 });
 
-const handleInsert = () => {
+const handleInsert = (row: any) => {
+  insertForm.configKey = row.configKey;
+  insertForm.configValue = row.configValue;
+  insertForm.description = row.description;
   insertVisible.value = true;
 };
 

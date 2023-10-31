@@ -33,13 +33,13 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Top" class="green" @click="handleButtonClick(scope.$index)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Top" @click="handleButtonClick(scope.$index)" v-permiss="1">
               {{buttonText}}
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Refresh" class="blue" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Refresh" class="green" v-permiss="1">
               同步
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Edit" class="blue" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
               编辑
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
@@ -233,7 +233,14 @@ let insertForm = reactive({
   password: null
 });
 
-const handleInsert = () => {
+const handleInsert = (row: any) => {
+  insertForm.name = row.name;
+  insertForm.description = row.description;
+  insertForm.type = row.type;
+  insertForm.host = row.host;
+  insertForm.port = row.port;
+  insertForm.username = row.username;
+  insertForm.password = row.password;
   insertVisible.value = true;
 };
 
