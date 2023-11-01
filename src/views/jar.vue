@@ -22,10 +22,7 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
-              编辑
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -108,11 +105,11 @@ const handlePageChange = (val: number) => {
 };
 
 // 删除操作
-const handleDelete = async (index: number) => {
+const handleDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await deleteJar(jarData.value[index].id);
+  const res = await deleteJar(id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);

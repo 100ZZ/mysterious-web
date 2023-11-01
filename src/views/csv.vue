@@ -22,10 +22,10 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
-              编辑
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleView(scope.row.id)" v-permiss="1">
+              预览
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -51,7 +51,7 @@
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
-import {deleteCsv, getCsvList} from "../api/csv";
+import {deleteCsv, downloadCsv, getCsvList} from "../api/csv";
 
 interface CsvItem {
   id: number;
@@ -108,17 +108,26 @@ const handlePageChange = (val: number) => {
 };
 
 // 删除操作
-const handleDelete = async (index: number) => {
+const handleDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await deleteCsv(csvData.value[index].id);
+  const res = await deleteCsv(id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("删除成功");
     await getList(); // 等待getList()执行完再继续
+  }
+};
+
+// 预览操作
+const handleView = async (id: number) => {
+  const res = await downloadCsv(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
   }
 };
 

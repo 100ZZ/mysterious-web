@@ -22,10 +22,16 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleJMeterLog(scope.row.id)" v-permiss="1">
               查看日志
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Download" class="blue" @click="handleDownload(scope.row.id)" v-permiss="1">
+              报告下载
+            </el-button>
+            <el-button style="margin-left: 0" text :icon="Top" class="green" @click="handleViewReport(scope.row.id)" v-permiss="1">
+              报告预览
+            </el-button>
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -50,9 +56,9 @@
 <script setup lang="ts" name="baseJmx">
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
+import { Download, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteJar, getJarList} from "../api/jar";
-import {cleanReport, getReportList} from "../api/report";
+import {cleanReport, downloadReport, getLog, getReportList, viewReport} from "../api/report";
 
 interface ReportItem {
   id: number;
@@ -106,11 +112,11 @@ const handlePageChange = (val: number) => {
 };
 
 // 删除操作
-const handleDelete = async (index: number) => {
+const handleDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await cleanReport(reportData.value[index].id);
+  const res = await cleanReport(id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
@@ -119,6 +125,33 @@ const handleDelete = async (index: number) => {
     await getList(); // 等待getList()执行完再继续
   }
 };
+
+// 报告下载
+const handleDownload = async (id: number) => {
+  const res = await downloadReport(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  }
+}
+
+// 查看报告
+const handleViewReport = async (id: number) => {
+  const res = await viewReport(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  }
+}
+
+// 查看日志
+const handleJMeterLog = async (id: number) => {
+  const res = await getLog(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  }
+}
 
 </script>
 

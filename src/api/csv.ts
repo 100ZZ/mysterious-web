@@ -22,3 +22,10 @@ export const uploadCsv = (testCaseId: number, body: any) => {
         data: body
     })
 }
+
+export const downloadCsv = (id: number) => {
+    return request({
+        url: '/csv/download/' + id,
+        method: 'get'
+    });
+}
