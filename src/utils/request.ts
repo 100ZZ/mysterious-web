@@ -2,7 +2,7 @@ import axios, {AxiosInstance, AxiosError, AxiosResponse, AxiosRequestConfig, Axi
 
 const service:AxiosInstance = axios.create({
      baseURL: "/mysterious",
-    timeout: 5000
+    timeout: 30000
 });
 
 service.interceptors.request.use(
