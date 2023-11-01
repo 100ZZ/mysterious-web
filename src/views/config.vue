@@ -21,10 +21,10 @@
 
         <el-table-column label="操作" width="220" align="center">
           <template #default="scope">
-            <el-button text :icon="Edit" class="blue" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
+            <el-button text :icon="Edit" class="blue" @click="handleEdit(scope.row)" v-permiss="1">
               编辑
             </el-button>
-            <el-button text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
+            <el-button text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -175,11 +175,11 @@ const saveInsert = async () => {
 };
 
 // 删除操作
-const handleDelete = async (index: number) => {
+const handleDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await deleteConfig(configData.value[index].id);
+  const res = await deleteConfig(id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
@@ -198,9 +198,7 @@ let editForm = reactive({
   description: null,
 });
 
-let idx: number = -1
-const handleEdit = (index: number, row : any) => {
-  idx = index;
+const handleEdit = (row : any) => {
   editForm.id = row.id;
   editForm.configKey = row.configKey;
   editForm.configValue = row.configValue;
@@ -211,7 +209,7 @@ const handleEdit = (index: number, row : any) => {
 const saveEdit = async () => {
   editVisible.value = false;
 
-  const res = await updateConfig(configData.value[idx].id, editForm);
+  const res = await updateConfig(editForm.id, editForm);
 
   const code = res.data.code
   if (code != 0) {

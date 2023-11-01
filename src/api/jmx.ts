@@ -22,3 +22,10 @@ export const uploadJmx = (testCaseId: number, body: any) => {
         data: body
     })
 }
+
+export const downloadJmx = (id: number) => {
+    return request({
+        url: '/jmx/downloadJmx/' + id,
+        method: 'get'
+    });
+}

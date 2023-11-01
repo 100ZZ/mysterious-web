@@ -46,13 +46,13 @@
               </template>
             </el-dropdown>
 
-            <el-button style="margin-left: 0" text :icon="Refresh" class="green" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Refresh" class="green" @click="syncAction(scope.row.id)" v-permiss="1">
               同步
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" class="blue" @click="handleEdit(scope.$index, scope.row)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Edit" class="blue" @click="handleEdit(scope.row)" v-permiss="1">
               编辑
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.$index)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -135,9 +135,6 @@
         <el-form-item label="登录用户">
           <el-input v-model="editForm.username" placeholder="ssh用户"></el-input>
         </el-form-item>
-        <el-form-item label="登录密码">
-          <el-input v-model="editForm.password" placeholder="登录密码"></el-input>
-        </el-form-item>
       </el-form>
       <template #footer>
 				<span class="dialog-footer">
@@ -155,6 +152,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right } from '@element-plus/icons-vue';
 import {addNode, deleteNode, disableNode, enableNode, getNodeList, updateNode} from "../api/node";
 import {codeToNodeStatus, codeToNodeType, nodeTypeToCode} from "../common/convert";
+import {syncNode} from "../api/testcase";
 
 interface NodeItem {
   id: number;
@@ -269,11 +267,12 @@ const saveInsert = async () => {
 };
 
 // 删除操作
-const handleDelete = async (index: number) => {
+const handleDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  const res = await deleteNode(nodeData.value[index].id);
+  //const res = await deleteNode(nodeData.value[index].id);
+  const res = await deleteNode(id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
@@ -292,13 +291,10 @@ let editForm = reactive({
   type: null,
   host: null,
   port: null,
-  username: null,
-  password: null
+  username: null
 });
 
-let idx: number = -1
-const handleEdit = (index: number, row : any) => {
-  idx = index;
+const handleEdit = (row : any) => {
   editForm.id = row.id;
   editForm.name = row.name;
   editForm.description = row.description;
@@ -306,7 +302,6 @@ const handleEdit = (index: number, row : any) => {
   editForm.host = row.host;
   editForm.port = row.port;
   editForm.username = row.username;
-  editForm.password = row.password;
   editVisible.value = true;
 };
 
@@ -314,7 +309,7 @@ const saveEdit = async () => {
   editVisible.value = false;
 
   editForm.type = nodeTypeToCode(editForm.type);
-  const res = await updateNode(nodeData.value[idx].id, editForm);
+  const res = await updateNode(editForm.id, editForm);
 
   const code = res.data.code
   if (code != 0) {
@@ -367,6 +362,17 @@ const disableAction = async (id: number) => {
     await getList(); // 等待getList()执行完再继续
   }
 };
+
+const syncAction = async (nodeId: number) => {
+  const res = await syncNode(nodeId);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("同步成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+}
 
 </script>
 

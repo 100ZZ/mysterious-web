@@ -21,7 +21,7 @@ export default defineConfig({
 	},
 	server: {
 		host: 'locahost',
-		port: 8888,
+		port: 7777,
 		open: true,
 		// 设置代理
 		proxy: {
