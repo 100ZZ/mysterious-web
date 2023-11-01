@@ -26,6 +26,8 @@ export const codeToNodeStatus = (code: number) => {
             return "禁用中"
         case 1:
             return "启用中"
+        case 2:
+            return "启动失败"
         default:
             return code
     }
@@ -37,6 +39,8 @@ export const statusTypeToCode = (status: string) => {
             return 0
         case "启用中":
             return 1
+        case "启动失败":
+            return 2
         default:
             return status
     }
