@@ -21,7 +21,7 @@
         <el-table-column prop="password" label="登录密码"></el-table-column>
         <el-table-column prop="status" label="节点状态" align="center">
           <template #default="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : 'danger'">
+            <el-tag :type="scope.row.status === 2 ? 'danger' : scope.row.status === 1 ? 'success' : 0">
               {{ statusEnum(scope.row.status) }}
             </el-tag>
           </template>
@@ -33,9 +33,19 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Top" @click="handleButtonClick(scope.$index)" v-permiss="1">
-              操作
-            </el-button>
+<!--            <el-button style="margin-left: 0" text :icon="Top" @click="handleButtonClick(scope.$index)" v-permiss="1">-->
+<!--              {{buttonText}}-->
+<!--            </el-button>-->
+            <el-dropdown class="group-status" trigger="click">
+              <el-button style="margin-left: 0" class="el-dropdown-link" text :icon="Right" v-permiss="1">操作</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>
+                  <el-dropdown-item @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+
             <el-button style="margin-left: 0" text :icon="Refresh" class="green" v-permiss="1">
               同步
             </el-button>
@@ -142,7 +152,7 @@
 <script setup lang="ts" name="baseNode">
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
+import { Plus, Search, Delete, Edit, Refresh, Right } from '@element-plus/icons-vue';
 import {addNode, deleteNode, disableNode, enableNode, getNodeList, updateNode} from "../api/node";
 import {codeToNodeStatus, codeToNodeType, nodeTypeToCode} from "../common/convert";
 
@@ -175,6 +185,8 @@ const statusEnum = (code: number) => {
       return "禁用中";
     case 1:
       return "启用中";
+    case 2:
+      return "启动失败"
     default:
       return "禁用中";
   }
@@ -313,21 +325,24 @@ const saveEdit = async () => {
   }
 };
 
-const isButtonActive = ref(false);
-const buttonText = computed(() => {
-  return isButtonActive.value ? '禁用' : '启用';
-});
-
-const handleButtonClick = (index: number) => {
-  if (isButtonActive.value) {
-    // 执行停止操作
-    disableAction(nodeData.value[index].id);
-  } else {
-    // 执行启动操作
-    enableAction(nodeData.value[index].id);
-  }
-  isButtonActive.value = !isButtonActive.value;
-};
+//const isButtonActive = ref(false);
+// const isButtonActive = ref(JSON.parse(localStorage.getItem('isButtonActive')) || false);
+//
+// const buttonText = computed(() => {
+//   return isButtonActive.value ? '禁用' : '启用';
+// });
+//
+// const handleButtonClick = (index: number) => {
+//   if (isButtonActive.value) {
+//     // 执行停止操作
+//     disableAction(nodeData.value[index].id);
+//   } else {
+//     // 执行启动操作
+//     enableAction(nodeData.value[index].id);
+//   }
+//   isButtonActive.value = !isButtonActive.value;
+//   localStorage.setItem('isButtonActive', JSON.stringify(isButtonActive.value));
+// };
 
 const enableAction = async (id: number) => {
   // 启动操作的代码
@@ -337,8 +352,8 @@ const enableAction = async (id: number) => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("启用成功");
-    await getList(); // 等待getList()执行完再继续
   }
+  await getList(); // 等待getList()执行完再继续
 };
 
 const disableAction = async (id: number) => {
@@ -350,7 +365,8 @@ const disableAction = async (id: number) => {
   } else {
     ElMessage.success("禁用成功");
     await getList(); // 等待getList()执行完再继续
-  }};
+  }
+};
 
 </script>
 
