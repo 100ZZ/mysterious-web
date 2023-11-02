@@ -52,20 +52,7 @@ import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteCsv, downloadCsv, getCsvList} from "../api/csv";
-
-interface CsvItem {
-  id: number;
-  srcName: string;
-  dstName: string;
-  description: string;
-  csvDir: string;
-  testCaseId: number;
-  jmeterScriptType: number;
-  creator: string;
-  modifier: string;
-  createTime: string;
-  modifyTime: string;
-}
+import {CsvItem} from "../common/item";
 
 const query = reactive({
   srcName: null,

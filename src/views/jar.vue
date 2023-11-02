@@ -49,20 +49,7 @@ import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteJar, getJarList} from "../api/jar";
-
-interface JarItem {
-  id: number;
-  srcName: string;
-  dstName: string;
-  description: string;
-  jarDir: string;
-  testCaseId: number;
-  jmeterScriptType: number;
-  creator: string;
-  modifier: string;
-  createTime: string;
-  modifyTime: string;
-}
+import {JarItem} from "../common/item";
 
 const query = reactive({
   srcName: null,

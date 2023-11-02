@@ -21,9 +21,9 @@
         <el-table-column prop="password" label="登录密码"></el-table-column>
         <el-table-column prop="status" label="节点状态" align="center">
           <template #default="scope">
-            <el-tag :type="scope.row.status === 2 ? 'danger' : scope.row.status === 1 ? 'success' : 0">
-              {{ statusEnum(scope.row.status) }}
-            </el-tag>
+            <el-tag v-if="scope.row.status === 0" type="warning">禁用中</el-tag>
+            <el-tag v-if="scope.row.status === 1" type="success">启用中</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="danger">启动失败</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
@@ -37,7 +37,7 @@
 <!--              {{buttonText}}-->
 <!--            </el-button>-->
             <el-dropdown class="group-status" trigger="click">
-              <el-button style="margin-left: 0" class="el-dropdown-link" text :icon="Right" v-permiss="1">操作</el-button>
+              <el-button style="margin-left: 0" text :icon="Right" class="purple" v-permiss="1">操作</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>
@@ -173,23 +173,6 @@ const nodeTypeFormat = (row: any) => {
   return codeToNodeType(row.type)
 }
 
-const nodeStatusFormat = (row: any) => {
-  return codeToNodeStatus(row.status)
-}
-
-const statusEnum = (code: number) => {
-  switch (code) {
-    case 0:
-      return "禁用中";
-    case 1:
-      return "启用中";
-    case 2:
-      return "启动失败"
-    default:
-      return "禁用中";
-  }
-}
-
 const query = reactive({
   name: null,
   host: null,
@@ -245,7 +228,7 @@ let insertForm = reactive({
 const handleInsert = (row: any) => {
   insertForm.name = row.name;
   insertForm.description = row.description;
-  insertForm.type = row.type;
+  insertForm.type = row.nodeType;
   insertForm.host = row.host;
   insertForm.port = row.port;
   insertForm.username = row.username;
@@ -403,6 +386,12 @@ const syncAction = async (nodeId: number) => {
 }
 .mr10 {
   margin-right: 10px;
+}
+.orange {
+  color: #ffA500;
+}
+.purple {
+  color: #7b68ee;
 }
 .table-td-thumb {
   display: block;
