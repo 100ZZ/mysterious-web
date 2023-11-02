@@ -53,20 +53,21 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteJmx, downloadJmx, getJmxList} from "../api/jmx";
 import {downloadCsv} from "../api/csv";
+import {JmxItem} from "../common/item";
 
-interface JmxItem {
-  id: number;
-  srcName: string;
-  dstName: string;
-  description: string;
-  jmxDir: string;
-  testCaseId: number;
-  jmeterScriptType: number;
-  creator: string;
-  modifier: string;
-  createTime: string;
-  modifyTime: string;
-}
+// interface JmxItem {
+//   id: number;
+//   srcName: string;
+//   dstName: string;
+//   description: string;
+//   jmxDir: string;
+//   testCaseId: number;
+//   jmeterScriptType: number;
+//   creator: string;
+//   modifier: string;
+//   createTime: string;
+//   modifyTime: string;
+// }
 
 const query = reactive({
   srcName: null,

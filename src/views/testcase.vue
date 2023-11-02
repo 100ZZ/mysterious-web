@@ -19,7 +19,16 @@
         <el-table-column prop="biz" label="业务线"></el-table-column>
         <el-table-column prop="service" label="服务"></el-table-column>
         <el-table-column prop="version" label="版本"></el-table-column>
-        <el-table-column prop="status" label="状态" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template #default="scope">
+              <el-tag v-if="scope.row.status === 0" type="info">没有执行</el-tag>
+              <el-tag v-if="scope.row.status === 1" type="warning">正在执行</el-tag>
+              <el-tag v-if="scope.row.status === 2" type="success">执行成功</el-tag>
+              <el-tag v-if="scope.row.status === 3" type="danger">执行异常</el-tag>
+              <el-tag v-if="scope.row.status === 4" type="primary">排队等待</el-tag>
+              <el-tag v-if="scope.row.status === 5" type="primary">排队取消</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>
@@ -27,15 +36,22 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleFull(scope.row.id)" v-permiss="1">
               详情
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" class="green" @click="handleEdit(scope.row)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Edit" class="orange" @click="handleEdit(scope.row)" v-permiss="1">
               编辑
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Right" class="green" @click="" v-permiss="1">
-              调试
-            </el-button>
+            <el-dropdown class="group-status" trigger="click">
+              <el-button style="margin-left: 0" text :icon="Right" class="purple" v-permiss="1">执行</el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="debugAction(scope.row.id)">调试</el-dropdown-item>
+                  <el-dropdown-item @click="startAction(scope.row.id)">压测</el-dropdown-item>
+                  <el-dropdown-item @click="stopAction(scope.row.id)">停止</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
             <el-button style="margin-left: 0" text :icon="Plus" class="blue" @click="" v-permiss="1">
               报告
             </el-button>
@@ -115,15 +131,34 @@
 				</span>
       </template>
     </el-dialog>
+
+    <!-- 详情弹出框 -->
+    <el-dialog title="用例详情" v-model="fullVisible" width="80%">
+      <el-descriptions title="用例信息" direction="vertical" :column="4" border v-if="testCaseFullData">
+        <el-descriptions-item label="ID">{{testCaseFullData.value.id}}</el-descriptions-item>
+        <el-descriptions-item label="名称">{{testCaseFullData.value.name}}</el-descriptions-item>
+        <el-descriptions-item label="描述">{{testCaseFullData.value.description}}</el-descriptions-item>
+        <el-descriptions-item label="业务线">{{testCaseFullData.value.biz}}</el-descriptions-item>
+        <el-descriptions-item label="服务">{{testCaseFullData.value.service}}</el-descriptions-item>
+        <el-descriptions-item label="版本号">{{testCaseFullData.value.version}}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
-<script setup lang="ts" name="baseNode">
+<script setup lang="ts" name="baseTestCase">
 import {ref, reactive} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right } from '@element-plus/icons-vue';
-import {codeToTestCaseStatus} from "../common/convert";
-import {addTestCase, deleteTestCase, getTestCaseList, syncNode, updateTestCase} from "../api/testcase";
+import {
+  addTestCase, debugTestCase,
+  deleteTestCase, getFull,
+  getTestCaseList,
+  startTestCase,
+  stopTestCase,
+  updateTestCase
+} from "../api/testcase";
+import {CsvItem, JarItem, JmxItem} from "../common/item";
 
 interface TestCaseItem {
   id: number;
@@ -131,36 +166,13 @@ interface TestCaseItem {
   description: string;
   biz: number;
   service: string;
-  version: number;
-  status: string;
+  version: string;
+  status: number;
   testCaseDir: string;
   creator: string;
   modifier: string;
   createTime: string;
   modifyTime: string;
-}
-
-const nodeTypeFormat = (row: any) => {
-  return codeToNodeType(row.type)
-}
-
-const testCaseStatusEnum = (code: number) => {
-  switch (code) {
-    case 0:
-      return "没有执行";
-    case 1:
-      return "正在执行";
-    case 2:
-      return "执行成功"
-    case 3:
-      return "执行异常"
-    case 4:
-      return "排队等待"
-    case 5:
-      return "排队取消"
-    default:
-      return "没有执行";
-  }
 }
 
 const query = reactive({
@@ -244,7 +256,6 @@ const handleDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
-  //const res = await deleteNode(nodeData.value[index].id);
   const res = await deleteTestCase(id);
   const code = res.data.code
   if (code != 0) {
@@ -266,7 +277,7 @@ let editForm = reactive({
   version: null
 });
 
-const handleEdit = (row : any) => {
+const handleEdit = (row: any) => {
   editForm.id = row.id;
   editForm.name = row.name;
   editForm.description = row.description;
@@ -289,6 +300,74 @@ const saveEdit = async () => {
     await getList(); // 等待getList()执行完再继续
   }
 };
+
+const debugAction = async (id: number) => {
+  const res = await debugTestCase(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("调试成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+}
+
+const startAction = async (id: number) => {
+  const res = await startTestCase(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("压测成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+}
+
+const stopAction = async (id: number) => {
+  const res = await stopTestCase(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("停止成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+}
+
+//测试用例详情，包括了关联的jmx，csv，jar等
+// 用例详情时弹窗
+const fullVisible = ref(false);
+interface TestCaseFullItem {
+  id: number;
+  name: string;
+  description: string;
+  biz: number;
+  service: string;
+  version: string;
+  status: number;
+  testCaseDir: string;
+  jmxItem: JmxItem;
+  csvItemList: CsvItem[];
+  jarItemList: JarItem[];
+}
+
+const testCaseFullData = ref<TestCaseFullItem>();
+// const jmxFullData = ref<JmxItem>();
+// const csvFullData = ref<CsvItem[]>([]);
+// const jarFullData = ref<JarItem[]>([]);
+const handleFull = async (id: number) => {
+  fullVisible.value = true;
+  const res = await getFull(id);
+
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+    return false;
+  } else {
+    testCaseFullData.value = res.data.data;
+    // csvFullData.value = res.data.data.csvVOList;
+  }
+}
 
 </script>
 
@@ -317,6 +396,15 @@ const saveEdit = async () => {
 .blue {
   color: #20a0ff;
 }
+.orange {
+  color: #ffA500;
+}
+.purple {
+  color: #7b68ee;
+}
+
+
+
 .mr10 {
   margin-right: 10px;
 }
