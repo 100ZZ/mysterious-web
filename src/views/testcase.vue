@@ -36,7 +36,7 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleFull(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,handleFull(scope.row.id)" v-permiss="1">
               详情
             </el-button>
             <el-button style="margin-left: 0" text :icon="Edit" class="orange" @click="handleEdit(scope.row)" v-permiss="1">
@@ -73,7 +73,6 @@
         ></el-pagination>
       </div>
     </div>
-
 
     <!-- 新增弹出框 -->
     <el-dialog title="新增用例" v-model="insertVisible" width="30%">
@@ -133,7 +132,79 @@
     </el-dialog>
 
     <!-- 详情弹出框 -->
-    <el-dialog title="用例详情" v-model="fullVisible" width="80%">
+<!--    <el-dialog title="用例详情" v-model="fullVisible" width="80%">-->
+<!--      <el-descriptions title="基础信息" direction="vertical" :column="4" border>-->
+<!--        <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>-->
+<!--        <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>-->
+<!--        <el-descriptions-item label="描述">{{testCaseFullData.description}}</el-descriptions-item>-->
+<!--        <el-descriptions-item label="业务线">{{testCaseFullData.biz}}</el-descriptions-item>-->
+<!--        <el-descriptions-item label="服务">{{testCaseFullData.service}}</el-descriptions-item>-->
+<!--        <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>-->
+<!--      </el-descriptions>-->
+
+<!--      <div class="test-case-descriptions-header">-->
+<!--        <div class="test-case-descriptions-title">脚本文件</div>-->
+<!--      </div>-->
+<!--      <el-table :data="jmxFullData" stripe style="width: 100%">-->
+<!--        <el-table-column prop="id" label="ID" width="180"></el-table-column>-->
+<!--        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>-->
+<!--        <el-table-column prop="description" label="描述" width="180"></el-table-column>-->
+<!--        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>-->
+<!--        <el-table-column prop="jmxDir" label="路径"></el-table-column>-->
+<!--        <el-table-column label="操作" width="120" align="center">-->
+<!--          <template #default="scope">-->
+<!--            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleJmxView(scope.row.id)" v-permiss="1">-->
+<!--              预览-->
+<!--            </el-button>-->
+<!--            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">-->
+<!--              删除-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+
+<!--      <div class="test-case-descriptions-header">-->
+<!--        <div class="test-case-descriptions-title">数据文件</div>-->
+<!--      </div>-->
+<!--      <el-table :data="csvFullData" stripe style="width: 100%">-->
+<!--        <el-table-column prop="id" label="ID" width="180"></el-table-column>-->
+<!--        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>-->
+<!--        <el-table-column prop="description" label="描述" width="180"></el-table-column>-->
+<!--        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>-->
+<!--        <el-table-column prop="csvDir" label="路径"></el-table-column>-->
+<!--        <el-table-column label="操作" width="120" align="center">-->
+<!--          <template #default="scope">-->
+<!--            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleCsvView(scope.row.id)" v-permiss="1">-->
+<!--              预览-->
+<!--            </el-button>-->
+<!--            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">-->
+<!--              删除-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+
+<!--      <div class="test-case-descriptions-header">-->
+<!--        <div class="test-case-descriptions-title">依赖文件</div>-->
+<!--      </div>-->
+<!--      <el-table title="JAR文件" :data="jarFullData" stripe style="width: 100%">-->
+<!--        <el-table-column prop="id" label="ID" width="180"></el-table-column>-->
+<!--        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>-->
+<!--        <el-table-column prop="description" label="描述" width="180"></el-table-column>-->
+<!--        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>-->
+<!--        <el-table-column prop="jarDir" label="路径"></el-table-column>-->
+<!--        <el-table-column label="操作" width="120" align="center">-->
+<!--          <template #default="scope">-->
+<!--            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJarDelete(scope.row.id)" v-permiss="1">-->
+<!--              删除-->
+<!--            </el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+<!--    </el-dialog>-->
+
+<!--    抽屉展示详情-->
+    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'60%'">
       <el-descriptions title="基础信息" direction="vertical" :column="4" border>
         <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>
         <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>
@@ -146,7 +217,7 @@
       <div class="test-case-descriptions-header">
         <div class="test-case-descriptions-title">脚本文件</div>
       </div>
-      <el-table :data="jmxFullData" stripe style="width: 100%">
+      <el-table :data="jmxFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="180"></el-table-column>
         <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
         <el-table-column prop="description" label="描述" width="180"></el-table-column>
@@ -154,10 +225,10 @@
         <el-table-column prop="jmxDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleJmxView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -167,7 +238,7 @@
       <div class="test-case-descriptions-header">
         <div class="test-case-descriptions-title">数据文件</div>
       </div>
-      <el-table :data="csvFullData" stripe style="width: 100%">
+      <el-table :data="csvFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="180"></el-table-column>
         <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
         <el-table-column prop="description" label="描述" width="180"></el-table-column>
@@ -175,10 +246,10 @@
         <el-table-column prop="csvDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -188,7 +259,7 @@
       <div class="test-case-descriptions-header">
         <div class="test-case-descriptions-title">依赖文件</div>
       </div>
-      <el-table title="JAR文件" :data="jarFullData" stripe style="width: 100%">
+      <el-table :data="jarFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="180"></el-table-column>
         <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
         <el-table-column prop="description" label="描述" width="180"></el-table-column>
@@ -196,14 +267,13 @@
         <el-table-column prop="jarDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJarDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
-
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
@@ -221,6 +291,10 @@ import {
 } from "../api/testcase";
 import {CsvItem, JarItem, JmxItem} from "../common/item";
 import {deleteCsv, downloadCsv} from "../api/csv";
+import {deleteJmx, downloadJmx} from "../api/jmx";
+import {deleteJar} from "../api/jar";
+
+const drawer = ref(false);
 
 interface TestCaseItem {
   id: number;
@@ -457,8 +531,68 @@ const handleFull = async (id: number) => {
   jarFullData.value = res.data.data.jarVOList;
 }
 
+//删除csv
+const handleCsvDelete = async (id: number) => {
+  await ElMessageBox.confirm('确定要删除吗？', '提示', {
+    type: 'warning'
+  });
+  const res = await deleteCsv(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("删除成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+};
 
+// 预览CSV
+const handleCsvView = async (id: number) => {
+  const res = await downloadCsv(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  }
+};
 
+// 删除JMX
+const handleJmxDelete = async (id: number) => {
+  await ElMessageBox.confirm('确定要删除吗？', '提示', {
+    type: 'warning'
+  });
+  const res = await deleteJmx(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("删除成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+};
+
+// 预览JMX
+const handleJmxView = async (id: number) => {
+  const res = await downloadJmx(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  }
+};
+
+// 删除JAR
+const handleJarDelete = async (id: number) => {
+  await ElMessageBox.confirm('确定要删除吗？', '提示', {
+    type: 'warning'
+  });
+  const res = await deleteJar(id);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("删除成功");
+    await getList(); // 等待getList()执行完再继续
+  }
+};
 </script>
 
 <style scoped>
@@ -476,6 +610,9 @@ const handleFull = async (id: number) => {
 .table {
   width: 100%;
   font-size: 14px;
+}
+.drawer {
+  width: 75%;
 }
 .red {
   color: #F56C6C;
