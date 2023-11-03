@@ -134,14 +134,75 @@
 
     <!-- 详情弹出框 -->
     <el-dialog title="用例详情" v-model="fullVisible" width="80%">
-      <el-descriptions title="用例信息" direction="vertical" :column="4" border v-if="testCaseFullData">
-        <el-descriptions-item label="ID">{{testCaseFullData.value.id}}</el-descriptions-item>
-        <el-descriptions-item label="名称">{{testCaseFullData.value.name}}</el-descriptions-item>
-        <el-descriptions-item label="描述">{{testCaseFullData.value.description}}</el-descriptions-item>
-        <el-descriptions-item label="业务线">{{testCaseFullData.value.biz}}</el-descriptions-item>
-        <el-descriptions-item label="服务">{{testCaseFullData.value.service}}</el-descriptions-item>
-        <el-descriptions-item label="版本号">{{testCaseFullData.value.version}}</el-descriptions-item>
+      <el-descriptions title="基础信息" direction="vertical" :column="4" border>
+        <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>
+        <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>
+        <el-descriptions-item label="描述">{{testCaseFullData.description}}</el-descriptions-item>
+        <el-descriptions-item label="业务线">{{testCaseFullData.biz}}</el-descriptions-item>
+        <el-descriptions-item label="服务">{{testCaseFullData.service}}</el-descriptions-item>
+        <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>
       </el-descriptions>
+
+      <div class="test-case-descriptions-header">
+        <div class="test-case-descriptions-title">脚本文件</div>
+      </div>
+      <el-table :data="jmxFullData" stripe style="width: 100%">
+        <el-table-column prop="id" label="ID" width="180"></el-table-column>
+        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
+        <el-table-column prop="description" label="描述" width="180"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>
+        <el-table-column prop="jmxDir" label="路径"></el-table-column>
+        <el-table-column label="操作" width="120" align="center">
+          <template #default="scope">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
+              预览
+            </el-button>
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="" v-permiss="1">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div class="test-case-descriptions-header">
+        <div class="test-case-descriptions-title">数据文件</div>
+      </div>
+      <el-table :data="csvFullData" stripe style="width: 100%">
+        <el-table-column prop="id" label="ID" width="180"></el-table-column>
+        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
+        <el-table-column prop="description" label="描述" width="180"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>
+        <el-table-column prop="csvDir" label="路径"></el-table-column>
+        <el-table-column label="操作" width="120" align="center">
+          <template #default="scope">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="" v-permiss="1">
+              预览
+            </el-button>
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="" v-permiss="1">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div class="test-case-descriptions-header">
+        <div class="test-case-descriptions-title">依赖文件</div>
+      </div>
+      <el-table title="JAR文件" :data="jarFullData" stripe style="width: 100%">
+        <el-table-column prop="id" label="ID" width="180"></el-table-column>
+        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
+        <el-table-column prop="description" label="描述" width="180"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>
+        <el-table-column prop="jarDir" label="路径"></el-table-column>
+        <el-table-column label="操作" width="120" align="center">
+          <template #default="scope">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="" v-permiss="1">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
     </el-dialog>
   </div>
 </template>
@@ -159,6 +220,7 @@ import {
   updateTestCase
 } from "../api/testcase";
 import {CsvItem, JarItem, JmxItem} from "../common/item";
+import {deleteCsv, downloadCsv} from "../api/csv";
 
 interface TestCaseItem {
   id: number;
@@ -351,23 +413,51 @@ interface TestCaseFullItem {
   jarItemList: JarItem[];
 }
 
-const testCaseFullData = ref<TestCaseFullItem>();
-// const jmxFullData = ref<JmxItem>();
-// const csvFullData = ref<CsvItem[]>([]);
-// const jarFullData = ref<JarItem[]>([]);
+const testCaseFullData = ref<TestCaseFullItem>({
+  id: null,
+  name: null,
+  description: null,
+  biz: null,
+  service: null,
+  version: null,
+  status: null,
+  testCaseDir: null,
+  jmxItem: null,
+  csvItemList: [],
+  jarItemList: []
+});
+// const jmxFullData = ref<JmxItem>({
+//   id: null,
+//   srcName: null,
+//   dstName: null,
+//   description: null,
+//   testCaseId: null,
+//   jmxDir: null,
+//   jmeterScriptType: null,
+//   creator: null,
+//   modifier: null,
+//   createTime: null,
+//   modifyTime: null
+//  });
+const jmxFullData = ref<JmxItem[]>([]);
+const csvFullData = ref<CsvItem[]>([]);
+const jarFullData = ref<JarItem[]>([]);
+
 const handleFull = async (id: number) => {
   fullVisible.value = true;
   const res = await getFull(id);
-
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
     return false;
-  } else {
-    testCaseFullData.value = res.data.data;
-    // csvFullData.value = res.data.data.csvVOList;
   }
+  testCaseFullData.value = res.data.data;
+  jmxFullData.value[0] = res.data.data.jmxVO;
+  csvFullData.value = res.data.data.csvVOList;
+  jarFullData.value = res.data.data.jarVOList;
 }
+
+
 
 </script>
 
@@ -403,7 +493,18 @@ const handleFull = async (id: number) => {
   color: #7b68ee;
 }
 
+.test-case-descriptions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
 
+.test-case-descriptions-title {
+  color: var(--el-text-color-primary);
+  font-size: 16px;
+  font-weight: 700;
+}
 
 .mr10 {
   margin-right: 10px;

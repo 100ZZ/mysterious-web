@@ -22,10 +22,10 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
@@ -95,7 +95,7 @@ const handlePageChange = (val: number) => {
 };
 
 // 删除操作
-const handleDelete = async (id: number) => {
+const handleCsvDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
     type: 'warning'
   });
@@ -110,7 +110,7 @@ const handleDelete = async (id: number) => {
 };
 
 // 预览操作
-const handleView = async (id: number) => {
+const handleCsvView = async (id: number) => {
   const res = await downloadCsv(id);
   const code = res.data.code
   if (code != 0) {
