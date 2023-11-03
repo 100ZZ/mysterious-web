@@ -131,81 +131,10 @@
       </template>
     </el-dialog>
 
-    <!-- 详情弹出框 -->
-<!--    <el-dialog title="用例详情" v-model="fullVisible" width="80%">-->
-<!--      <el-descriptions title="基础信息" direction="vertical" :column="4" border>-->
-<!--        <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>-->
-<!--        <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>-->
-<!--        <el-descriptions-item label="描述">{{testCaseFullData.description}}</el-descriptions-item>-->
-<!--        <el-descriptions-item label="业务线">{{testCaseFullData.biz}}</el-descriptions-item>-->
-<!--        <el-descriptions-item label="服务">{{testCaseFullData.service}}</el-descriptions-item>-->
-<!--        <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>-->
-<!--      </el-descriptions>-->
-
-<!--      <div class="test-case-descriptions-header">-->
-<!--        <div class="test-case-descriptions-title">脚本文件</div>-->
-<!--      </div>-->
-<!--      <el-table :data="jmxFullData" stripe style="width: 100%">-->
-<!--        <el-table-column prop="id" label="ID" width="180"></el-table-column>-->
-<!--        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>-->
-<!--        <el-table-column prop="description" label="描述" width="180"></el-table-column>-->
-<!--        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>-->
-<!--        <el-table-column prop="jmxDir" label="路径"></el-table-column>-->
-<!--        <el-table-column label="操作" width="120" align="center">-->
-<!--          <template #default="scope">-->
-<!--            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleJmxView(scope.row.id)" v-permiss="1">-->
-<!--              预览-->
-<!--            </el-button>-->
-<!--            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">-->
-<!--              删除-->
-<!--            </el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--      </el-table>-->
-
-<!--      <div class="test-case-descriptions-header">-->
-<!--        <div class="test-case-descriptions-title">数据文件</div>-->
-<!--      </div>-->
-<!--      <el-table :data="csvFullData" stripe style="width: 100%">-->
-<!--        <el-table-column prop="id" label="ID" width="180"></el-table-column>-->
-<!--        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>-->
-<!--        <el-table-column prop="description" label="描述" width="180"></el-table-column>-->
-<!--        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>-->
-<!--        <el-table-column prop="csvDir" label="路径"></el-table-column>-->
-<!--        <el-table-column label="操作" width="120" align="center">-->
-<!--          <template #default="scope">-->
-<!--            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleCsvView(scope.row.id)" v-permiss="1">-->
-<!--              预览-->
-<!--            </el-button>-->
-<!--            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">-->
-<!--              删除-->
-<!--            </el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--      </el-table>-->
-
-<!--      <div class="test-case-descriptions-header">-->
-<!--        <div class="test-case-descriptions-title">依赖文件</div>-->
-<!--      </div>-->
-<!--      <el-table title="JAR文件" :data="jarFullData" stripe style="width: 100%">-->
-<!--        <el-table-column prop="id" label="ID" width="180"></el-table-column>-->
-<!--        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>-->
-<!--        <el-table-column prop="description" label="描述" width="180"></el-table-column>-->
-<!--        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>-->
-<!--        <el-table-column prop="jarDir" label="路径"></el-table-column>-->
-<!--        <el-table-column label="操作" width="120" align="center">-->
-<!--          <template #default="scope">-->
-<!--            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJarDelete(scope.row.id)" v-permiss="1">-->
-<!--              删除-->
-<!--            </el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
-<!--      </el-table>-->
-<!--    </el-dialog>-->
-
 <!--    抽屉展示详情-->
-    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'60%'">
-      <el-descriptions title="基础信息" direction="vertical" :column="4" border>
+    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :with-header="true" :size="'60%'">
+      <el-divider>基础信息</el-divider>
+      <el-descriptions direction="vertical" :column="3" border>
         <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>
         <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>
         <el-descriptions-item label="描述">{{testCaseFullData.description}}</el-descriptions-item>
@@ -214,14 +143,16 @@
         <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>
       </el-descriptions>
 
-      <div class="test-case-descriptions-header">
-        <div class="test-case-descriptions-title">脚本文件</div>
-      </div>
+      <el-divider>
+        <div>
+          <el-button text :icon="Upload" class="blue" @click="">上传JMX脚本文件</el-button>
+        </div>
+      </el-divider>
       <el-table :data="jmxFullData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="180"></el-table-column>
-        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
-        <el-table-column prop="description" label="描述" width="180"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>
+        <el-table-column prop="id" label="ID" width="55"></el-table-column>
+        <el-table-column prop="dstName" label="名称"></el-table-column>
+        <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例"></el-table-column>
         <el-table-column prop="jmxDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
@@ -235,14 +166,16 @@
         </el-table-column>
       </el-table>
 
-      <div class="test-case-descriptions-header">
-        <div class="test-case-descriptions-title">数据文件</div>
-      </div>
+      <el-divider>
+        <div>
+          <el-button text :icon="Upload" class="blue" @click="">上传CSV数据文件</el-button>
+        </div>
+      </el-divider>
       <el-table :data="csvFullData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="180"></el-table-column>
-        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
-        <el-table-column prop="description" label="描述" width="180"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>
+        <el-table-column prop="id" label="ID" width="55"></el-table-column>
+        <el-table-column prop="dstName" label="名称"></el-table-column>
+        <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例"></el-table-column>
         <el-table-column prop="csvDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
@@ -256,14 +189,16 @@
         </el-table-column>
       </el-table>
 
-      <div class="test-case-descriptions-header">
-        <div class="test-case-descriptions-title">依赖文件</div>
-      </div>
+      <el-divider>
+        <div>
+          <el-button text :icon="Upload" class="blue" @click="">上传JAR依赖文件</el-button>
+        </div>
+      </el-divider>
       <el-table :data="jarFullData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="180"></el-table-column>
-        <el-table-column prop="dstName" label="名称" width="180"></el-table-column>
-        <el-table-column prop="description" label="描述" width="180"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例" width="180"></el-table-column>
+        <el-table-column prop="id" label="ID" width="55"></el-table-column>
+        <el-table-column prop="dstName" label="名称"></el-table-column>
+        <el-table-column prop="description" label="描述"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例"></el-table-column>
         <el-table-column prop="jarDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
@@ -280,7 +215,7 @@
 <script setup lang="ts" name="baseTestCase">
 import {ref, reactive} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
-import { Plus, Search, Delete, Edit, Refresh, Right } from '@element-plus/icons-vue';
+import { Plus, Search, Delete, Edit, Refresh, Right, Upload } from '@element-plus/icons-vue';
 import {
   addTestCase, debugTestCase,
   deleteTestCase, getFull,
@@ -593,6 +528,28 @@ const handleJarDelete = async (id: number) => {
     await getList(); // 等待getList()执行完再继续
   }
 };
+
+
+//上传JMX
+// const fileInputRef = ref(null);
+// const handleJmxUpload = async (id: number) => {
+//   const fileInput = fileInputRef.value as HTMLInputElement;
+//   const file = fileInput.files?.[0];
+//   if (file) {
+//     const formData = new FormData();
+//     formData.append('file', file);
+//
+//     // 发送FormData到后端处理
+//     // 例如使用axios或fetch发送POST请求
+//     // axios.post('/upload', formData)
+//     //   .then(response => {
+//     //     console.log('上传成功', response);
+//     //   })
+//     //   .catch(error => {
+//     //     console.error('上传失败', error);
+//     //   });
+//   }
+// }
 </script>
 
 <style scoped>
@@ -629,7 +586,9 @@ const handleJarDelete = async (id: number) => {
 .purple {
   color: #7b68ee;
 }
-
+.ant-drawer-header {
+  display: none;
+}
 .test-case-descriptions-header {
   display: flex;
   justify-content: space-between;
