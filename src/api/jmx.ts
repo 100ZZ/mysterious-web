@@ -15,11 +15,14 @@ export const deleteJmx = (id: number) => {
     });
 }
 
-export const uploadJmx = (testCaseId: number, body: any) => {
+export const uploadJmx = (testCaseId: number, formData: FormData) => {
     return request({
         url: '/jmx/upload/' + testCaseId,
         method: 'post',
-        data: body
+        headers:{
+            'Content-Type':'multipart/form-data',
+        },
+        data: formData,
     })
 }
 

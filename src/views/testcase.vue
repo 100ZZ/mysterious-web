@@ -144,9 +144,20 @@
       </el-descriptions>
 
       <el-divider>
-        <div>
-          <el-button text :icon="Upload" class="blue" @click="">上传JMX脚本文件</el-button>
-        </div>
+<!--        <div>-->
+<!--          <el-button text :icon="Upload" class="blue" @click="">上传JMX脚本文件</el-button>-->
+<!--          <input type="file" ref="fileInput" style="display:none" @change="onFileChange">-->
+<!--        </div>-->
+        <!--            action="/mysterious/jmx/upload/{{testCaseFullData.id.toString()}}"-->
+
+        <el-upload
+            action=""
+            :show-file-list="false"
+            :http-request="handleJmxUpload"
+            :on-success="handleJmxUploadSuccess"
+        >
+          <el-button text :icon="Upload" class="blue">上传JMX脚本文件</el-button>
+        </el-upload>
       </el-divider>
       <el-table :data="jmxFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="55"></el-table-column>
@@ -226,7 +237,7 @@ import {
 } from "../api/testcase";
 import {CsvItem, JarItem, JmxItem} from "../common/item";
 import {deleteCsv, downloadCsv} from "../api/csv";
-import {deleteJmx, downloadJmx} from "../api/jmx";
+import {deleteJmx, downloadJmx, uploadJmx} from "../api/jmx";
 import {deleteJar} from "../api/jar";
 
 const drawer = ref(false);
@@ -531,25 +542,24 @@ const handleJarDelete = async (id: number) => {
 
 
 //上传JMX
-// const fileInputRef = ref(null);
-// const handleJmxUpload = async (id: number) => {
-//   const fileInput = fileInputRef.value as HTMLInputElement;
-//   const file = fileInput.files?.[0];
-//   if (file) {
-//     const formData = new FormData();
-//     formData.append('file', file);
-//
-//     // 发送FormData到后端处理
-//     // 例如使用axios或fetch发送POST请求
-//     // axios.post('/upload', formData)
-//     //   .then(response => {
-//     //     console.log('上传成功', response);
-//     //   })
-//     //   .catch(error => {
-//     //     console.error('上传失败', error);
-//     //   });
-//   }
-// }
+const handleJmxUpload = async (file) => {
+  const testCaseId = testCaseFullData.value.id;
+  console.log("testCaseId:", testCaseId);
+  console.log("jmxFile:", file);
+  const formData = new FormData();
+  formData.append("jmxFile", file);
+  const res = await uploadJmx(testCaseId, formData);
+  console.log("res:", res);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  }
+}
+
+const handleJmxUploadSuccess = () => {
+  console.log("success");
+}
+
 </script>
 
 <style scoped>
