@@ -32,7 +32,7 @@
               报告预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
-              删除
+              删除报告
             </el-button>
           </template>
         </el-table-column>
