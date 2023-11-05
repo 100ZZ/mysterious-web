@@ -22,7 +22,7 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleCsvView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
@@ -31,6 +31,11 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!--    抽屉展示详情-->
+      <el-drawer v-model="drawer" title="数据详情" :show-close="true" :with-header="true" :size="'60%'">
+        <xmp><div v-text="csvFile"></div></xmp>
+      </el-drawer>
 
       <div class="pagination">
         <el-pagination
@@ -47,12 +52,15 @@
   </div>
 </template>
 
-<script setup lang="ts" name="baseJmx">
+<script setup lang="ts" name="baseCsv">
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteCsv, downloadCsv, getCsvList} from "../api/csv";
 import {CsvItem} from "../common/item";
+import {downloadJmx} from "../api/jmx";
+
+const drawer = ref(false);
 
 const query = reactive({
   srcName: null,
@@ -110,12 +118,10 @@ const handleCsvDelete = async (id: number) => {
 };
 
 // 预览操作
+const csvFile = ref('');
 const handleCsvView = async (id: number) => {
   const res = await downloadCsv(id);
-  const code = res.data.code
-  if (code != 0) {
-    ElMessage.error(res.data.message);
-  }
+  csvFile.value = res.data;
 };
 
 </script>
