@@ -132,7 +132,7 @@
     </el-dialog>
 
 <!--    抽屉展示详情-->
-    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :with-header="true" :size="'60%'">
+    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'60%'">
       <el-divider>基础信息</el-divider>
       <el-descriptions direction="vertical" :column="3" border>
         <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>
@@ -143,6 +143,7 @@
         <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>
       </el-descriptions>
 
+<!--      关联jmx脚本-->
       <el-divider>
         <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload">
           <el-button text :icon="Upload" class="blue">上传JMX脚本文件</el-button>
@@ -156,9 +157,13 @@
         <el-table-column prop="jmxDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleJmxView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
+            <!--    抽屉展示详情-->
+            <el-drawer v-model="jmxDrawer" title="脚本详情" :append-to-body="true" :size="'45%'">
+              <xmp><div v-text="jmxFile"></div></xmp>
+            </el-drawer>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
@@ -166,6 +171,8 @@
         </el-table-column>
       </el-table>
 
+
+      <!--      关联csv文件-->
       <el-divider>
         <el-upload action="" :show-file-list="false" :http-request="handleCsvUpload">
           <el-button text :icon="Upload" class="blue">上传CSV数据文件</el-button>
@@ -179,9 +186,13 @@
         <el-table-column prop="csvDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleCsvView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
+            <!--    抽屉展示详情-->
+            <el-drawer v-model="csvDrawer" title="数据详情" :append-to-body="true" :size="'45%'">
+              <xmp><div v-text="csvFile"></div></xmp>
+            </el-drawer>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
@@ -189,6 +200,7 @@
         </el-table-column>
       </el-table>
 
+      <!--      关联jar依赖-->
       <el-divider>
         <el-upload action="" :show-file-list="false" :http-request="handleJarUpload">
           <el-button text :icon="Upload" class="blue">上传JAR依赖文件</el-button>
@@ -230,6 +242,9 @@ import {deleteJmx, downloadJmx, uploadJmx} from "../api/jmx";
 import {deleteJar, uploadJar} from "../api/jar";
 
 const drawer = ref(false);
+const jmxDrawer = ref(false)
+const csvDrawer = ref(false)
+
 
 interface TestCaseItem {
   id: number;
@@ -486,15 +501,6 @@ const handleCsvDelete = async (id: number) => {
   }
 };
 
-// 预览CSV
-const handleCsvView = async (id: number) => {
-  const res = await downloadCsv(id);
-  const code = res.data.code
-  if (code != 0) {
-    ElMessage.error(res.data.message);
-  }
-};
-
 // 删除JMX
 const handleJmxDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
@@ -507,15 +513,6 @@ const handleJmxDelete = async (id: number) => {
   } else {
     ElMessage.success("删除成功");
     await getFullTestCase(testCaseFullData.value.id);
-  }
-};
-
-// 预览JMX
-const handleJmxView = async (id: number) => {
-  const res = await downloadJmx(id);
-  const code = res.data.code
-  if (code != 0) {
-    ElMessage.error(res.data.message);
   }
 };
 
@@ -579,6 +576,20 @@ const handleJarUpload = async (uploadRequestOptions) => {
     await getFullTestCase(testCaseId);
   }
 }
+
+// 预览jmx
+const jmxFile = ref('');
+const handleJmxView = async (id: number) => {
+  const res = await downloadJmx(id);
+  jmxFile.value = res.data;
+};
+
+// 预览csv
+const csvFile = ref('');
+const handleCsvView = async (id: number) => {
+  const res = await downloadCsv(id);
+  csvFile.value = res.data;
+};
 
 </script>
 

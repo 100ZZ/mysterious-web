@@ -57,7 +57,6 @@
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Download, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
-import {deleteJar, getJarList} from "../api/jar";
 import {cleanReport, downloadReport, getLog, getReportList, viewReport} from "../api/report";
 
 interface ReportItem {

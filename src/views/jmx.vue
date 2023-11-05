@@ -22,7 +22,7 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="handleJmxView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,handleJmxView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">
@@ -31,6 +31,11 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!--    抽屉展示详情-->
+      <el-drawer v-model="drawer" title="脚本详情" :show-close="true" :with-header="true" :size="'60%'">
+        <xmp><div v-text="jmxFile"></div></xmp>
+      </el-drawer>
 
       <div class="pagination">
         <el-pagination
@@ -55,19 +60,7 @@ import {deleteJmx, downloadJmx, getJmxList} from "../api/jmx";
 import {downloadCsv} from "../api/csv";
 import {JmxItem} from "../common/item";
 
-// interface JmxItem {
-//   id: number;
-//   srcName: string;
-//   dstName: string;
-//   description: string;
-//   jmxDir: string;
-//   testCaseId: number;
-//   jmeterScriptType: number;
-//   creator: string;
-//   modifier: string;
-//   createTime: string;
-//   modifyTime: string;
-// }
+const drawer = ref(false);
 
 const query = reactive({
   srcName: null,
@@ -125,12 +118,10 @@ const handleJmxDelete = async (id: number) => {
 };
 
 // 预览操作
+const jmxFile = ref('');
 const handleJmxView = async (id: number) => {
   const res = await downloadJmx(id);
-  const code = res.data.code
-  if (code != 0) {
-    ElMessage.error(res.data.message);
-  }
+  jmxFile.value = res.data;
 };
 
 </script>

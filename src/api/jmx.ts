@@ -22,13 +22,13 @@ export const uploadJmx = (testCaseId: number, formData: FormData) => {
         headers:{
             'Content-Type':'multipart/form-data',
         },
-        data: formData,
+        data: formData
     })
 }
 
 export const downloadJmx = (id: number) => {
     return request({
-        url: '/jmx/downloadJmx/' + id,
+        url: '/jmx/download/' + id,
         method: 'get'
     });
 }
