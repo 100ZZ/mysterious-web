@@ -464,8 +464,8 @@ const getFullTestCase = async (id: number) => {
   testCaseFullData.value = fullData;
   //jmxFullData.value[0] = res.data.data.jmxVO;
   //后端返回的是null，前端并不认为是空
-  if (fullData.jmxVO) {
-    jmxFullData.value.push(fullData.jmxVO);
+  if (res.data.data.jmxVO) {
+    jmxFullData.value[0] = fullData.jmxVO;
   }
   csvFullData.value = fullData.csvVOList;
   jarFullData.value = fullData.jarVOList;
