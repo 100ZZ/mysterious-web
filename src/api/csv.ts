@@ -19,6 +19,9 @@ export const uploadCsv = (testCaseId: number, body: any) => {
     return request({
         url: '/csv/upload/' + testCaseId,
         method: 'post',
+        headers:{
+            'Content-Type':'multipart/form-data',
+        },
         data: body
     })
 }

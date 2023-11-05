@@ -19,6 +19,9 @@ export const uploadJar = (testCaseId: number, body: any) => {
     return request({
         url: '/jar/upload/' + testCaseId,
         method: 'post',
+        headers:{
+            'Content-Type':'multipart/form-data',
+        },
         data: body
     })
 }

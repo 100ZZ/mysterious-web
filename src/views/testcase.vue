@@ -144,18 +144,7 @@
       </el-descriptions>
 
       <el-divider>
-<!--        <div>-->
-<!--          <el-button text :icon="Upload" class="blue" @click="">上传JMX脚本文件</el-button>-->
-<!--          <input type="file" ref="fileInput" style="display:none" @change="onFileChange">-->
-<!--        </div>-->
-        <!--            action="/mysterious/jmx/upload/{{testCaseFullData.id.toString()}}"-->
-
-        <el-upload
-            action=""
-            :show-file-list="false"
-            :http-request="handleJmxUpload"
-            :on-success="handleJmxUploadSuccess"
-        >
+        <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload">
           <el-button text :icon="Upload" class="blue">上传JMX脚本文件</el-button>
         </el-upload>
       </el-divider>
@@ -178,9 +167,9 @@
       </el-table>
 
       <el-divider>
-        <div>
-          <el-button text :icon="Upload" class="blue" @click="">上传CSV数据文件</el-button>
-        </div>
+        <el-upload action="" :show-file-list="false" :http-request="handleCsvUpload">
+          <el-button text :icon="Upload" class="blue">上传CSV数据文件</el-button>
+        </el-upload>
       </el-divider>
       <el-table :data="csvFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="55"></el-table-column>
@@ -201,9 +190,9 @@
       </el-table>
 
       <el-divider>
-        <div>
-          <el-button text :icon="Upload" class="blue" @click="">上传JAR依赖文件</el-button>
-        </div>
+        <el-upload action="" :show-file-list="false" :http-request="handleJarUpload">
+          <el-button text :icon="Upload" class="blue">上传JAR依赖文件</el-button>
+        </el-upload>
       </el-divider>
       <el-table :data="jarFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="55"></el-table-column>
@@ -236,9 +225,9 @@ import {
   updateTestCase
 } from "../api/testcase";
 import {CsvItem, JarItem, JmxItem} from "../common/item";
-import {deleteCsv, downloadCsv} from "../api/csv";
+import {deleteCsv, downloadCsv, uploadCsv} from "../api/csv";
 import {deleteJmx, downloadJmx, uploadJmx} from "../api/jmx";
-import {deleteJar} from "../api/jar";
+import {deleteJar, uploadJar} from "../api/jar";
 
 const drawer = ref(false);
 
@@ -471,10 +460,15 @@ const getFullTestCase = async (id: number) => {
     ElMessage.error(res.data.message);
     return false;
   }
-  testCaseFullData.value = res.data.data;
-  jmxFullData.value[0] = res.data.data.jmxVO;
-  csvFullData.value = res.data.data.csvVOList;
-  jarFullData.value = res.data.data.jarVOList;
+  const fullData = res.data.data;
+  testCaseFullData.value = fullData;
+  //jmxFullData.value[0] = res.data.data.jmxVO;
+  //后端返回的是null，前端并不认为是空
+  if (fullData.jmxVO) {
+    jmxFullData.value.push(fullData.jmxVO);
+  }
+  csvFullData.value = fullData.csvVOList;
+  jarFullData.value = fullData.jarVOList;
 }
 
 //删除csv
@@ -488,7 +482,7 @@ const handleCsvDelete = async (id: number) => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("删除成功");
-    await getList(); // 等待getList()执行完再继续
+    await getFullTestCase(testCaseFullData.value.id);
   }
 };
 
@@ -512,7 +506,7 @@ const handleJmxDelete = async (id: number) => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("删除成功");
-    await getList(); // 等待getList()执行完再继续
+    await getFullTestCase(testCaseFullData.value.id);
   }
 };
 
@@ -536,7 +530,7 @@ const handleJarDelete = async (id: number) => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("删除成功");
-    await getList(); // 等待getList()执行完再继续
+    await getFullTestCase(testCaseFullData.value.id);
   }
 };
 
@@ -556,8 +550,34 @@ const handleJmxUpload = async (uploadRequestOptions) => {
   }
 }
 
-const handleJmxUploadSuccess = () => {
-  console.log("success");
+//上传CSV
+const handleCsvUpload = async (uploadRequestOptions) => {
+  const testCaseId = testCaseFullData.value.id;
+  const formData = new FormData();
+  formData.append("csvFile", uploadRequestOptions.file);
+  const res = await uploadCsv(testCaseId, formData);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("上传成功");
+    await getFullTestCase(testCaseId);
+  }
+}
+
+//上传JAR
+const handleJarUpload = async (uploadRequestOptions) => {
+  const testCaseId = testCaseFullData.value.id;
+  const formData = new FormData();
+  formData.append("jarFile", uploadRequestOptions.file);
+  const res = await uploadJar(testCaseId, formData);
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("上传成功");
+    await getFullTestCase(testCaseId);
+  }
 }
 
 </script>
