@@ -36,7 +36,7 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,handleFull(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,getFullTestCase(scope.row.id)" v-permiss="1">
               详情
             </el-button>
             <el-button style="margin-left: 0" text :icon="Edit" class="orange" @click="handleEdit(scope.row)" v-permiss="1">
@@ -463,7 +463,7 @@ const jmxFullData = ref<JmxItem[]>([]);
 const csvFullData = ref<CsvItem[]>([]);
 const jarFullData = ref<JarItem[]>([]);
 
-const handleFull = async (id: number) => {
+const getFullTestCase = async (id: number) => {
   fullVisible.value = true;
   const res = await getFull(id);
   const code = res.data.code
@@ -542,17 +542,17 @@ const handleJarDelete = async (id: number) => {
 
 
 //上传JMX
-const handleJmxUpload = async (file) => {
+const handleJmxUpload = async (uploadRequestOptions) => {
   const testCaseId = testCaseFullData.value.id;
-  console.log("testCaseId:", testCaseId);
-  console.log("jmxFile:", file);
   const formData = new FormData();
-  formData.append("jmxFile", file);
+  formData.append("jmxFile", uploadRequestOptions.file);
   const res = await uploadJmx(testCaseId, formData);
-  console.log("res:", res);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("上传成功");
+    await getFullTestCase(testCaseId);
   }
 }
 
