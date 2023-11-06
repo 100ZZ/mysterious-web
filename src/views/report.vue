@@ -28,7 +28,7 @@
             <el-button style="margin-left: 0" text :icon="Download" class="blue" @click="handleDownload(scope.row.id)" v-permiss="1">
               报告下载
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Top" class="green" @click="handleViewReport(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Top" class="purple" @click="handleViewReport(scope.row.id)" v-permiss="1">
               报告预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
@@ -141,6 +141,7 @@ const handleViewReport = async (id: number) => {
   if (code != 0) {
     ElMessage.error(res.data.message);
   }
+  window.open(res.data.data, '_blank');
 }
 
 // 查看日志
@@ -178,6 +179,9 @@ const handleJMeterLog = async (id: number) => {
 }
 .blue {
   color: #20a0ff;
+}
+.purple {
+  color: #7b68ee;
 }
 .mr10 {
   margin-right: 10px;
