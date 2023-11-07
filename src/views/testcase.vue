@@ -16,7 +16,7 @@
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="biz" label="业务线"></el-table-column>
+        <el-table-column prop="biz" label="产品线"></el-table-column>
         <el-table-column prop="service" label="服务"></el-table-column>
         <el-table-column prop="version" label="版本"></el-table-column>
         <el-table-column prop="status" label="状态" align="center">
@@ -83,8 +83,8 @@
         <el-form-item label="描述">
           <el-input v-model="insertForm.description" placeholder="描述"></el-input>
         </el-form-item>
-        <el-form-item label="业务线">
-          <el-input v-model="insertForm.biz" placeholder="业务线"></el-input>
+        <el-form-item label="产品线">
+          <el-input v-model="insertForm.biz" placeholder="产品线"></el-input>
         </el-form-item>
         <el-form-item label="服务">
           <el-input v-model="insertForm.service" placeholder="服务"></el-input>
@@ -113,8 +113,8 @@
         <el-form-item label="描述">
           <el-input v-model="editForm.description" placeholder="描述"></el-input>
         </el-form-item>
-        <el-form-item label="业务线">
-          <el-input v-model="editForm.biz" placeholder="业务线"></el-input>
+        <el-form-item label="产品线">
+          <el-input v-model="editForm.biz" placeholder="产品线"></el-input>
         </el-form-item>
         <el-form-item label="服务">
           <el-input v-model="editForm.service" placeholder="服务"></el-input>
@@ -138,7 +138,7 @@
         <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>
         <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>
         <el-descriptions-item label="描述">{{testCaseFullData.description}}</el-descriptions-item>
-        <el-descriptions-item label="业务线">{{testCaseFullData.biz}}</el-descriptions-item>
+        <el-descriptions-item label="产品线">{{testCaseFullData.biz}}</el-descriptions-item>
         <el-descriptions-item label="服务">{{testCaseFullData.service}}</el-descriptions-item>
         <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>
       </el-descriptions>
@@ -159,17 +159,16 @@
             <el-button style="margin-left: 0" text :icon="Search" class="green" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
-            <!--    抽屉展示详情-->
-            <el-drawer v-model="jmxDrawer" title="脚本详情" :append-to-body="true" :size="'45%'">
-              <xmp><div v-text="jmxFile"></div></xmp>
-            </el-drawer>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
-
+      <!--    抽屉展示详情-->
+      <el-drawer v-model="jmxDrawer" title="脚本详情" :append-to-body="true" :size="'45%'">
+        <xmp><div v-text="jmxFile"></div></xmp>
+      </el-drawer>
 
       <!--      关联csv文件-->
       <el-divider>
@@ -187,16 +186,17 @@
             <el-button style="margin-left: 0" text :icon="Search" class="green" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
-            <!--    抽屉展示详情-->
-            <el-drawer v-model="csvDrawer" title="数据详情" :append-to-body="true" :size="'45%'">
-              <xmp><div v-text="csvFile"></div></xmp>
-            </el-drawer>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
+
+      <!--    抽屉展示详情-->
+      <el-drawer v-model="csvDrawer" title="数据详情" :append-to-body="true" :size="'45%'">
+        <xmp><div v-text="csvFile"></div></xmp>
+      </el-drawer>
 
       <!--      关联jar依赖-->
       <el-divider>

@@ -2,7 +2,7 @@ import request from '../utils/request';
 
 export const getReportList = (param: any) => {
     return request({
-        url: '/report/list',
+        url: '/report/listByTestCase',
         method: 'get',
         params: param
     });
