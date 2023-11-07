@@ -14,7 +14,6 @@
         <el-table-column prop="srcName" label="数据名称"></el-table-column>
         <el-table-column prop="description" label="数据描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="csvDir" label="数据路径"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>
