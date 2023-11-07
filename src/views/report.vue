@@ -3,6 +3,8 @@
     <div class="container">
       <div class="handle-box">
         <el-input v-model="query.name" placeholder="报告名称" class="handle-input mr10"></el-input>
+        <el-input v-model="query.testCaseId" placeholder="用例ID" class="handle-input mr10"></el-input>
+
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
         <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
@@ -13,7 +15,12 @@
         <el-table-column prop="name" label="报告名称"></el-table-column>
         <el-table-column prop="description" label="报告描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="execType" label="执行类型"></el-table-column>
+        <el-table-column prop="execType" label="执行类型">
+          <template #default="scope">
+            <el-tag v-if="scope.row.execType === 1" type="success">调试</el-tag>
+            <el-tag v-if="scope.row.execType === 2" type="danger">压测</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="responseData" label="执行结果"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
@@ -74,6 +81,7 @@ interface ReportItem {
 
 const query = reactive({
   name: null,
+  testCaseId: null,
   page: 1,
   size: 10
 });
@@ -101,6 +109,7 @@ const handleSearch = () => {
 
 const handleReset = () => {
   query.name = null;
+  query.testCaseId = null;
   getList();
 };
 
@@ -140,8 +149,9 @@ const handleViewReport = async (id: number) => {
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
+  } else {
+    window.open(res.data.data, '_blank');
   }
-  window.open(res.data.data, '_blank');
 }
 
 // 查看日志
