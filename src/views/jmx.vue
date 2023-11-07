@@ -14,7 +14,6 @@
         <el-table-column prop="srcName" label="脚本名称"></el-table-column>
         <el-table-column prop="description" label="脚本描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="jmxDir" label="脚本路径"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>

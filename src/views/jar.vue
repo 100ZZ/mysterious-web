@@ -14,7 +14,6 @@
         <el-table-column prop="srcName" label="依赖名称"></el-table-column>
         <el-table-column prop="description" label="依赖描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="jarDir" label="依赖路径"></el-table-column>
         <el-table-column prop="creator" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <el-table-column prop="modifier" label="修改人"></el-table-column>

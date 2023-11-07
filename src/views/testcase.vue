@@ -154,7 +154,6 @@
         <el-table-column prop="dstName" label="名称"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例"></el-table-column>
-        <el-table-column prop="jmxDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Search" class="green" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
@@ -183,7 +182,6 @@
         <el-table-column prop="dstName" label="名称"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例"></el-table-column>
-        <el-table-column prop="csvDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Search" class="green" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">
@@ -211,7 +209,6 @@
         <el-table-column prop="dstName" label="名称"></el-table-column>
         <el-table-column prop="description" label="描述"></el-table-column>
         <el-table-column prop="testCaseId" label="用例"></el-table-column>
-        <el-table-column prop="jarDir" label="路径"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJarDelete(scope.row.id)" v-permiss="1">
