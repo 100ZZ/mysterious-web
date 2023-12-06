@@ -21,7 +21,7 @@
 
         <el-table-column label="操作" width="220" align="center">
           <template #default="scope">
-            <el-button text :icon="Edit" class="blue" @click="handleEdit(scope.row)" v-permiss="1">
+            <el-button text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
               编辑
             </el-button>
             <el-button text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
@@ -124,7 +124,7 @@ const getList = () => {
       return false;
     }
     configData.value = res.data.data.list;
-    total.value = res.data.data.total || 50;
+    total.value = res.data.data.total || 10;
   });
 };
 getList();
@@ -246,6 +246,9 @@ const saveEdit = async () => {
 }
 .blue {
   color: #20a0ff;
+}
+.bg-blue {
+  color: #409EFF;
 }
 .mr10 {
   margin-right: 10px;
