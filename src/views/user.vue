@@ -95,7 +95,7 @@ const getList = () => {
       return false;
     }
     userData.value = res.data.data.list;
-    total.value = res.data.data.total || 50;
+    total.value = res.data.data.total || 10;
   });
 };
 getList();
@@ -191,6 +191,9 @@ const handleDelete = async (id: number) => {
 .table {
   width: 100%;
   font-size: 14px;
+}
+.bg-blue {
+  color: #409EFF;
 }
 .red {
   color: #F56C6C;

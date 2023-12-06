@@ -21,7 +21,7 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,handleCsvView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true,handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
@@ -78,7 +78,7 @@ const getList = () => {
       return false;
     }
     csvData.value = res.data.data.list;
-    total.value = res.data.data.total || 50;
+    total.value = res.data.data.total || 10;
   });
 };
 getList();
@@ -149,6 +149,9 @@ const handleCsvView = async (id: number) => {
 }
 .blue {
   color: #20a0ff;
+}
+.bg-blue {
+  color: #409EFF;
 }
 .mr10 {
   margin-right: 10px;

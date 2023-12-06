@@ -67,7 +67,7 @@ const getList = () => {
       return false;
     }
     jarData.value = res.data.data.list;
-    total.value = res.data.data.total || 50;
+    total.value = res.data.data.total || 10;
   });
 };
 getList();
@@ -131,6 +131,9 @@ const handleJarDelete = async (id: number) => {
 }
 .blue {
   color: #20a0ff;
+}
+.bg-blue {
+  color: #409EFF;
 }
 .mr10 {
   margin-right: 10px;

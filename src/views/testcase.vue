@@ -36,14 +36,14 @@
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="drawer = true,getFullTestCase(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true,getFullTestCase(scope.row.id)" v-permiss="1">
               详情
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" class="orange" @click="handleEdit(scope.row)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
               编辑
             </el-button>
             <el-dropdown class="group-status" trigger="click">
-              <el-button style="margin-left: 0" text :icon="Right" class="purple" v-permiss="1">执行</el-button>
+              <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="debugAction(scope.row.id)">调试</el-dropdown-item>
@@ -52,7 +52,7 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-button style="margin-left: 0" text :icon="Plus" class="blue" @click="" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Plus" class="bg-blue" @click="goReports" v-permiss="1">
               报告
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
@@ -156,7 +156,7 @@
         <el-table-column prop="testCaseId" label="用例"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">
@@ -183,7 +183,7 @@
         <el-table-column prop="testCaseId" label="用例"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="green" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
@@ -237,6 +237,7 @@ import {CsvItem, JarItem, JmxItem} from "../common/item";
 import {deleteCsv, downloadCsv, uploadCsv} from "../api/csv";
 import {deleteJmx, downloadJmx, uploadJmx} from "../api/jmx";
 import {deleteJar, uploadJar} from "../api/jar";
+import router from "../router";
 
 const drawer = ref(false);
 const jmxDrawer = ref(false)
@@ -277,7 +278,7 @@ const getList = () => {
       return false;
     }
     testCaseData.value = res.data.data.list;
-    total.value = res.data.data.total || 50;
+    total.value = res.data.data.total || 10;
   });
 };
 getList();
@@ -588,6 +589,11 @@ const handleCsvView = async (id: number) => {
   csvFile.value = res.data;
 };
 
+
+const goReports = () => {
+  router.push({path:'/report'})
+}
+
 </script>
 
 <style scoped>
@@ -617,6 +623,9 @@ const handleCsvView = async (id: number) => {
 }
 .blue {
   color: #20a0ff;
+}
+.bg-blue {
+  color: #409EFF;
 }
 .orange {
   color: #ffA500;

@@ -37,7 +37,7 @@
 <!--              {{buttonText}}-->
 <!--            </el-button>-->
             <el-dropdown class="group-status" trigger="click">
-              <el-button style="margin-left: 0" text :icon="Right" class="purple" v-permiss="1">操作</el-button>
+              <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">操作</el-button>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>
@@ -46,10 +46,10 @@
               </template>
             </el-dropdown>
 
-            <el-button style="margin-left: 0" text :icon="Refresh" class="green" @click="syncAction(scope.row.id)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Refresh" class="bg-blue" @click="syncAction(scope.row.id)" v-permiss="1">
               同步
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" class="blue" @click="handleEdit(scope.row)" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
               编辑
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
@@ -190,7 +190,7 @@ const getList = () => {
       return false;
     }
     nodeData.value = res.data.data.list;
-    total.value = res.data.data.total || 50;
+    total.value = res.data.data.total || 10;
   });
 };
 getList();
@@ -383,6 +383,9 @@ const syncAction = async (nodeId: number) => {
 }
 .blue {
   color: #20a0ff;
+}
+.bg-blue {
+  color: #409EFF;
 }
 .mr10 {
   margin-right: 10px;
