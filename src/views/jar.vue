@@ -49,6 +49,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteJar, getJarList} from "../api/jar";
 import {JarItem} from "../common/item";
+import {toLogin} from "../common/push";
 
 const query = reactive({
   srcName: null,
@@ -64,6 +65,7 @@ const getList = () => {
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
+      toLogin();
       return false;
     }
     jarData.value = res.data.data.list;

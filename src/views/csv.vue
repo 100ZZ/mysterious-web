@@ -58,6 +58,7 @@ import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vu
 import {deleteCsv, downloadCsv, getCsvList} from "../api/csv";
 import {CsvItem} from "../common/item";
 import {downloadJmx} from "../api/jmx";
+import {toLogin} from "../common/push";
 
 const drawer = ref(false);
 
@@ -75,6 +76,7 @@ const getList = () => {
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
+      toLogin()
       return false;
     }
     csvData.value = res.data.data.list;

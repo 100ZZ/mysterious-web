@@ -238,6 +238,7 @@ import {deleteCsv, downloadCsv, uploadCsv} from "../api/csv";
 import {deleteJmx, downloadJmx, uploadJmx} from "../api/jmx";
 import {deleteJar, uploadJar} from "../api/jar";
 import router from "../router";
+import {toLogin} from "../common/push";
 
 const drawer = ref(false);
 const jmxDrawer = ref(false)
@@ -275,6 +276,7 @@ const getList = () => {
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
+      toLogin();
       return false;
     }
     testCaseData.value = res.data.data.list;
