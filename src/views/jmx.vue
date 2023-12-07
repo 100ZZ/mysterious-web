@@ -58,7 +58,7 @@ import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vu
 import {deleteJmx, downloadJmx, getJmxList} from "../api/jmx";
 import {downloadCsv} from "../api/csv";
 import {JmxItem} from "../common/item";
-import {toLogin} from "../common/push";
+import {checkToLogin} from "../common/push";
 
 const drawer = ref(false);
 
@@ -73,10 +73,10 @@ const jmxData = ref<JmxItem[]>([]);
 const total = ref(0);
 const getList = () => {
   getJmxList(query).then(res => {
+    checkToLogin(res.data.message);
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
-      toLogin();
       return false;
     }
     jmxData.value = res.data.data.list;

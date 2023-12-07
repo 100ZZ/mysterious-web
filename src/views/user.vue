@@ -68,7 +68,7 @@ import { ref, reactive } from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Refresh } from '@element-plus/icons-vue';
 import {addUser, deleteUser, getUserList} from "../api/user";
-import {toLogin} from "../common/push";
+import {checkToLogin} from "../common/push";
 
 interface UserItem {
   id: number;
@@ -90,10 +90,10 @@ const userData = ref<UserItem[]>([]);
 const total = ref(0);
 const getList = () => {
   getUserList(query).then(res => {
+    checkToLogin(res.data.message);
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
-      toLogin();
       return false;
     }
     userData.value = res.data.data.list;
