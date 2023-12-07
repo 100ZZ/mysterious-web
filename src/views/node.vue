@@ -153,7 +153,7 @@ import { Plus, Search, Delete, Edit, Refresh, Right } from '@element-plus/icons-
 import {addNode, deleteNode, disableNode, enableNode, getNodeList, updateNode} from "../api/node";
 import {codeToNodeStatus, codeToNodeType, nodeTypeToCode} from "../common/convert";
 import {syncNode} from "../api/testcase";
-import {toLogin} from "../common/push";
+import {checkToLogin} from "../common/push";
 
 interface NodeItem {
   id: number;
@@ -185,10 +185,10 @@ const nodeData = ref<NodeItem[]>([]);
 const total = ref(0);
 const getList = () => {
   getNodeList(query).then(res => {
+    checkToLogin(res.data.message);
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
-      toLogin();
       return false;
     }
     nodeData.value = res.data.data.list;

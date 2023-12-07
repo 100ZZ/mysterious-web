@@ -96,7 +96,7 @@ import { ref, reactive } from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh } from '@element-plus/icons-vue';
 import {addConfig, deleteConfig, getConfigList, updateConfig} from "../api/config";
-import {toLogin} from "../common/push";
+import {checkToLogin} from "../common/push";
 
 interface ConfigItem {
   id: number;
@@ -119,10 +119,10 @@ const configData = ref<ConfigItem[]>([]);
 const total = ref(0);
 const getList = () => {
   getConfigList(query).then(res => {
+    checkToLogin(res.data.message);
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
-      toLogin();
       return false;
     }
     configData.value = res.data.data.list;

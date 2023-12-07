@@ -70,7 +70,7 @@ import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Download, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {cleanReport, downloadReport, getLog, getReportList, viewReport} from "../api/report";
-import {toLogin} from "../common/push";
+import {checkToLogin} from "../common/push";
 
 const drawer = ref(false);
 
@@ -98,10 +98,10 @@ const reportData = ref<ReportItem[]>([]);
 const total = ref(0);
 const getList = () => {
   getReportList(query).then(res => {
+    checkToLogin(res.data.message);
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);
-      toLogin();
       return false;
     }
     reportData.value = res.data.data.list;
