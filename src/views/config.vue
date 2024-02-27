@@ -11,13 +11,13 @@
 
       <el-table :data="configData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="configKey" label="配置字段"></el-table-column>
-        <el-table-column prop="configValue" label="字段值"></el-table-column>
-        <el-table-column prop="description" label="字段描述"></el-table-column>
-        <el-table-column prop="creator" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="modifier" label="修改人"></el-table-column>
-        <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
+        <el-table-column prop="configKey" label="配置字段" align="center"></el-table-column>
+        <el-table-column prop="configValue" label="字段值" align="center"></el-table-column>
+        <el-table-column prop="description" label="字段描述" align="center"></el-table-column>
+        <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
+        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
         <el-table-column label="操作" width="220" align="center">
           <template #default="scope">

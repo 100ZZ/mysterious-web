@@ -11,13 +11,13 @@
 
       <el-table :data="jmxData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="srcName" label="脚本名称"></el-table-column>
-        <el-table-column prop="description" label="脚本描述"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="creator" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="modifier" label="修改人"></el-table-column>
-        <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
+        <el-table-column prop="srcName" label="脚本名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="脚本描述" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例ID" align="center"></el-table-column>
+        <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
+        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">

@@ -12,20 +12,20 @@
 
       <el-table :data="reportData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="name" label="报告名称"></el-table-column>
-        <el-table-column prop="description" label="报告描述"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例ID"></el-table-column>
-        <el-table-column prop="execType" label="执行类型">
+        <el-table-column prop="name" label="报告名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="报告描述" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例ID" align="center"></el-table-column>
+        <el-table-column prop="execType" label="执行类型" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.execType === 1" type="success">调试</el-tag>
             <el-tag v-if="scope.row.execType === 2" type="danger">压测</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="responseData" label="执行结果"></el-table-column>
-        <el-table-column prop="creator" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="modifier" label="修改人"></el-table-column>
-        <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
+        <el-table-column prop="responseData" label="执行结果" align="center"></el-table-column>
+        <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
+        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">

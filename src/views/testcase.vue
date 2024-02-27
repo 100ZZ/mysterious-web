@@ -14,11 +14,11 @@
 
       <el-table :data="testCaseData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="name" label="名称"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="biz" label="产品线"></el-table-column>
-        <el-table-column prop="service" label="服务"></el-table-column>
-        <el-table-column prop="version" label="版本"></el-table-column>
+        <el-table-column prop="name" label="名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+        <el-table-column prop="biz" label="产品" align="center"></el-table-column>
+        <el-table-column prop="service" label="服务" align="center"></el-table-column>
+        <el-table-column prop="version" label="版本" align="center"></el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
               <el-tag v-if="scope.row.status === 0" type="info">没有执行</el-tag>
@@ -29,10 +29,10 @@
               <el-tag v-if="scope.row.status === 5" type="primary">排队取消</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="creator" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="modifier" label="修改人"></el-table-column>
-        <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
+        <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
+        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
@@ -135,12 +135,12 @@
     <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'60%'">
       <el-divider>基础信息</el-divider>
       <el-descriptions direction="vertical" :column="3" border>
-        <el-descriptions-item label="ID">{{testCaseFullData.id}}</el-descriptions-item>
-        <el-descriptions-item label="名称">{{testCaseFullData.name}}</el-descriptions-item>
-        <el-descriptions-item label="描述">{{testCaseFullData.description}}</el-descriptions-item>
-        <el-descriptions-item label="产品线">{{testCaseFullData.biz}}</el-descriptions-item>
-        <el-descriptions-item label="服务">{{testCaseFullData.service}}</el-descriptions-item>
-        <el-descriptions-item label="版本号">{{testCaseFullData.version}}</el-descriptions-item>
+        <el-descriptions-item label="ID" align="center">{{testCaseFullData.id}}</el-descriptions-item>
+        <el-descriptions-item label="名称" align="center">{{testCaseFullData.name}}</el-descriptions-item>
+        <el-descriptions-item label="描述" align="center">{{testCaseFullData.description}}</el-descriptions-item>
+        <el-descriptions-item label="产品线" align="center">{{testCaseFullData.biz}}</el-descriptions-item>
+        <el-descriptions-item label="服务" align="center">{{testCaseFullData.service}}</el-descriptions-item>
+        <el-descriptions-item label="版本号" align="center">{{testCaseFullData.version}}</el-descriptions-item>
       </el-descriptions>
 
 <!--      关联jmx脚本-->
@@ -150,10 +150,10 @@
         </el-upload>
       </el-divider>
       <el-table :data="jmxFullData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="55"></el-table-column>
-        <el-table-column prop="dstName" label="名称"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例"></el-table-column>
+        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
@@ -177,10 +177,10 @@
         </el-upload>
       </el-divider>
       <el-table :data="csvFullData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="55"></el-table-column>
-        <el-table-column prop="dstName" label="名称"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例"></el-table-column>
+        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">
@@ -205,10 +205,10 @@
         </el-upload>
       </el-divider>
       <el-table :data="jarFullData" border style="width: 100%">
-        <el-table-column prop="id" label="ID" width="55"></el-table-column>
-        <el-table-column prop="dstName" label="名称"></el-table-column>
-        <el-table-column prop="description" label="描述"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例"></el-table-column>
+        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleJarDelete(scope.row.id)" v-permiss="1">

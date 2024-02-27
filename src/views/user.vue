@@ -12,11 +12,11 @@
 
       <el-table :data="userData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="username" label="用户"></el-table-column>
-        <el-table-column prop="password" label="密码"></el-table-column>
-        <el-table-column prop="realName" label="姓名"></el-table-column>
-        <el-table-column prop="effectTime" label="生效时间"></el-table-column>
-        <el-table-column prop="expireTime" label="失效时间"></el-table-column>
+        <el-table-column prop="username" label="用户" align="center"></el-table-column>
+        <el-table-column prop="password" label="密码" align="center"></el-table-column>
+        <el-table-column prop="realName" label="姓名" align="center"></el-table-column>
+        <el-table-column prop="effectTime" label="生效时间" align="center"></el-table-column>
+        <el-table-column prop="expireTime" label="失效时间" align="center"></el-table-column>
 
         <el-table-column label="操作" width="220" align="center">
           <template #default="scope">
