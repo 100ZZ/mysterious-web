@@ -12,13 +12,13 @@
 
       <el-table :data="nodeData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-        <el-table-column prop="name" label="节点名称"></el-table-column>
-        <el-table-column prop="description" label="节点描述"></el-table-column>
-        <el-table-column prop="type" label="节点类型" :formatter="nodeTypeFormat"></el-table-column>
-        <el-table-column prop="host" label="登录地址"></el-table-column>
-        <el-table-column prop="port" label="登录端口"></el-table-column>
-        <el-table-column prop="username" label="登录用户"></el-table-column>
-        <el-table-column prop="password" label="登录密码"></el-table-column>
+        <el-table-column prop="name" label="节点名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="节点描述" align="center"></el-table-column>
+        <el-table-column prop="type" label="节点类型" :formatter="nodeTypeFormat" align="center"></el-table-column>
+        <el-table-column prop="host" label="登录地址" align="center"></el-table-column>
+        <el-table-column prop="port" label="登录端口" align="center"></el-table-column>
+        <el-table-column prop="username" label="登录用户" align="center"></el-table-column>
+        <el-table-column prop="password" label="登录密码" align="center"></el-table-column>
         <el-table-column prop="status" label="节点状态" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 0" type="warning">禁用中</el-tag>
@@ -26,10 +26,10 @@
             <el-tag v-if="scope.row.status === 2" type="danger">启动失败</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="creator" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="modifier" label="修改人"></el-table-column>
-        <el-table-column prop="modifyTime" label="修改时间"></el-table-column>
+        <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
+        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
