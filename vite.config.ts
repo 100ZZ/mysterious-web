@@ -21,12 +21,12 @@ export default defineConfig({
 	},
 	server: {
 		host: 'locahost',
-		port: 7777,
+		port: 1234,
 		open: true,
 		// 设置代理
 		proxy: {
 		'/mysterious': {
-			target: 'http://127.0.0.1:9999',
+			target: 'http://127.0.0.1:4321',
 			changeOrigin: true,
 			rewrite: path => path.replace(/^\/mysterious/, '')
 			},

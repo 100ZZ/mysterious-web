@@ -164,7 +164,6 @@ const handleInsert = (row: any) => {
 };
 
 const saveInsert = async () => {
-  insertVisible.value = false;
   const res = await addConfig(insertForm);
 
   const code = res.data.code;
@@ -172,6 +171,7 @@ const saveInsert = async () => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("新增成功");
+    insertVisible.value = false;
     await getList(); // 等待getList()执行完再继续
   }
 };
@@ -209,8 +209,6 @@ const handleEdit = (row : any) => {
 };
 
 const saveEdit = async () => {
-  editVisible.value = false;
-
   const res = await updateConfig(editForm.id, editForm);
 
   const code = res.data.code
@@ -218,6 +216,7 @@ const saveEdit = async () => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("编辑成功");
+    editVisible.value = false;
     await getList(); // 等待getList()执行完再继续
   }
 };
