@@ -146,7 +146,6 @@ const handleInsert = (row: any) => {
 };
 
 const saveInsert = async () => {
-  insertVisible.value = false;
   const res = await addUser(insertForm);
 
   const code = res.data.code;
@@ -154,6 +153,7 @@ const saveInsert = async () => {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("注册成功");
+    insertVisible.value = false;
   }
 };
 
