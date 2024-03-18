@@ -146,9 +146,8 @@ const handleDelete = async (id: number) => {
 // 报告下载
 const handleDownload = async (id: number) => {
   const res = await downloadReport(id);
-  const code = res.data.code
-  if (code != 0) {
-    ElMessage.error(res.data.message);
+  if (!res.success) {
+    ElMessage.error("下载失败, 请重试");
   }
 }
 
