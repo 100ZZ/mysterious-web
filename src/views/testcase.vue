@@ -477,8 +477,10 @@ const getFullTestCase = async (id: number) => {
   const fullData = res.data.data;
   testCaseFullData.value = fullData;
   //jmxFullData.value[0] = res.data.data.jmxVO;
-  //后端返回的是null，前端并不认为是空
-  if (res.data.data.jmxVO) {
+  // 检查 jmxVO 是否为 null，如果是则将 jmxFullData 设置为空数组
+  if (fullData.jmxVO === null) {
+    jmxFullData.value = [];
+  } else {
     jmxFullData.value[0] = fullData.jmxVO;
   }
   csvFullData.value = fullData.csvVOList;
