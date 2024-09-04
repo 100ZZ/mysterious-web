@@ -52,7 +52,7 @@
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
-            <el-button style="margin-left: 0" text :icon="Plus" class="bg-blue" @click="goReports" v-permiss="1">
+            <el-button style="margin-left: 0" text :icon="Plus" class="bg-blue" @click="goReports(scope.row.id, scope.row.name)" v-permiss="1">
               报告
             </el-button>
             <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
@@ -593,9 +593,20 @@ const handleCsvView = async (id: number) => {
 };
 
 
-const goReports = () => {
-  router.push({path:'/report'})
+// const goReports = () => {
+//   router.push({path:'/report'})
+// }
+
+const goReports = (testCaseId, name) => {
+  router.push({
+    path: '/report',
+    query: {
+      testCaseId: testCaseId,
+      name: name
+    }
+  });
 }
+
 
 </script>
 

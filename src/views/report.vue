@@ -71,6 +71,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Download, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {cleanReport, downloadReport, getLog, getReportList, viewReport} from "../api/report";
 import {checkToLogin} from "../common/push";
+import {useRoute} from "vue-router";
 
 const drawer = ref(false);
 
@@ -87,9 +88,11 @@ interface ReportItem {
   modifyTime: string;
 }
 
+const route = useRoute();
+
 const query = reactive({
-  name: null,
-  testCaseId: null,
+  name: route.query.name || null,          // 获取传递的name参数
+  testCaseId: route.query.testCaseId || null,  // 获取传递的testCaseId参数
   page: 1,
   size: 10
 });
