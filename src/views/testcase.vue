@@ -222,7 +222,7 @@
 </template>
 
 <script setup lang="ts" name="baseTestCase">
-import {ref, reactive} from 'vue';
+import {ref, reactive, onUnmounted, onMounted} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right, Upload } from '@element-plus/icons-vue';
 import {
@@ -283,7 +283,17 @@ const getList = () => {
     total.value = res.data.data.total || 10;
   });
 };
-getList();
+
+// 定时刷新数据
+let interval: ReturnType<typeof setInterval>;
+onMounted(() => {
+  getList(); // 页面加载时获取一次数据
+  interval = setInterval(getList, 30000); // 每30秒刷新一次
+});
+
+onUnmounted(() => {
+  clearInterval(interval); // 页面卸载时清除定时器
+});
 
 // 查询操作
 const handleSearch = () => {
