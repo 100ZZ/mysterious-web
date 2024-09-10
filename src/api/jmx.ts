@@ -32,3 +32,26 @@ export const downloadJmx = (id: number) => {
         method: 'get'
     });
 }
+
+export const addOnlineJmx = (body: any) => {
+    return request({
+        url: '/jmx/addOnline',
+        method: 'post',
+        data: body
+    })
+}
+
+export const updateOnlineJmx = (id: number, body: any) => {
+    return request({
+        url: '/jmx/updateOnline/' + id,
+        method: 'post',
+        data: body
+    })
+}
+
+export const getOnlineJmx = (id: number) => {
+    return request({
+        url: '/jmx/getOnline/' + id,
+        method: 'get'
+    });
+}
