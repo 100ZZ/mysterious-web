@@ -132,7 +132,7 @@
     </el-dialog>
 
 <!--    抽屉展示详情-->
-    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'60%'">
+    <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'80%'">
       <el-divider>基础信息</el-divider>
       <el-descriptions direction="vertical" :column="3" border>
         <el-descriptions-item label="ID" align="center">{{testCaseFullData.id}}</el-descriptions-item>
@@ -143,12 +143,20 @@
         <el-descriptions-item label="版本号" align="center">{{testCaseFullData.version}}</el-descriptions-item>
       </el-descriptions>
 
-<!--      关联jmx脚本-->
+      <!--      关联jmx脚本-->
       <el-divider>
-        <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload">
-          <el-button text :icon="Upload" class="blue">上传JMX脚本文件</el-button>
-        </el-upload>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload">
+              <el-button text :icon="Upload" class="blue">本地上传JMX脚本文件</el-button>
+            </el-upload>
+          </el-col>
+          <el-col :span="12">
+            <el-button text :icon="Edit" class="blue" @click="handleJmxEdit">在线编辑JMX脚本文件</el-button>
+          </el-col>
+        </el-row>
       </el-divider>
+
       <el-table :data="jmxFullData" border style="width: 100%">
         <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
         <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
@@ -165,6 +173,308 @@
           </template>
         </el-table-column>
       </el-table>
+
+
+      <!-- 子抽屉用于编辑 JMX 脚本 -->
+      <el-drawer v-model="onlineDrawer" title="在线编辑JMX脚本文件" :append-to-body="true" :size="'75%'">
+        <!-- 线程组选择 -->
+        <el-form :model="onlineEditForm" label-width="150px" label-position="top">
+          <el-divider>
+            <el-radio-group v-model="threadGroupType">
+              <el-radio label="threadGroup">Thread Group</el-radio>
+              <el-radio label="steppingThreadGroup">Stepping Thread Group</el-radio>
+              <el-radio label="concurrencyThreadGroup">Concurrency Thread Group</el-radio>
+            </el-radio-group>
+          </el-divider>
+
+          <!-- 条件渲染不同的线程组输入框 -->
+          <template v-if="threadGroupType === 'threadGroup'">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Number of Threads (users)">
+                  <el-input v-model="onlineEditForm.threadGroup.numThreads"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Ramp-Up Period (in seconds)">
+                  <el-input v-model="onlineEditForm.threadGroup.rampUpPeriod"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Loop Count">
+                  <el-input v-model="onlineEditForm.threadGroup.loopCount"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Same user on each iteration">
+                  <el-checkbox v-model="onlineEditForm.threadGroup.sameUserOnNextIteration"></el-checkbox>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Delay Thread creation until needed">
+                  <el-checkbox v-model="onlineEditForm.threadGroup.delayThreadCreation"></el-checkbox>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Scheduler">
+                  <el-checkbox v-model="onlineEditForm.threadGroup.scheduler"></el-checkbox>
+                </el-form-item>
+              </el-col>
+              <el-col :span="16" v-if="onlineEditForm.threadGroup.scheduler">
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item label="Duration (seconds)">
+                      <el-input v-model="onlineEditForm.threadGroup.duration"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="Startup Delay (seconds)">
+                      <el-input v-model="onlineEditForm.threadGroup.startupDelay"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </template>
+
+          <template v-if="threadGroupType === 'steppingThreadGroup'">
+            <!-- Stepping Thread Group 输入框调整 -->
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="This group will start">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.startThreads"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="First, wait for">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.firstWait"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Then start">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.startThreadsInterval"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="Next, add threads">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.addThreads"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Every (seconds)">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.addThreadsInterval"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="Ramp-Up Time (seconds)">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.rampUpTime"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Hold load for (seconds)">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.holdTime"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="Finally, stop threads">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.stopThreads"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Every (seconds)">
+                  <el-input v-model="onlineEditForm.steppingThreadGroup.stopThreadsInterval"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </template>
+
+
+          <template v-if="threadGroupType === 'concurrencyThreadGroup'">
+            <!-- 这里根据 Concurrency Thread Group 的需求添加输入框 -->
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="Target Concurrency">
+                  <el-input v-model="onlineEditForm.concurrencyThreadGroup.targetConcurrency"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Ramp-Up Time (seconds)">
+                  <el-input v-model="onlineEditForm.concurrencyThreadGroup.rampUpTime"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="12">
+                <el-form-item label="Ramp-Up Steps Count">
+                  <el-input v-model="onlineEditForm.concurrencyThreadGroup.rampUpSteps"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="Hold Target Rate Time (seconds)">
+                  <el-input v-model="onlineEditForm.concurrencyThreadGroup.holdTargetTime"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </template>
+
+
+          <el-divider>
+            <el-radio-group v-model="requestType">
+              <el-radio label="http">HTTP Request</el-radio>
+              <el-radio label="java">Java Request</el-radio>
+              <el-radio label="dubbo">Dubbo Request</el-radio>
+            </el-radio-group>
+          </el-divider>
+
+
+          <template v-if="requestType === 'http'">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Protocol">
+                  <el-select v-model="onlineEditForm.protocol">
+                    <el-option label="HTTP" value="http"></el-option>
+                    <el-option label="HTTPS" value="https"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Host">
+                  <el-input v-model="onlineEditForm.host"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Port">
+                  <el-input v-model="onlineEditForm.port"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Method">
+                  <el-select v-model="onlineEditForm.method">
+                    <el-option label="GET" value="GET"></el-option>
+                    <el-option label="POST" value="POST"></el-option>
+                    <el-option label="PUT" value="PUT"></el-option>
+                    <el-option label="DELETE" value="DELETE"></el-option>
+                    <el-option label="PATCH" value="PATCH"></el-option>
+                    <el-option label="TRACE" value="TRACE"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Path">
+                  <el-input v-model="onlineEditForm.path"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Encoding">
+                  <el-input v-model="onlineEditForm.encoding" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-tabs v-model="activeTab">
+              <el-tab-pane label="Header" name="header">
+                <el-table :data="onlineEditForm.httpHeaders" border style="width: 100%">
+                  <el-table-column prop="key" label="Key" width="180" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.key"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="value" label="Value" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.value"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="120" align="center">
+                    <template #default="scope">
+                      <el-button text :icon="Delete" class="red" @click="handleHttpHeaderDelete(scope.$index)">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-button type="primary" @click="handleHttpHeaderAdd">新增</el-button>
+              </el-tab-pane>
+              <el-tab-pane label="Param" name="param">
+                <el-table :data="onlineEditForm.httpParams" border style="width: 100%">
+                  <el-table-column prop="key" label="Key" width="180" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.key"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="value" label="Value" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.value"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="120" align="center">
+                    <template #default="scope">
+                      <el-button text :icon="Delete" class="red" @click="handleHttpParamDelete(scope.$index)">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-button type="primary" @click="handleHttpParamAdd">新增</el-button>
+              </el-tab-pane>
+              <el-tab-pane label="Body" name="body">
+                <el-input type="textarea" v-model="onlineEditForm.body" :rows="10"></el-input>
+              </el-tab-pane>
+            </el-tabs>
+          </template>
+
+          <template v-else-if="requestType === 'java'">
+            <el-form-item label="ClassPath">
+              <el-input v-model="onlineEditForm.classPath"></el-input>
+            </el-form-item>
+            <el-tabs v-model="activeTab">
+              <el-tab-pane label="JavaParams" name="javaParams">
+                <el-table :data="onlineEditForm.javaParams" border style="width: 100%">
+                  <el-table-column prop="key" label="Key" width="180" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.key"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="value" label="Value" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.value"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="120" align="center">
+                    <template #default="scope">
+                      <el-button text :icon="Delete" class="red" @click="handleJavaParamDelete(scope.$index)">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-button type="primary" @click="handleJavaParamAdd">新增</el-button>
+              </el-tab-pane>
+            </el-tabs>
+          </template>
+
+          <template v-else-if="requestType === 'dubbo'">
+            <el-form-item>
+              <el-input type="textarea" v-model="onlineEditForm.dubboParams" :rows="10"></el-input>
+            </el-form-item>
+          </template>
+        </el-form>
+        <el-button type="primary" @click="handleSave" style="margin-top: 20px;">保存</el-button>
+      </el-drawer>
+
       <!--    抽屉展示详情-->
       <el-drawer v-model="jmxDrawer" title="脚本详情" :append-to-body="true" :size="'45%'">
         <xmp><div v-text="jmxFile"></div></xmp>
@@ -173,7 +483,7 @@
       <!--      关联csv文件-->
       <el-divider>
         <el-upload action="" :show-file-list="false" :http-request="handleCsvUpload">
-          <el-button text :icon="Upload" class="blue">上传CSV数据文件</el-button>
+          <el-button text :icon="Upload" class="blue">本地上传CSV数据文件</el-button>
         </el-upload>
       </el-divider>
       <el-table :data="csvFullData" border style="width: 100%">
@@ -201,7 +511,7 @@
       <!--      关联jar依赖-->
       <el-divider>
         <el-upload action="" :show-file-list="false" :http-request="handleJarUpload">
-          <el-button text :icon="Upload" class="blue">上传JAR依赖文件</el-button>
+          <el-button text :icon="Upload" class="blue">本地上传JAR依赖文件</el-button>
         </el-upload>
       </el-divider>
       <el-table :data="jarFullData" border style="width: 100%">
@@ -243,6 +553,7 @@ import {checkToLogin} from "../common/push";
 const drawer = ref(false);
 const jmxDrawer = ref(false)
 const csvDrawer = ref(false)
+const onlineDrawer = ref(false)
 
 
 interface TestCaseItem {
@@ -616,6 +927,150 @@ const goReports = (testCaseId, name) => {
     }
   });
 }
+
+
+interface ThreadGroup {
+  numThreads: string;
+  rampUpPeriod: string;
+  loopCount: string;
+  sameUserOnNextIteration: boolean;
+  delayThreadCreation: boolean;
+  scheduler: boolean;
+  duration: string;
+  startupDelay: string;
+}
+
+interface SteppingThreadGroup {
+  startThreads: string;
+  firstWait: string;
+  startThreadsInterval: string;
+  addThreads: string;
+  addThreadsInterval: string;
+  rampUpTime: string;
+  holdTime: string;
+  stopThreads: string;
+  stopThreadsInterval: string;
+}
+
+interface ConcurrencyThreadGroup {
+  targetConcurrency: string;
+  rampUpTime: string;
+  rampUpSteps: string;
+  holdTargetTime: string;
+}
+
+// 在线编辑
+interface HttpHeader {
+  key: string;
+  value: string;
+}
+
+interface HttpParam {
+  key: string;
+  value: string;
+}
+
+interface JavaParam {
+  key: string;
+  value: string;
+}
+
+interface OnlineEditForm {
+  threadGroup: ThreadGroup;
+  steppingThreadGroup: SteppingThreadGroup;
+  concurrencyThreadGroup: ConcurrencyThreadGroup;
+  protocol: string;
+  host: string;
+  port: string;
+  method: string;
+  path: string;
+  encoding: string;
+  httpHeaders: HttpHeader[];
+  httpParams: HttpParam[];
+  body: string;
+  classPath: string;
+  javaParams: JavaParam[];
+  dubboParams: string;
+}
+
+const threadGroupType = ref('threadGroup'); // 默认为 Thread Group
+const requestType = ref('http');
+const activeTab = ref('header');
+const onlineEditForm = ref<OnlineEditForm>({
+  protocol: 'http',
+  host: '',
+  port: '',
+  method: 'GET',
+  path: '',
+  encoding: 'UTF-8',
+  httpHeaders: [{ key: '', value: '' }],
+  httpParams: [{ key: '', value: '' }],
+  body: '',
+  classPath: '',
+  javaParams: [{ key: '', value: '' }],
+  dubboParams: '',
+  threadGroup: {
+    numThreads: '1',
+    rampUpPeriod: '0',
+    loopCount: '-1',
+    sameUserOnNextIteration: true,
+    delayThreadCreation: false,
+    scheduler: true,
+    duration: '300',
+    startupDelay: '0'
+  },
+  steppingThreadGroup: {
+    startThreads: '20',
+    firstWait: '0',
+    startThreadsInterval: '0',
+    addThreads: '2',
+    addThreadsInterval: '30',
+    rampUpTime: '5',
+    holdTime: '300',
+    stopThreads: '5',
+    stopThreadsInterval: '1'
+  },
+  concurrencyThreadGroup: {
+    targetConcurrency: '20',
+    rampUpTime: '300',
+    rampUpSteps: '10',
+    holdTargetTime: '300'
+  }
+});
+
+const handleJmxEdit = () => {
+  // 根据 id 获取 JMX 脚本数据并填充到 editForm 中
+  onlineDrawer.value = true;
+};
+
+const handleHttpHeaderAdd = () => {
+  onlineEditForm.value.httpHeaders.push({ key: '', value: '' });
+};
+
+const handleHttpHeaderDelete = (index: number) => {
+  onlineEditForm.value.httpHeaders.splice(index, 1);
+};
+
+const handleHttpParamAdd = () => {
+  onlineEditForm.value.httpParams.push({ key: '', value: '' });
+};
+
+const handleHttpParamDelete = (index: number) => {
+  onlineEditForm.value.httpParams.splice(index, 1);
+};
+
+const handleJavaParamAdd = () => {
+  onlineEditForm.value.javaParams.push({ key: '', value: '' });
+};
+
+const handleJavaParamDelete = (index: number) => {
+  onlineEditForm.value.javaParams.splice(index, 1);
+};
+
+const handleSave = () => {
+  // 保存编辑后的 JMX 脚本数据
+  onlineDrawer.value = false;
+};
 
 
 </script>
