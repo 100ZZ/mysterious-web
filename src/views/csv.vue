@@ -33,7 +33,7 @@
 
       <!--    抽屉展示详情-->
       <el-drawer v-model="drawer" title="数据详情" :show-close="true" :with-header="true" :size="'60%'">
-        <xmp><div v-text="csvFile"></div></xmp>
+        <pre><div v-text="csvFile"></div></pre>
       </el-drawer>
 
       <div class="pagination">

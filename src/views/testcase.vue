@@ -177,10 +177,25 @@
 
       <!-- 子抽屉用于编辑 JMX 脚本 -->
       <el-drawer v-model="onlineDrawer" title="在线编写JMX脚本文件" :append-to-body="true" :size="'75%'">
-        <el-form-item label="脚本名称">
-          <el-input v-model="onlineJmxItem.srcName" placeholder="请输入脚本名称, 以.jmx后缀结尾" :disabled="onlineJmxItem.id !== 0"></el-input>
-        </el-form-item>
         <el-form :model="onlineJmxItem" label-width="150px" label-position="top">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="脚本名称">
+                <el-input v-model="onlineJmxItem.srcName" placeholder="请输入脚本名称, 以.jmx后缀结尾" :disabled="onlineJmxItem.id !== 0"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="脚本描述">
+                <el-input v-model="testCaseFullData.name" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="用例ID">
+                <el-input v-model="onlineJmxItem.testCaseId" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-divider>
             <el-radio-group v-model="threadGroupType">
               <el-radio label="threadGroup">Thread Group</el-radio>
@@ -211,28 +226,19 @@
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Same user on each iteration">
-                  <el-select v-model="onlineJmxItem.threadGroupVO.sameUserOnNextIteration">
-                    <el-option label="Yes" value="1"></el-option>
-                    <el-option label="No" value="0"></el-option>
-                  </el-select>
+                  <el-checkbox v-model="onlineJmxItem.threadGroupVO.sameUserOnNextIteration" @change="handleCheckboxChange('sameUserOnNextIteration', $event)"></el-checkbox>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Delay Thread creation until needed">
-                  <el-select v-model="onlineJmxItem.threadGroupVO.delayedStart">
-                    <el-option label="Yes" value="1"></el-option>
-                    <el-option label="No" value="0"></el-option>
-                  </el-select>
+                  <el-checkbox v-model="onlineJmxItem.threadGroupVO.delayedStart" @change="handleCheckboxChange('delayedStart', $event)"></el-checkbox>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Scheduler">
-                  <el-select v-model="onlineJmxItem.threadGroupVO.scheduler">
-                    <el-option label="Yes" value="1"></el-option>
-                    <el-option label="No" value="0"></el-option>
-                  </el-select>
+                  <el-checkbox v-model="onlineJmxItem.threadGroupVO.scheduler" @change="handleCheckboxChange('scheduler', $event)"></el-checkbox>
                 </el-form-item>
               </el-col>
               <el-col :span="16" v-if="onlineJmxItem.threadGroupVO.scheduler">
@@ -488,7 +494,7 @@
 
       <!--    抽屉展示详情-->
       <el-drawer v-model="jmxDrawer" title="脚本详情" :append-to-body="true" :size="'45%'">
-        <xmp><div v-text="jmxFile"></div></xmp>
+        <pre><div v-text="jmxFile"></div></pre>
       </el-drawer>
 
       <!--      关联csv文件-->
@@ -516,7 +522,7 @@
 
       <!--    抽屉展示详情-->
       <el-drawer v-model="csvDrawer" title="数据详情" :append-to-body="true" :size="'45%'">
-        <xmp><div v-text="csvFile"></div></xmp>
+        <pre><div v-text="csvFile"></div></pre>
       </el-drawer>
 
       <!--      关联jar依赖-->
@@ -947,9 +953,9 @@ interface ThreadGroupVO {
   numThreads: string;
   rampTime: string;
   loops: string;
-  sameUserOnNextIteration: string; // 修改为字符串 1：true，0：false
-  delayedStart: string; // 修改为字符串
-  scheduler: string; // 修改为字符串
+  sameUserOnNextIteration: boolean; // 修改为字符串 1：true，0：false
+  delayedStart: boolean; // 修改为字符串
+  scheduler: boolean; // 修改为字符串
   duration: string;
   delay: string;
 }
@@ -1051,7 +1057,7 @@ interface OnlineJmxItem {
 const threadGroupType = ref('threadGroup'); // 默认为 Thread Group
 const requestType = ref('http');
 const activeTab = ref('header');
-const onlineJmxItem = ref<OnlineJmxItem>({
+let onlineJmxItem = reactive({
   id: 0,
   srcName: '',
   testCaseId: 0,
@@ -1065,9 +1071,9 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     numThreads: '1',
     rampTime: '0',
     loops: '-1',
-    sameUserOnNextIteration: "1",
-    delayedStart: "0",
-    scheduler: "1",
+    sameUserOnNextIteration: true,
+    delayedStart: false,
+    scheduler: true,
     duration: '300',
     delay: '0'
   },
@@ -1117,9 +1123,75 @@ const onlineJmxItem = ref<OnlineJmxItem>({
   },
   dubboVO: {}
 });
+// const onlineJmxItem = ref<OnlineJmxItem>({
+//   id: 0,
+//   srcName: '',
+//   testCaseId: 0,
+//   jmeterScriptType: 0,
+//   jmeterThreadsType: 0,
+//   jmeterSampleType: 0,
+//   threadGroupVO: {
+//     id: 0,
+//     testCaseId: 0,
+//     jmxId: 0,
+//     numThreads: '1',
+//     rampTime: '0',
+//     loops: '-1',
+//     sameUserOnNextIteration: true,
+//     delayedStart: false,
+//     scheduler: true,
+//     duration: '300',
+//     delay: '0'
+//   },
+//   steppingThreadGroupVO: {
+//     id: 0,
+//     testCaseId: 0,
+//     jmxId: 0,
+//     numThreads: '20',
+//     firstWaitForSeconds: '0',
+//     thenStartThreads: '0',
+//     nextAddThreads: '2',
+//     nextAddThreadsEverySeconds: '30',
+//     usingRampUpSeconds: '5',
+//     thenHoldLoadForSeconds: '300',
+//     finallyStopThreads: '5',
+//     finallyStopThreadsEverySeconds: '1'
+//   },
+//   concurrencyThreadGroupVO: {
+//     id: 0,
+//     testCaseId: 0,
+//     jmxId: 0,
+//     targetConcurrency: '20',
+//     rampUpTime: '300',
+//     rampUpStepsCount: '10',
+//     holdTargetRateTime: '300'
+//   },
+//   httpVO: {
+//     id: 0,
+//     testCaseId: 0,
+//     jmxId: 0,
+//     protocol: 'http',
+//     domain: '',
+//     port: '',
+//     method: 'GET',
+//     path: '',
+//     contentEncoding: 'UTF-8',
+//     httpHeaderVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' }],
+//     httpParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' }],
+//     body: ''
+//   },
+//   javaVO: {
+//     id: 0,
+//     testCaseId: 0,
+//     jmxId: 0,
+//     javaRequestClassPath: '',
+//     javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
+//   },
+//   dubboVO: {}
+// });
 
 const addOnlineJmxData = async () => {
-  const res = await addOnlineJmx(onlineJmxItem.value);
+  const res = await addOnlineJmx(onlineJmxItem);
   const code = res.data.code;
   if (code !== 0) {
     ElMessage.error(res.data.message);
@@ -1130,7 +1202,7 @@ const addOnlineJmxData = async () => {
 };
 
 const updateOnlineJmxData = async (id: number) => {
-  const res = await updateOnlineJmx(id, onlineJmxItem.value);
+  const res = await updateOnlineJmx(id, onlineJmxItem);
   const code = res.data.code;
   if (code !== 0) {
     ElMessage.error(res.data.message);
@@ -1144,7 +1216,7 @@ const getOnlineJmxData = async (id: number | null) => {
   onlineDrawer.value = true;
 
   // 重置 onlineJmxItem 的状态
-  onlineJmxItem.value = {
+  onlineJmxItem = {
     id: 0,
     srcName: '',
     testCaseId: testCaseFullData.value.id, // 假设 testCaseFullData 中包含当前用例的 id
@@ -1158,9 +1230,9 @@ const getOnlineJmxData = async (id: number | null) => {
       numThreads: '1',
       rampTime: '0',
       loops: '-1',
-      sameUserOnNextIteration: "1",
-      delayedStart: "0",
-      scheduler: "1",
+      sameUserOnNextIteration: true,
+      delayedStart: false,
+      scheduler: true,
       duration: '300',
       delay: '0'
     },
@@ -1222,6 +1294,7 @@ const getOnlineJmxData = async (id: number | null) => {
     }
 
     const onlineJmxData = res.data.data;
+    console.log("onlineJmxData:", onlineJmxData)
 
     // 判断 jmeterScriptType
     if (onlineJmxData.jmeterScriptType !== 1) {
@@ -1230,7 +1303,7 @@ const getOnlineJmxData = async (id: number | null) => {
     }
 
     // 设置 onlineJmxItem 的值
-    onlineJmxItem.value = {
+    onlineJmxItem = {
       id: onlineJmxData.id,
       srcName: onlineJmxData.srcName,
       testCaseId: onlineJmxData.testCaseId,
@@ -1244,9 +1317,9 @@ const getOnlineJmxData = async (id: number | null) => {
         numThreads: '1',
         rampTime: '0',
         loops: '-1',
-        sameUserOnNextIteration: true,
-        delayedStart: false,
-        scheduler: true,
+        sameUserOnNextIteration: numberToBoolean(onlineJmxData.threadGroupVO.sameUserOnNextIteration),
+        delayedStart: numberToBoolean(onlineJmxData.threadGroupVO.delayedStart),
+        scheduler: numberToBoolean(onlineJmxData.threadGroupVO.scheduler),
         duration: '300',
         delay: '0'
       },
@@ -1273,7 +1346,7 @@ const getOnlineJmxData = async (id: number | null) => {
         rampUpStepsCount: '10',
         holdTargetRateTime: '300'
       },
-      httpVO: {
+      httpVO: onlineJmxData.httpVO ? {
         id: onlineJmxData.httpVO.id || 0,
         testCaseId: onlineJmxData.httpVO.testCaseId || 0,
         jmxId: onlineJmxData.httpVO.jmxId || 0,
@@ -1300,8 +1373,34 @@ const getOnlineJmxData = async (id: number | null) => {
           paramValue: p.paramValue || ''
         })),
         body: onlineJmxData.httpVO.body || ''
+      } : {
+        id: 0,
+        testCaseId: 0,
+        jmxId: 0,
+        protocol: 'http',
+        domain: '',
+        port: '',
+        method: 'GET',
+        path: '',
+        contentEncoding: 'UTF-8',
+        httpHeaderVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' }],
+        httpParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' }],
+        body: ''
       },
-      javaVO: onlineJmxData.javaVO || {
+      javaVO: onlineJmxData.javaVO ? {
+        id: onlineJmxData.javaVO.id || 0,
+        testCaseId: onlineJmxData.javaVO.testCaseId || 0,
+        jmxId: onlineJmxData.javaVO.jmxId || 0,
+        javaRequestClassPath: onlineJmxData.javaVO.javaRequestClassPath || '',
+        javaParamVOList: onlineJmxData.javaVO.javaParamVOList.map(p => ({
+          id: p.id || 0,
+          testCaseId: p.testCaseId || 0,
+          jmxId: p.jmxId || 0,
+          javaId: p.javaId || 0,
+          paramKey: p.paramKey || '',
+          paramValue: p.paramValue || ''
+        }))
+      } : {
         id: 0,
         testCaseId: 0,
         jmxId: 0,
@@ -1311,38 +1410,77 @@ const getOnlineJmxData = async (id: number | null) => {
       dubboVO: onlineJmxData.dubboVO || {}
     };
   }
+  console.log("onlineJmxItem:", onlineJmxItem)
+
 };
 
+const numberToBoolean = (value: number): boolean => value === 1;
+// Simplify checkbox change handler using helper function
+
+// Reusable function to add a new item to any list (like headers, params)
+const addNewItem = <T>(list: T[], newItem: T) => {
+  list.push(newItem);
+};
+
+// Reusable function to delete an item by index from a list
+const deleteItemByIndex = <T>(list: T[], index: number) => {
+  list.splice(index, 1);
+};
+
+// Refactored HTTP Header and Param handlers using generic functions
 const handleHttpHeaderAdd = () => {
-  onlineJmxItem.value.httpVO.httpHeaderVOList.push({ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' });
+  addNewItem(onlineJmxItem.httpVO.httpHeaderVOList, {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    httpId: 0,
+    headerKey: '',
+    headerValue: ''
+  });
 };
 
 const handleHttpHeaderDelete = (index: number) => {
-  onlineJmxItem.value.httpVO.httpHeaderVOList.splice(index, 1);
+  deleteItemByIndex(onlineJmxItem.httpVO.httpHeaderVOList, index);
 };
 
 const handleHttpParamAdd = () => {
-  onlineJmxItem.value.httpVO.httpParamVOList.push({ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' });
+  addNewItem(onlineJmxItem.httpVO.httpParamVOList, {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    httpId: 0,
+    paramKey: '',
+    paramValue: ''
+  });
 };
 
 const handleHttpParamDelete = (index: number) => {
-  onlineJmxItem.value.httpVO.httpParamVOList.splice(index, 1);
+  deleteItemByIndex(onlineJmxItem.httpVO.httpParamVOList, index);
 };
 
+// Java Param handlers using the same generic functions
 const handleJavaParamAdd = () => {
-  onlineJmxItem.value.javaVO.javaParamVOList.push({ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' });
+  addNewItem(onlineJmxItem.javaVO.javaParamVOList, {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    javaId: 0,
+    paramKey: '',
+    paramValue: ''
+  });
 };
 
 const handleJavaParamDelete = (index: number) => {
-  onlineJmxItem.value.javaVO.javaParamVOList.splice(index, 1);
+  deleteItemByIndex(onlineJmxItem.javaVO.javaParamVOList, index);
 };
+
 
 const handleSave = async () => {
   let res;
   // 保存编辑后的 JMX 脚本数据
-  if (onlineJmxItem.value.id) {
+  if (onlineJmxItem.id) {
     // 如果 id 不为空，则调用更新操作
-    res = await updateOnlineJmxData(onlineJmxItem.value.id);
+    res = await updateOnlineJmxData(onlineJmxItem.id);
   } else {
     // 如果 id 为空，则调用新增操作
     res = await addOnlineJmxData();
@@ -1355,6 +1493,12 @@ const handleSave = async () => {
     onlineDrawer.value = false;
   }
 };
+
+
+const handleCheckboxChange = (field: string, value: boolean) => {
+  onlineJmxItem.threadGroupVO[field] = value;
+};
+
 
 
 </script>
