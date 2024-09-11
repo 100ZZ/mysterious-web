@@ -152,7 +152,7 @@
             </el-upload>
           </el-col>
           <el-col :span="12">
-            <el-button text :icon="Edit" class="blue" @click="">在线编辑JMX脚本文件</el-button>
+            <el-button text :icon="Edit" class="blue" @click="onlineDrawer = true,getOnlineJmxData(jmxFullData[0] ? jmxFullData[0].id : null)">在线编写JMX脚本文件</el-button>
           </el-col>
         </el-row>
       </el-divider>
@@ -164,9 +164,6 @@
         <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Edit" class="bg-blue" @click="onlineDrawer = true,getOnlineJmxData(scope.row.id)" v-permiss="1">
-              编辑
-            </el-button>
             <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
@@ -180,7 +177,9 @@
 
       <!-- 子抽屉用于编辑 JMX 脚本 -->
       <el-drawer v-model="onlineDrawer" title="在线编写JMX脚本文件" :append-to-body="true" :size="'75%'">
-        <!-- 线程组选择 -->
+        <el-form-item label="脚本名称">
+          <el-input v-model="onlineJmxItem.srcName" placeholder="请输入脚本名称, 以.jmx后缀结尾" :disabled="onlineJmxItem.id !== 0"></el-input>
+        </el-form-item>
         <el-form :model="onlineJmxItem" label-width="150px" label-position="top">
           <el-divider>
             <el-radio-group v-model="threadGroupType">
@@ -195,48 +194,57 @@
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Number of Threads (users)">
-                  <el-input v-model="onlineJmxItem.threadGroup.numThreads"></el-input>
+                  <el-input v-model="onlineJmxItem.threadGroupVO.numThreads"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Ramp-Up Period (in seconds)">
-                  <el-input v-model="onlineJmxItem.threadGroup.rampUpPeriod"></el-input>
+                  <el-input v-model="onlineJmxItem.threadGroupVO.rampTime"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Loop Count">
-                  <el-input v-model="onlineJmxItem.threadGroup.loopCount"></el-input>
+                  <el-input v-model="onlineJmxItem.threadGroupVO.loops"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Same user on each iteration">
-                  <el-checkbox v-model="onlineJmxItem.threadGroup.sameUserOnNextIteration"></el-checkbox>
+                  <el-select v-model="onlineJmxItem.threadGroupVO.sameUserOnNextIteration">
+                    <el-option label="Yes" value="1"></el-option>
+                    <el-option label="No" value="0"></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Delay Thread creation until needed">
-                  <el-checkbox v-model="onlineJmxItem.threadGroup.delayThreadCreation"></el-checkbox>
+                  <el-select v-model="onlineJmxItem.threadGroupVO.delayedStart">
+                    <el-option label="Yes" value="1"></el-option>
+                    <el-option label="No" value="0"></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Scheduler">
-                  <el-checkbox v-model="onlineJmxItem.threadGroup.scheduler"></el-checkbox>
+                  <el-select v-model="onlineJmxItem.threadGroupVO.scheduler">
+                    <el-option label="Yes" value="1"></el-option>
+                    <el-option label="No" value="0"></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="16" v-if="onlineJmxItem.threadGroup.scheduler">
+              <el-col :span="16" v-if="onlineJmxItem.threadGroupVO.scheduler">
                 <el-row :gutter="20">
                   <el-col :span="12">
                     <el-form-item label="Duration (seconds)">
-                      <el-input v-model="onlineJmxItem.threadGroup.duration"></el-input>
+                      <el-input v-model="onlineJmxItem.threadGroupVO.duration"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="Startup Delay (seconds)">
-                      <el-input v-model="onlineJmxItem.threadGroup.startupDelay"></el-input>
+                      <el-input v-model="onlineJmxItem.threadGroupVO.delay"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -249,17 +257,17 @@
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="This group will start">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.startThreads"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.numThreads"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="First, wait for">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.firstWait"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.firstWaitForSeconds"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Then start">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.startThreadsInterval"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.thenStartThreads"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -267,12 +275,12 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Next, add threads">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.addThreads"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.nextAddThreads"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Every (seconds)">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.addThreadsInterval"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.nextAddThreadsEverySeconds"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -280,12 +288,12 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Ramp-Up Time (seconds)">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.rampUpTime"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.usingRampUpSeconds"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Hold load for (seconds)">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.holdTime"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.thenHoldLoadForSeconds"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -293,12 +301,12 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Finally, stop threads">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.stopThreads"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.finallyStopThreads"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Every (seconds)">
-                  <el-input v-model="onlineJmxItem.steppingThreadGroup.stopThreadsInterval"></el-input>
+                  <el-input v-model="onlineJmxItem.steppingThreadGroupVO.finallyStopThreadsEverySeconds"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -310,24 +318,24 @@
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Target Concurrency">
-                  <el-input v-model="onlineJmxItem.concurrencyThreadGroup.targetConcurrency"></el-input>
+                  <el-input v-model="onlineJmxItem.concurrencyThreadGroupVO.targetConcurrency"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Ramp-Up Time (seconds)">
-                  <el-input v-model="onlineJmxItem.concurrencyThreadGroup.rampUpTime"></el-input>
+                  <el-input v-model="onlineJmxItem.concurrencyThreadGroupVO.rampUpTime"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="Ramp-Up Steps Count">
-                  <el-input v-model="onlineJmxItem.concurrencyThreadGroup.rampUpSteps"></el-input>
+                  <el-input v-model="onlineJmxItem.concurrencyThreadGroupVO.rampUpStepsCount"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="Hold Target Rate Time (seconds)">
-                  <el-input v-model="onlineJmxItem.concurrencyThreadGroup.holdTargetTime"></el-input>
+                  <el-input v-model="onlineJmxItem.concurrencyThreadGroupVO.holdTargetRateTime"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -347,7 +355,7 @@
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Protocol">
-                  <el-select v-model="onlineJmxItem.httpItem.protocol">
+                  <el-select v-model="onlineJmxItem.httpVO.protocol">
                     <el-option label="HTTP" value="http"></el-option>
                     <el-option label="HTTPS" value="https"></el-option>
                   </el-select>
@@ -355,19 +363,19 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Host">
-                  <el-input v-model="onlineJmxItem.httpItem.domain"></el-input>
+                  <el-input v-model="onlineJmxItem.httpVO.domain"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Port">
-                  <el-input v-model="onlineJmxItem.httpItem.port"></el-input>
+                  <el-input v-model="onlineJmxItem.httpVO.port"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Method">
-                  <el-select v-model="onlineJmxItem.httpItem.method">
+                  <el-select v-model="onlineJmxItem.httpVO.method">
                     <el-option label="GET" value="GET"></el-option>
                     <el-option label="POST" value="POST"></el-option>
                     <el-option label="PUT" value="PUT"></el-option>
@@ -379,26 +387,26 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Path">
-                  <el-input v-model="onlineJmxItem.httpItem.path"></el-input>
+                  <el-input v-model="onlineJmxItem.httpVO.path"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="Encoding">
-                  <el-input v-model="onlineJmxItem.httpItem.contentEncoding" disabled></el-input>
+                  <el-input v-model="onlineJmxItem.httpVO.contentEncoding" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="Header" name="header">
-                <el-table :data="onlineJmxItem.httpItem.httpHeaders" border style="width: 100%">
+                <el-table :data="onlineJmxItem.httpVO.httpHeaderVOList" border style="width: 100%">
                   <el-table-column prop="key" label="Key" width="180" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.key"></el-input>
+                      <el-input v-model="scope.row.headerKey"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="value" label="Value" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.value"></el-input>
+                      <el-input v-model="scope.row.headerValue"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" width="120" align="center">
@@ -412,15 +420,15 @@
                 <el-button type="primary" @click="handleHttpHeaderAdd">新增</el-button>
               </el-tab-pane>
               <el-tab-pane label="Param" name="param">
-                <el-table :data="onlineJmxItem.httpItem.httpParams" border style="width: 100%">
+                <el-table :data="onlineJmxItem.httpVO.httpParamVOList" border style="width: 100%">
                   <el-table-column prop="key" label="Key" width="180" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.key"></el-input>
+                      <el-input v-model="scope.row.paramKey"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="value" label="Value" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.value"></el-input>
+                      <el-input v-model="scope.row.paramValue"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" width="120" align="center">
@@ -434,26 +442,26 @@
                 <el-button type="primary" @click="handleHttpParamAdd">新增</el-button>
               </el-tab-pane>
               <el-tab-pane label="Body" name="body">
-                <el-input type="textarea" v-model="onlineJmxItem.httpItem.body" :rows="10"></el-input>
+                <el-input type="textarea" v-model="onlineJmxItem.httpVO.body" :rows="10"></el-input>
               </el-tab-pane>
             </el-tabs>
           </template>
 
           <template v-else-if="requestType === 'java'">
             <el-form-item label="ClassPath">
-              <el-input v-model="onlineJmxItem.javaItem.classPath"></el-input>
+              <el-input v-model="onlineJmxItem.javaVO.javaRequestClassPath"></el-input>
             </el-form-item>
             <el-tabs v-model="activeTab">
               <el-tab-pane label="JavaParams" name="javaParams">
-                <el-table :data="onlineJmxItem.javaItem.javaParams" border style="width: 100%">
+                <el-table :data="onlineJmxItem.javaVO.javaParamVOList" border style="width: 100%">
                   <el-table-column prop="key" label="Key" width="180" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.key"></el-input>
+                      <el-input v-model="scope.row.paramKey"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="value" label="Value" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.value"></el-input>
+                      <el-input v-model="scope.row.paramValue"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" width="120" align="center">
@@ -471,7 +479,7 @@
 
           <template v-else-if="requestType === 'dubbo'">
             <el-form-item>
-              <el-input type="textarea" v-model="onlineJmxItem.dubboItem" :rows="10"></el-input>
+              <el-input type="textarea" v-model="onlineJmxItem.dubboVO" :rows="10"></el-input>
             </el-form-item>
           </template>
         </el-form>
@@ -932,132 +940,186 @@ const goReports = (testCaseId, name) => {
 }
 
 
-interface ThreadGroup {
+interface ThreadGroupVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
   numThreads: string;
-  rampUpPeriod: string;
-  loopCount: string;
-  sameUserOnNextIteration: boolean;
-  delayThreadCreation: boolean;
-  scheduler: boolean;
+  rampTime: string;
+  loops: string;
+  sameUserOnNextIteration: string; // 修改为字符串 1：true，0：false
+  delayedStart: string; // 修改为字符串
+  scheduler: string; // 修改为字符串
   duration: string;
-  startupDelay: string;
+  delay: string;
 }
 
-interface SteppingThreadGroup {
-  startThreads: string;
-  firstWait: string;
-  startThreadsInterval: string;
-  addThreads: string;
-  addThreadsInterval: string;
-  rampUpTime: string;
-  holdTime: string;
-  stopThreads: string;
-  stopThreadsInterval: string;
+interface SteppingThreadGroupVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  numThreads: string;
+  firstWaitForSeconds: string;
+  thenStartThreads: string;
+  nextAddThreads: string;
+  nextAddThreadsEverySeconds: string;
+  usingRampUpSeconds: string;
+  thenHoldLoadForSeconds: string;
+  finallyStopThreads: string;
+  finallyStopThreadsEverySeconds: string;
 }
 
-interface ConcurrencyThreadGroup {
+interface ConcurrencyThreadGroupVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
   targetConcurrency: string;
   rampUpTime: string;
-  rampUpSteps: string;
-  holdTargetTime: string;
+  rampUpStepsCount: string;
+  holdTargetRateTime: string;
 }
 
-interface HttpItem {
+interface HttpVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
   protocol: string;
   domain: string;
   port: string;
   method: string;
   path: string;
   contentEncoding: string;
-  httpHeaders: HttpHeader[];
-  httpParams: HttpParam[];
+  httpHeaderVOList: HttpHeaderVO[];
+  httpParamVOList: HttpParamVO[];
   body: string;
 }
 
 // 在线编辑
-interface HttpHeader {
-  key: string;
-  value: string;
+interface HttpHeaderVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  httpId: number;
+  headerKey: string;
+  headerValue: string;
 }
 
-interface HttpParam {
-  key: string;
-  value: string;
+interface HttpParamVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  httpId: number;
+  paramKey: string;
+  paramValue: string;
 }
 
-interface JavaItem {
-  classPath: string;
-  javaParams: JavaParam[];
+interface JavaVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  javaRequestClassPath: string;
+  javaParamVOList: JavaParamVO[];
 }
 
-interface JavaParam {
-  key: string;
-  value: string;
+interface JavaParamVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  javaId: number;
+  paramKey: string;
+  paramValue: string;
 }
 
-interface DubboItem {
+interface DubboVO {
 }
 
 interface OnlineJmxItem {
-  threadGroup: ThreadGroup;
-  steppingThreadGroup: SteppingThreadGroup;
-  concurrencyThreadGroup: ConcurrencyThreadGroup;
-  httpItem: HttpItem;
-  javaItem: JavaItem;
-  dubboItem: DubboItem;
+  id: number;
+  srcName: string;
+  testCaseId: number;
+  jmeterScriptType: number;
+  jmeterThreadsType: number;
+  jmeterSampleType: number;
+  threadGroupVO: ThreadGroupVO;
+  steppingThreadGroupVO: SteppingThreadGroupVO;
+  concurrencyThreadGroupVO: ConcurrencyThreadGroupVO;
+  httpVO: HttpVO;
+  javaVO: JavaVO;
+  dubboVO: DubboVO;
 }
 
 const threadGroupType = ref('threadGroup'); // 默认为 Thread Group
 const requestType = ref('http');
 const activeTab = ref('header');
 const onlineJmxItem = ref<OnlineJmxItem>({
-  threadGroup: {
+  id: 0,
+  srcName: '',
+  testCaseId: 0,
+  jmeterScriptType: 0,
+  jmeterThreadsType: 0,
+  jmeterSampleType: 0,
+  threadGroupVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
     numThreads: '1',
-    rampUpPeriod: '0',
-    loopCount: '-1',
-    sameUserOnNextIteration: true,
-    delayThreadCreation: false,
-    scheduler: true,
+    rampTime: '0',
+    loops: '-1',
+    sameUserOnNextIteration: "1",
+    delayedStart: "0",
+    scheduler: "1",
     duration: '300',
-    startupDelay: '0'
+    delay: '0'
   },
-  steppingThreadGroup: {
-    startThreads: '20',
-    firstWait: '0',
-    startThreadsInterval: '0',
-    addThreads: '2',
-    addThreadsInterval: '30',
-    rampUpTime: '5',
-    holdTime: '300',
-    stopThreads: '5',
-    stopThreadsInterval: '1'
+  steppingThreadGroupVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    numThreads: '20',
+    firstWaitForSeconds: '0',
+    thenStartThreads: '0',
+    nextAddThreads: '2',
+    nextAddThreadsEverySeconds: '30',
+    usingRampUpSeconds: '5',
+    thenHoldLoadForSeconds: '300',
+    finallyStopThreads: '5',
+    finallyStopThreadsEverySeconds: '1'
   },
-  concurrencyThreadGroup: {
+  concurrencyThreadGroupVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
     targetConcurrency: '20',
     rampUpTime: '300',
-    rampUpSteps: '10',
-    holdTargetTime: '300'
+    rampUpStepsCount: '10',
+    holdTargetRateTime: '300'
   },
-  httpItem: {
+  httpVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
     protocol: 'http',
     domain: '',
     port: '',
     method: 'GET',
     path: '',
     contentEncoding: 'UTF-8',
-    httpHeaders: [{ key: '', value: '' }],
-    httpParams: [{ key: '', value: '' }],
+    httpHeaderVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' }],
+    httpParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' }],
     body: ''
   },
-  javaItem: {
-    classPath: '',
-    javaParams: [{ key: '', value: '' }]
+  javaVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    javaRequestClassPath: '',
+    javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
   },
-  dubboItem: {}
+  dubboVO: {}
 });
 
-const saveOnlineJmxData = async () => {
-  const res = await addOnlineJmx(onlineJmxItem);
+const addOnlineJmxData = async () => {
+  const res = await addOnlineJmx(onlineJmxItem.value);
   const code = res.data.code;
   if (code !== 0) {
     ElMessage.error(res.data.message);
@@ -1067,8 +1129,8 @@ const saveOnlineJmxData = async () => {
   }
 };
 
-const updateOnlineJmxData = async () => {
-  const res = await updateOnlineJmx(onlineJmxItem);
+const updateOnlineJmxData = async (id: number) => {
+  const res = await updateOnlineJmx(id, onlineJmxItem.value);
   const code = res.data.code;
   if (code !== 0) {
     ElMessage.error(res.data.message);
@@ -1078,101 +1140,220 @@ const updateOnlineJmxData = async () => {
   }
 };
 
-const getOnlineJmxData = async (id: number) => {
+const getOnlineJmxData = async (id: number | null) => {
   onlineDrawer.value = true;
-  const res = await getOnlineJmx(id);
-  const code = res.data.code;
-  if (code != 0) {
-    ElMessage.error(res.data.message);
-    return false;
+
+  // 重置 onlineJmxItem 的状态
+  onlineJmxItem.value = {
+    id: 0,
+    srcName: '',
+    testCaseId: testCaseFullData.value.id, // 假设 testCaseFullData 中包含当前用例的 id
+    jmeterScriptType: 0,
+    jmeterThreadsType: 0,
+    jmeterSampleType: 0,
+    threadGroupVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      numThreads: '1',
+      rampTime: '0',
+      loops: '-1',
+      sameUserOnNextIteration: "1",
+      delayedStart: "0",
+      scheduler: "1",
+      duration: '300',
+      delay: '0'
+    },
+    steppingThreadGroupVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      numThreads: '20',
+      firstWaitForSeconds: '0',
+      thenStartThreads: '0',
+      nextAddThreads: '2',
+      nextAddThreadsEverySeconds: '30',
+      usingRampUpSeconds: '5',
+      thenHoldLoadForSeconds: '300',
+      finallyStopThreads: '5',
+      finallyStopThreadsEverySeconds: '1'
+    },
+    concurrencyThreadGroupVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      targetConcurrency: '20',
+      rampUpTime: '300',
+      rampUpStepsCount: '10',
+      holdTargetRateTime: '300'
+    },
+    httpVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      protocol: 'http',
+      domain: '',
+      port: '',
+      method: 'GET',
+      path: '',
+      contentEncoding: 'UTF-8',
+      httpHeaderVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' }],
+      httpParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' }],
+      body: ''
+    },
+    javaVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      javaRequestClassPath: '',
+      javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
+    },
+    dubboVO: {}
+  };
+
+  if (id) {
+    // 如果传入了 id，则调用获取数据操作
+    const res = await getOnlineJmx(id);
+    const code = res.data.code;
+    if (code != 0) {
+      ElMessage.error(res.data.message);
+      onlineDrawer.value = false;
+      return false;
+    }
+
+    const onlineJmxData = res.data.data;
+
+    // 判断 jmeterScriptType
+    if (onlineJmxData.jmeterScriptType !== 1) {
+      ElMessage.warning("只支持在线编写的脚本");
+      return false;
+    }
+
+    // 设置 onlineJmxItem 的值
+    onlineJmxItem.value = {
+      id: onlineJmxData.id,
+      srcName: onlineJmxData.srcName,
+      testCaseId: onlineJmxData.testCaseId,
+      jmeterScriptType: onlineJmxData.jmeterScriptType,
+      jmeterThreadsType: onlineJmxData.jmeterThreadsType,
+      jmeterSampleType: onlineJmxData.jmeterSampleType,
+      threadGroupVO: onlineJmxData.threadGroupVO || {
+        id: 0,
+        testCaseId: 0,
+        jmxId: 0,
+        numThreads: '1',
+        rampTime: '0',
+        loops: '-1',
+        sameUserOnNextIteration: true,
+        delayedStart: false,
+        scheduler: true,
+        duration: '300',
+        delay: '0'
+      },
+      steppingThreadGroupVO: onlineJmxData.steppingThreadGroupVO || {
+        id: 0,
+        testCaseId: 0,
+        jmxId: 0,
+        numThreads: '20',
+        firstWaitForSeconds: '0',
+        thenStartThreads: '0',
+        nextAddThreads: '2',
+        nextAddThreadsEverySeconds: '30',
+        usingRampUpSeconds: '5',
+        thenHoldLoadForSeconds: '300',
+        finallyStopThreads: '5',
+        finallyStopThreadsEverySeconds: '1'
+      },
+      concurrencyThreadGroupVO: onlineJmxData.concurrencyThreadGroupVO || {
+        id: 0,
+        testCaseId: 0,
+        jmxId: 0,
+        targetConcurrency: '20',
+        rampUpTime: '300',
+        rampUpStepsCount: '10',
+        holdTargetRateTime: '300'
+      },
+      httpVO: {
+        id: onlineJmxData.httpVO.id || 0,
+        testCaseId: onlineJmxData.httpVO.testCaseId || 0,
+        jmxId: onlineJmxData.httpVO.jmxId || 0,
+        protocol: onlineJmxData.httpVO.protocol || 'http',
+        domain: onlineJmxData.httpVO.domain || '',
+        port: onlineJmxData.httpVO.port || '',
+        method: onlineJmxData.httpVO.method || 'GET',
+        path: onlineJmxData.httpVO.path || '',
+        contentEncoding: onlineJmxData.httpVO.contentEncoding || 'UTF-8',
+        httpHeaderVOList: onlineJmxData.httpVO.httpHeaderVOList.map(h => ({
+          id: h.id || 0,
+          testCaseId: h.testCaseId || 0,
+          jmxId: h.jmxId || 0,
+          httpId: h.httpId || 0,
+          headerKey: h.headerKey || '',
+          headerValue: h.headerValue || ''
+        })),
+        httpParamVOList: onlineJmxData.httpVO.httpParamVOList.map(p => ({
+          id: p.id || 0,
+          testCaseId: p.testCaseId || 0,
+          jmxId: p.jmxId || 0,
+          httpId: p.httpId || 0,
+          paramKey: p.paramKey || '',
+          paramValue: p.paramValue || ''
+        })),
+        body: onlineJmxData.httpVO.body || ''
+      },
+      javaVO: onlineJmxData.javaVO || {
+        id: 0,
+        testCaseId: 0,
+        jmxId: 0,
+        javaRequestClassPath: '',
+        javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
+      },
+      dubboVO: onlineJmxData.dubboVO || {}
+    };
   }
-  const onlineJmxData = res.data.data;
-
-  // 检查并设置 threadGroup
-  onlineJmxItem.value.threadGroup = onlineJmxData.threadGroupVO || {
-    numThreads: '1',
-    rampUpPeriod: '0',
-    loopCount: '-1',
-    sameUserOnNextIteration: true,
-    delayThreadCreation: false,
-    scheduler: true,
-    duration: '300',
-    startupDelay: '0'
-  };
-
-  // 检查并设置 steppingThreadGroup
-  onlineJmxItem.value.steppingThreadGroup = onlineJmxData.steppingThreadGroupVO || {
-    startThreads: '20',
-    firstWait: '0',
-    startThreadsInterval: '0',
-    addThreads: '2',
-    addThreadsInterval: '30',
-    rampUpTime: '5',
-    holdTime: '300',
-    stopThreads: '5',
-    stopThreadsInterval: '1'
-  };
-
-  // 检查并设置 concurrencyThreadGroup
-  onlineJmxItem.value.concurrencyThreadGroup = onlineJmxData.concurrencyThreadGroupVO || {
-    targetConcurrency: '20',
-    rampUpTime: '300',
-    rampUpSteps: '10',
-    holdTargetTime: '300'
-  };
-
-  // 设置 httpItem
-  onlineJmxItem.value.httpItem = {
-    protocol: onlineJmxData.httpVO.protocol || 'http',
-    domain: onlineJmxData.httpVO.domain || '',
-    port: onlineJmxData.httpVO.port || '',
-    method: onlineJmxData.httpVO.method || 'GET',
-    path: onlineJmxData.httpVO.path || '',
-    contentEncoding: onlineJmxData.httpVO.contentEncoding || 'UTF-8',
-    httpHeaders: onlineJmxData.httpVO.httpHeaderVOList.map(h => ({
-      key: h.headerKey,
-      value: h.headerValue
-    })),
-    httpParams: onlineJmxData.httpVO.httpParamVOList || [{ key: '', value: '' }],
-    body: onlineJmxData.httpVO.body || ''
-  };
-
-  // 设置 javaItem 和 dubboItem
-  onlineJmxItem.value.javaItem = onlineJmxData.javaVO || {
-    classPath: '',
-    javaParams: [{ key: '', value: '' }]
-  };
-
-  onlineJmxItem.value.dubboItem = onlineJmxData.dubboVO || {};
 };
 
 const handleHttpHeaderAdd = () => {
-  onlineJmxItem.value.httpItem.httpHeaders.push({ key: '', value: '' });
+  onlineJmxItem.value.httpVO.httpHeaderVOList.push({ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' });
 };
 
 const handleHttpHeaderDelete = (index: number) => {
-  onlineJmxItem.value.httpItem.httpHeaders.splice(index, 1);
+  onlineJmxItem.value.httpVO.httpHeaderVOList.splice(index, 1);
 };
 
 const handleHttpParamAdd = () => {
-  onlineJmxItem.value.httpItem.httpParams.push({ key: '', value: '' });
+  onlineJmxItem.value.httpVO.httpParamVOList.push({ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' });
 };
 
 const handleHttpParamDelete = (index: number) => {
-  onlineJmxItem.value.httpItem.httpParams.splice(index, 1);
+  onlineJmxItem.value.httpVO.httpParamVOList.splice(index, 1);
 };
 
 const handleJavaParamAdd = () => {
-  onlineJmxItem.value.javaItem.javaParams.push({ key: '', value: '' });
+  onlineJmxItem.value.javaVO.javaParamVOList.push({ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' });
 };
 
 const handleJavaParamDelete = (index: number) => {
-  onlineJmxItem.value.javaItem.javaParams.splice(index, 1);
+  onlineJmxItem.value.javaVO.javaParamVOList.splice(index, 1);
 };
 
-const handleSave = () => {
+const handleSave = async () => {
+  let res;
   // 保存编辑后的 JMX 脚本数据
-  onlineDrawer.value = false;
+  if (onlineJmxItem.value.id) {
+    // 如果 id 不为空，则调用更新操作
+    res = await updateOnlineJmxData(onlineJmxItem.value.id);
+  } else {
+    // 如果 id 为空，则调用新增操作
+    res = await addOnlineJmxData();
+  }
+  const code = res.data.code;
+  if (code !== 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    ElMessage.success("保存成功");
+    onlineDrawer.value = false;
+  }
 };
 
 

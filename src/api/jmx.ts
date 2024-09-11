@@ -41,9 +41,11 @@ export const addOnlineJmx = (body: any) => {
     })
 }
 
-export const updateOnlineJmx = (body: any) => {
+export const updateOnlineJmx = (id: number, body: any) => {
+    console.log("Request URL:", '/jmx/updateOnline/' + id);
+    console.log("Request Body:", body);
     return request({
-        url: '/jmx/updateOnline',
+        url: '/jmx/updateOnline/' + id,
         method: 'post',
         data: body
     })
