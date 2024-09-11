@@ -59,7 +59,7 @@
 
     <!--    抽屉查看日志-->
     <el-drawer v-model="drawer" title="jmeter.log日志" :show-close="true" :with-header="true" :size="'60%'">
-      <xmp><div v-text="jmxLog"></div></xmp>
+      <pre><div v-text="jmxLog"></div></pre>
     </el-drawer>
 
   </div>

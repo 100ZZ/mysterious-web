@@ -33,7 +33,7 @@
 
       <!--    抽屉展示详情-->
       <el-drawer v-model="drawer" title="脚本详情" :show-close="true" :with-header="true" :size="'60%'">
-        <xmp><div v-text="jmxFile"></div></xmp>
+        <pre><div v-text="jmxFile"></div></pre>
       </el-drawer>
 
       <div class="pagination">
