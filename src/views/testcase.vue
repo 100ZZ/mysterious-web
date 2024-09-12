@@ -197,7 +197,7 @@
           </el-row>
 
           <el-divider>
-            <el-radio-group v-model="threadGroupType">
+            <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
               <el-radio label="threadGroup">Thread Group</el-radio>
               <el-radio label="steppingThreadGroup">Stepping Thread Group</el-radio>
               <el-radio label="concurrencyThreadGroup">Concurrency Thread Group</el-radio>
@@ -205,7 +205,7 @@
           </el-divider>
 
           <!-- 条件渲染不同的线程组输入框 -->
-          <template v-if="threadGroupType === 'threadGroup'">
+          <template v-if="jmeterThreadsType === 'threadGroup'">
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Number of Threads (users)">
@@ -258,7 +258,7 @@
             </el-row>
           </template>
 
-          <template v-if="threadGroupType === 'steppingThreadGroup'">
+          <template v-if="jmeterThreadsType === 'steppingThreadGroup'">
             <!-- Stepping Thread Group 输入框调整 -->
             <el-row :gutter="20">
               <el-col :span="8">
@@ -319,7 +319,7 @@
           </template>
 
 
-          <template v-if="threadGroupType === 'concurrencyThreadGroup'">
+          <template v-if="jmeterThreadsType === 'concurrencyThreadGroup'">
             <!-- 这里根据 Concurrency Thread Group 的需求添加输入框 -->
             <el-row :gutter="20">
               <el-col :span="12">
@@ -349,7 +349,7 @@
 
 
           <el-divider>
-            <el-radio-group v-model="requestType">
+            <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
               <el-radio label="http">HTTP Request</el-radio>
               <el-radio label="java">Java Request</el-radio>
               <el-radio label="dubbo">Dubbo Request</el-radio>
@@ -357,7 +357,7 @@
           </el-divider>
 
 
-          <template v-if="requestType === 'http'">
+          <template v-if="jmeterSampleType === 'http'">
             <el-row :gutter="20">
               <el-col :span="8">
                 <el-form-item label="Protocol">
@@ -453,7 +453,7 @@
             </el-tabs>
           </template>
 
-          <template v-else-if="requestType === 'java'">
+          <template v-else-if="jmeterSampleType === 'java'">
             <el-form-item label="ClassPath">
               <el-input v-model="onlineJmxItem.javaVO.javaRequestClassPath"></el-input>
             </el-form-item>
@@ -483,7 +483,7 @@
             </el-tabs>
           </template>
 
-          <template v-else-if="requestType === 'dubbo'">
+          <template v-else-if="jmeterSampleType === 'dubbo'">
             <el-form-item>
               <el-input type="textarea" v-model="onlineJmxItem.dubboVO" :rows="10"></el-input>
             </el-form-item>
@@ -1042,7 +1042,9 @@ interface DubboVO {
 interface OnlineJmxItem {
   id: number;
   srcName: string;
+  dstName: string;
   testCaseId: number;
+  jmxDir: string;
   jmeterScriptType: number;
   jmeterThreadsType: number;
   jmeterSampleType: number;
@@ -1054,14 +1056,16 @@ interface OnlineJmxItem {
   dubboVO: DubboVO;
 }
 
-const threadGroupType = ref('threadGroup'); // 默认为 Thread Group
-const requestType = ref('http');
+const jmeterThreadsType = ref('threadGroup'); // 默认为 Thread Group
+const jmeterSampleType = ref('http');
 const activeTab = ref('header');
 const onlineJmxItem = ref<OnlineJmxItem>({
   id: 0,
   srcName: '',
+  dstName: '',
   testCaseId: 0,
-  jmeterScriptType: 0,
+  jmxDir: '',
+  jmeterScriptType: 1,
   jmeterThreadsType: 0,
   jmeterSampleType: 0,
   threadGroupVO: {
@@ -1131,8 +1135,10 @@ const getOnlineJmxData = async (id: number | null) => {
   onlineJmxItem.value = {
     id: 0,
     srcName: '',
+    dstName: '',
     testCaseId: testCaseFullData.value.id, // 假设 testCaseFullData 中包含当前用例的 id
-    jmeterScriptType: 0,
+    jmxDir: '',
+    jmeterScriptType: 1,
     jmeterThreadsType: 0,
     jmeterSampleType: 0,
     threadGroupVO: {
@@ -1213,13 +1219,13 @@ const getOnlineJmxData = async (id: number | null) => {
       return false;
     }
 
-    console.log("onlineJmxData: ", numberToBoolean(onlineJmxData.threadGroupVO.sameUserOnNextIteration));
-    // 设置 onlineJmxItem 的值
     // 设置 onlineJmxItem 的值
     onlineJmxItem.value = {
       id: onlineJmxData.id,
       srcName: onlineJmxData.srcName,
+      dstName: onlineJmxData.srcName,
       testCaseId: onlineJmxData.testCaseId,
+      jmxDir: onlineJmxData.jmxDir,
       jmeterScriptType: onlineJmxData.jmeterScriptType,
       jmeterThreadsType: onlineJmxData.jmeterThreadsType,
       jmeterSampleType: onlineJmxData.jmeterSampleType,
@@ -1303,6 +1309,72 @@ const getOnlineJmxData = async (id: number | null) => {
       },
       dubboVO: onlineJmxData.dubboVO || {}
     };
+    //根据 onlineJmxData 设置 jmeterThreadsType 和 jmeterSampleType
+    jmeterThreadsType.value = getJmeterThreadsType(onlineJmxData.jmeterThreadsType);
+    jmeterSampleType.value = getJmeterSampleType(onlineJmxData.jmeterSampleType);
+  } else {
+    // 如果是新增操作，重置为默认值
+    jmeterThreadsType.value = 'threadGroup';
+    jmeterSampleType.value = 'http';
+  }
+  await getFullTestCase(testCaseFullData.value.id);
+};
+
+const getJmeterThreadsType = (type: number): string => {
+  switch (type) {
+    case 0:
+      return 'threadGroup';
+    case 1:
+      return 'steppingThreadGroup';
+    case 2:
+      return 'concurrencyThreadGroup';
+    default:
+      return 'threadGroup';
+  }
+};
+
+const getJmeterSampleType = (type: number): string => {
+  switch (type) {
+    case 0:
+      return 'http';
+    case 1:
+      return 'java';
+    case 2:
+      return 'dubbo';
+    default:
+      return 'http';
+  }
+};
+
+const handleThreadGroupTypeChange = (value: string) => {
+  switch (value) {
+    case 'threadGroup':
+      onlineJmxItem.value.jmeterThreadsType = 0;
+      break;
+    case 'steppingThreadGroup':
+      onlineJmxItem.value.jmeterThreadsType = 1;
+      break;
+    case 'concurrencyThreadGroup':
+      onlineJmxItem.value.jmeterThreadsType = 2;
+      break;
+    default:
+      onlineJmxItem.value.jmeterThreadsType = 0;
+  }
+};
+
+const handleRequestTypeChange = (value: string) => {
+  switch (value) {
+    case 'http':
+      onlineJmxItem.value.jmeterSampleType = 0;
+      break;
+    case 'java':
+      onlineJmxItem.value.jmeterSampleType = 1;
+      break;
+    case 'dubbo':
+      onlineJmxItem.value.jmeterSampleType = 2;
+      break;
+    default:
+      onlineJmxItem.value.jmeterSampleType = 0;
   }
 };
 
@@ -1438,6 +1510,7 @@ const handleSave = () => {
     // 如果 id 为空，则调用新增操作
     addOnlineJmxData(formattedItem);
   }
+  getFullTestCase(testCaseFullData.value.id);
 };
 
 
