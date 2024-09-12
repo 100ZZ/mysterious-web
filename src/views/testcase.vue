@@ -448,7 +448,8 @@
                 <el-button type="primary" @click="handleHttpParamAdd">新增</el-button>
               </el-tab-pane>
               <el-tab-pane label="Body" name="body">
-                <el-input type="textarea" v-model="onlineJmxItem.httpVO.body" :rows="10"></el-input>
+                <el-input type="textarea" v-model="formattedJson" :rows="10" @input="onJsonInput"></el-input>
+
               </el-tab-pane>
             </el-tabs>
           </template>
@@ -549,7 +550,7 @@
 </template>
 
 <script setup lang="ts" name="baseTestCase">
-import {ref, reactive, onUnmounted, onMounted} from 'vue';
+import {ref, reactive, onUnmounted, onMounted, watch, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right, Upload } from '@element-plus/icons-vue';
 import {
@@ -596,6 +597,33 @@ const query = reactive({
   page: 1,
   size: 10
 });
+
+const formattedJson = computed(() => {
+  if (onlineJmxItem.value.httpVO.body.trim() === '') {
+    return ''; // 如果 body 是默认空字符串，则返回空
+  }
+  return formatJson(onlineJmxItem.value.httpVO.body);
+});
+
+const formatJson = (body: string) => {
+  try {
+    const jsonObject = JSON.parse(body);
+    return JSON.stringify(jsonObject, null, 2);
+  } catch (error) {
+    ElMessage.error("Body is not a valid JSON object.");
+    return '';
+  }
+};
+
+const onJsonInput = (event: Event) => {
+  const input = event.target as HTMLTextAreaElement;
+  try {
+    JSON.parse(input.value); // 检查格式是否正确
+    onlineJmxItem.value.httpVO.body = input.value;
+  } catch (error) {
+    ElMessage.error("Body is not a valid JSON object.");
+  }
+};
 
 const testCaseData = ref<TestCaseItem[]>([]);
 const total = ref(0);
@@ -1312,6 +1340,7 @@ const getOnlineJmxData = async (id: number | null) => {
     //根据 onlineJmxData 设置 jmeterThreadsType 和 jmeterSampleType
     jmeterThreadsType.value = getJmeterThreadsType(onlineJmxData.jmeterThreadsType);
     jmeterSampleType.value = getJmeterSampleType(onlineJmxData.jmeterSampleType);
+
   } else {
     // 如果是新增操作，重置为默认值
     jmeterThreadsType.value = 'threadGroup';
