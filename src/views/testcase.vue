@@ -549,7 +549,7 @@
 </template>
 
 <script setup lang="ts" name="baseTestCase">
-import {ref, reactive, onUnmounted, onMounted, UnwrapRef} from 'vue';
+import {ref, reactive, onUnmounted, onMounted} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right, Upload } from '@element-plus/icons-vue';
 import {
@@ -1213,6 +1213,8 @@ const getOnlineJmxData = async (id: number | null) => {
       return false;
     }
 
+    console.log("onlineJmxData: ", numberToBoolean(onlineJmxData.threadGroupVO.sameUserOnNextIteration));
+    // 设置 onlineJmxItem 的值
     // 设置 onlineJmxItem 的值
     onlineJmxItem.value = {
       id: onlineJmxData.id,
@@ -1221,53 +1223,53 @@ const getOnlineJmxData = async (id: number | null) => {
       jmeterScriptType: onlineJmxData.jmeterScriptType,
       jmeterThreadsType: onlineJmxData.jmeterThreadsType,
       jmeterSampleType: onlineJmxData.jmeterSampleType,
-      threadGroupVO: onlineJmxData.threadGroupVO || {
-        id: 0,
-        testCaseId: 0,
-        jmxId: 0,
-        numThreads: '1',
-        rampTime: '0',
-        loops: '-1',
-        sameUserOnNextIteration: numberToBoolean(onlineJmxData.threadGroupVO.sameUserOnNextIteration),
-        delayedStart: numberToBoolean(onlineJmxData.threadGroupVO.delayedStart),
-        scheduler: numberToBoolean(onlineJmxData.threadGroupVO.scheduler),
-        duration: '300',
-        delay: '0'
+      threadGroupVO: {
+        id: onlineJmxData.threadGroupVO?.id || 0,
+        testCaseId: onlineJmxData.threadGroupVO?.testCaseId || 0,
+        jmxId: onlineJmxData.threadGroupVO?.jmxId || 0,
+        numThreads: onlineJmxData.threadGroupVO?.numThreads || '1',
+        rampTime: onlineJmxData.threadGroupVO?.rampTime || '0',
+        loops: onlineJmxData.threadGroupVO?.loops || '-1',
+        sameUserOnNextIteration: numberToBoolean(onlineJmxData.threadGroupVO?.sameUserOnNextIteration || 0),
+        delayedStart: numberToBoolean(onlineJmxData.threadGroupVO?.delayedStart || 0),
+        scheduler: numberToBoolean(onlineJmxData.threadGroupVO?.scheduler || 0),
+        duration: onlineJmxData.threadGroupVO?.duration || '300',
+        delay: onlineJmxData.threadGroupVO?.delay || '0'
       },
-      steppingThreadGroupVO: onlineJmxData.steppingThreadGroupVO || {
-        id: 0,
-        testCaseId: 0,
-        jmxId: 0,
-        numThreads: '20',
-        firstWaitForSeconds: '0',
-        thenStartThreads: '0',
-        nextAddThreads: '2',
-        nextAddThreadsEverySeconds: '30',
-        usingRampUpSeconds: '5',
-        thenHoldLoadForSeconds: '300',
-        finallyStopThreads: '5',
-        finallyStopThreadsEverySeconds: '1'
+      steppingThreadGroupVO: {
+        id: onlineJmxData.steppingThreadGroupVO?.id || 0,
+        testCaseId: onlineJmxData.steppingThreadGroupVO?.testCaseId || 0,
+        jmxId: onlineJmxData.steppingThreadGroupVO?.jmxId || 0,
+        numThreads: onlineJmxData.steppingThreadGroupVO?.numThreads || '20',
+        firstWaitForSeconds: onlineJmxData.steppingThreadGroupVO?.firstWaitForSeconds || '0',
+        thenStartThreads: onlineJmxData.steppingThreadGroupVO?.thenStartThreads || '0',
+        nextAddThreads: onlineJmxData.steppingThreadGroupVO?.nextAddThreads || '2',
+        nextAddThreadsEverySeconds: onlineJmxData.steppingThreadGroupVO?.nextAddThreadsEverySeconds || '30',
+        usingRampUpSeconds: onlineJmxData.steppingThreadGroupVO?.usingRampUpSeconds || '5',
+        thenHoldLoadForSeconds: onlineJmxData.steppingThreadGroupVO?.thenHoldLoadForSeconds || '300',
+        finallyStopThreads: onlineJmxData.steppingThreadGroupVO?.finallyStopThreads || '5',
+        finallyStopThreadsEverySeconds: onlineJmxData.steppingThreadGroupVO?.finallyStopThreadsEverySeconds || '1'
       },
-      concurrencyThreadGroupVO: onlineJmxData.concurrencyThreadGroupVO || {
-        id: 0,
-        testCaseId: 0,
-        jmxId: 0,
-        targetConcurrency: '20',
-        rampUpTime: '300',
-        rampUpStepsCount: '10',
-        holdTargetRateTime: '300'
+      concurrencyThreadGroupVO: {
+        id: onlineJmxData.concurrencyThreadGroupVO?.id || 0,
+        testCaseId: onlineJmxData.concurrencyThreadGroupVO?.testCaseId || 0,
+        jmxId: onlineJmxData.concurrencyThreadGroupVO?.jmxId || 0,
+        targetConcurrency: onlineJmxData.concurrencyThreadGroupVO?.targetConcurrency || '20',
+        rampUpTime: onlineJmxData.concurrencyThreadGroupVO?.rampUpTime || '300',
+        rampUpStepsCount: onlineJmxData.concurrencyThreadGroupVO?.rampUpStepsCount || '10',
+        holdTargetRateTime: onlineJmxData.concurrencyThreadGroupVO?.holdTargetRateTime || '300'
       },
-      httpVO: onlineJmxData.httpVO ? {
-        id: onlineJmxData.httpVO.id || 0,
-        testCaseId: onlineJmxData.httpVO.testCaseId || 0,
-        jmxId: onlineJmxData.httpVO.jmxId || 0,
-        protocol: onlineJmxData.httpVO.protocol || 'http',
-        domain: onlineJmxData.httpVO.domain || '',
-        port: onlineJmxData.httpVO.port || '',
-        method: onlineJmxData.httpVO.method || 'GET',
-        path: onlineJmxData.httpVO.path || '',
-        contentEncoding: onlineJmxData.httpVO.contentEncoding || 'UTF-8',
-        httpHeaderVOList: onlineJmxData.httpVO.httpHeaderVOList.map(h => ({
+      httpVO: {
+        id: onlineJmxData.httpVO?.id || 0,
+        testCaseId: onlineJmxData.httpVO?.testCaseId || 0,
+        jmxId: onlineJmxData.httpVO?.jmxId || 0,
+        protocol: onlineJmxData.httpVO?.protocol || 'http',
+        domain: onlineJmxData.httpVO?.domain || '',
+        port: onlineJmxData.httpVO?.port || '',
+        method: onlineJmxData.httpVO?.method || 'GET',
+        path: onlineJmxData.httpVO?.path || '',
+        contentEncoding: onlineJmxData.httpVO?.contentEncoding || 'UTF-8',
+        httpHeaderVOList: (onlineJmxData.httpVO?.httpHeaderVOList || []).map(h => ({
           id: h.id || 0,
           testCaseId: h.testCaseId || 0,
           jmxId: h.jmxId || 0,
@@ -1275,7 +1277,7 @@ const getOnlineJmxData = async (id: number | null) => {
           headerKey: h.headerKey || '',
           headerValue: h.headerValue || ''
         })),
-        httpParamVOList: onlineJmxData.httpVO.httpParamVOList.map(p => ({
+        httpParamVOList: (onlineJmxData.httpVO?.httpParamVOList || []).map(p => ({
           id: p.id || 0,
           testCaseId: p.testCaseId || 0,
           jmxId: p.jmxId || 0,
@@ -1283,27 +1285,14 @@ const getOnlineJmxData = async (id: number | null) => {
           paramKey: p.paramKey || '',
           paramValue: p.paramValue || ''
         })),
-        body: onlineJmxData.httpVO.body || ''
-      } : {
-        id: 0,
-        testCaseId: 0,
-        jmxId: 0,
-        protocol: 'http',
-        domain: '',
-        port: '',
-        method: 'GET',
-        path: '',
-        contentEncoding: 'UTF-8',
-        httpHeaderVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, headerKey: '', headerValue: '' }],
-        httpParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, httpId: 0, paramKey: '', paramValue: '' }],
-        body: ''
+        body: onlineJmxData.httpVO?.body || ''
       },
-      javaVO: onlineJmxData.javaVO ? {
-        id: onlineJmxData.javaVO.id || 0,
-        testCaseId: onlineJmxData.javaVO.testCaseId || 0,
-        jmxId: onlineJmxData.javaVO.jmxId || 0,
-        javaRequestClassPath: onlineJmxData.javaVO.javaRequestClassPath || '',
-        javaParamVOList: onlineJmxData.javaVO.javaParamVOList.map(p => ({
+      javaVO: {
+        id: onlineJmxData.javaVO?.id || 0,
+        testCaseId: onlineJmxData.javaVO?.testCaseId || 0,
+        jmxId: onlineJmxData.javaVO?.jmxId || 0,
+        javaRequestClassPath: onlineJmxData.javaVO?.javaRequestClassPath || '',
+        javaParamVOList: (onlineJmxData.javaVO?.javaParamVOList || []).map(p => ({
           id: p.id || 0,
           testCaseId: p.testCaseId || 0,
           jmxId: p.jmxId || 0,
@@ -1311,12 +1300,6 @@ const getOnlineJmxData = async (id: number | null) => {
           paramKey: p.paramKey || '',
           paramValue: p.paramValue || ''
         }))
-      } : {
-        id: 0,
-        testCaseId: 0,
-        jmxId: 0,
-        javaRequestClassPath: '',
-        javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
       },
       dubboVO: onlineJmxData.dubboVO || {}
     };
