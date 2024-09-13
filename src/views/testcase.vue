@@ -429,12 +429,12 @@
                 <el-table :data="onlineJmxItem.httpVO.httpParamVOList" border style="width: 100%">
                   <el-table-column prop="key" label="Key" width="180" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.paramKey"></el-input>
+                      <el-input v-model="scope.row.paramKey" :disabled="isParamDisabled"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="value" label="Value" align="center">
                     <template #default="scope">
-                      <el-input v-model="scope.row.paramValue"></el-input>
+                      <el-input v-model="scope.row.paramValue" :disabled="isParamDisabled"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" width="120" align="center">
@@ -445,12 +445,11 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                <el-button type="primary" @click="handleHttpParamAdd">新增</el-button>
+                <el-button type="primary" @click="handleHttpParamAdd" :disabled="isParamDisabled">新增</el-button>
               </el-tab-pane>
               <el-tab-pane label="Body" name="body">
-<!--                <el-input type="textarea" v-model="formattedJson" :rows="6" @input="onJsonInput"></el-input>-->
-                <el-input type="textarea" v-model="formattedJson" :rows="6" @blur="onJsonBlur"></el-input>
-
+<!--                <el-input type="textarea" v-model="onlineJmxItem.httpVO.body" :rows="10"></el-input>-->
+                <el-input type="textarea" v-model="formattedJson" :rows="6" @blur="onJsonBlur" :disabled="isBodyDisabled"></el-input>
               </el-tab-pane>
             </el-tabs>
           </template>
@@ -629,6 +628,17 @@ onMounted(() => {
   watch(() => onlineJmxItem.value.httpVO.body, (newBody) => {
     formattedJson.value = formatJson(newBody || '');
   }, { immediate: true });
+});
+
+
+// 监听 Param 是否有输入
+const isParamDisabled = computed(() => {
+  return onlineJmxItem.value.httpVO.body !== '';
+});
+
+// 监听 Body 是否有输入
+const isBodyDisabled = computed(() => {
+  return onlineJmxItem.value.httpVO.httpParamVOList.some(item => item.paramKey || item.paramValue);
 });
 
 const testCaseData = ref<TestCaseItem[]>([]);
