@@ -448,7 +448,8 @@
                 <el-button type="primary" @click="handleHttpParamAdd">新增</el-button>
               </el-tab-pane>
               <el-tab-pane label="Body" name="body">
-                <el-input type="textarea" v-model="formattedJson" :rows="10" @input="onJsonInput"></el-input>
+<!--                <el-input type="textarea" v-model="formattedJson" :rows="6" @input="onJsonInput"></el-input>-->
+                <el-input type="textarea" v-model="formattedJson" :rows="6" @blur="onJsonBlur"></el-input>
 
               </el-tab-pane>
             </el-tabs>
@@ -598,32 +599,41 @@ const query = reactive({
   size: 10
 });
 
-const formattedJson = computed(() => {
-  if (onlineJmxItem.value.httpVO.body.trim() === '') {
-    return ''; // 如果 body 是默认空字符串，则返回空
-  }
-  return formatJson(onlineJmxItem.value.httpVO.body);
-});
 
+// 定义 formattedJson
+const formattedJson = ref('');
+
+// 格式化 JSON 的方法
 const formatJson = (body: string) => {
   try {
     const jsonObject = JSON.parse(body);
     return JSON.stringify(jsonObject, null, 2);
   } catch (error) {
-    ElMessage.error("Body is not a valid JSON object.");
-    return '';
+    ElMessage.error("[Format]输入的Body不是合法的JSON格式");
+    return;
   }
 };
 
-const onJsonInput = (event: Event) => {
+// 处理 blur 事件，在输入框失去焦点时进行 JSON 解析
+const onJsonBlur = (event: Event) => {
   const input = event.target as HTMLTextAreaElement;
   try {
-    JSON.parse(input.value); // 检查格式是否正确
-    onlineJmxItem.value.httpVO.body = input.value;
+    const jsonValue = JSON.parse(input.value); // 检查格式是否正确
+    onlineJmxItem.value.httpVO.body = JSON.stringify(jsonValue); // 更新原始 body 数据
+    formattedJson.value = formatJson(input.value); // 格式化后的 JSON 显示在输入框中
   } catch (error) {
-    ElMessage.error("Body is not a valid JSON object.");
+    ElMessage.error("[Blur]输入的Body不是合法的JSON格式");
+    return;
   }
 };
+
+// 使用 onMounted 来确保 onlineJmxItem 初始化后再设置 watch
+onMounted(() => {
+  // 初始化时同步 body 和 formattedJson 的值
+  watch(() => onlineJmxItem.value.httpVO.body, (newBody) => {
+    formattedJson.value = formatJson(newBody || '');
+  }, { immediate: true });
+});
 
 const testCaseData = ref<TestCaseItem[]>([]);
 const total = ref(0);
