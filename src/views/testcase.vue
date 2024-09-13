@@ -608,23 +608,19 @@ const formatJson = (body: string) => {
   try {
     const jsonObject = JSON.parse(body);
     return JSON.stringify(jsonObject, null, 2);
-  } catch (error) {
-    ElMessage.error("[Format]输入的Body不是合法的JSON格式");
-    return;
+  } catch {
+    // 如果 JSON 解析失败，则返回空字符串或原始数据
+    return body;
   }
 };
 
 // 处理 blur 事件，在输入框失去焦点时进行 JSON 解析
 const onJsonBlur = (event: Event) => {
   const input = event.target as HTMLTextAreaElement;
-  try {
-    const jsonValue = JSON.parse(input.value); // 检查格式是否正确
-    onlineJmxItem.value.httpVO.body = JSON.stringify(jsonValue); // 更新原始 body 数据
-    formattedJson.value = formatJson(input.value); // 格式化后的 JSON 显示在输入框中
-  } catch (error) {
-    ElMessage.error("[Blur]输入的Body不是合法的JSON格式");
-    return;
-  }
+  // 格式化后的 JSON 显示在输入框中
+  formattedJson.value = formatJson(input.value);
+  // 更新 onlineJmxItem 的 body 数据
+  onlineJmxItem.value.httpVO.body = formattedJson.value;
 };
 
 // 使用 onMounted 来确保 onlineJmxItem 初始化后再设置 watch
