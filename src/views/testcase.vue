@@ -1542,17 +1542,13 @@ const updateOnlineJmxData = async (formattedItem: OnlineJmxItemForApi) => {
 };
 
 // 处理保存操作的函数
-const handleSave = () => {
+const handleSave = async () => {
   // 强制计算 isParamDisabled 和 isBodyDisabled 确保它们的值是最新的
   const isParamDisabledValue = isParamDisabled.value;
   const isBodyDisabledValue = isBodyDisabled.value;
 
-  // console.log("before format: ", onlineJmxItem.value);
   const formattedItem = convertBooleanToNumber(onlineJmxItem.value);
-  // console.log("after format: ", formattedItem);
 
-  // console.log("isParamDisabled:", isParamDisabled.value);
-  // console.log("isBodyDisabled:", isBodyDisabled.value);
   // 如果 Param 被禁用，则将 Param 传 null
   if (isParamDisabledValue) {
     formattedItem.httpVO.httpParamVOList = [];
@@ -1566,13 +1562,16 @@ const handleSave = () => {
   // 保存编辑后的 JMX 脚本数据
   if (onlineJmxItem.value.id) {
     // 如果 id 不为空，则调用更新操作
-    updateOnlineJmxData(formattedItem);
+    await updateOnlineJmxData(formattedItem);
   } else {
     // 如果 id 为空，则调用新增操作
-    addOnlineJmxData(formattedItem);
+    await addOnlineJmxData(formattedItem);
   }
-  getFullTestCase(testCaseFullData.value.id);
+
+  // 在操作完成后刷新关联列表
+  await getFullTestCase(testCaseFullData.value.id);
 };
+
 
 
 
