@@ -34,32 +34,55 @@
         <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
         <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="120" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true,getFullTestCase(scope.row.id)" v-permiss="1">
-              详情
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
-              编辑
-            </el-button>
-            <el-dropdown class="group-status" trigger="click">
-              <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="debugAction(scope.row.id)">调试</el-dropdown-item>
-                  <el-dropdown-item @click="startAction(scope.row.id)">压测</el-dropdown-item>
-                  <el-dropdown-item @click="stopAction(scope.row.id)">停止</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-            <el-button style="margin-left: 0" text :icon="Plus" class="bg-blue" @click="goReports(scope.row.id, scope.row.name)" v-permiss="1">
-              报告
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
-              删除
-            </el-button>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true, getFullTestCase(scope.row.id)" v-permiss="1">
+                  详情
+                </el-button>
+              </el-col>
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
+                  编辑
+                </el-button>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-dropdown class="group-status" trigger="click">
+                  <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="debugAction(scope.row.id)">调试</el-dropdown-item>
+                      <el-dropdown-item @click="startAction(scope.row.id)">压测</el-dropdown-item>
+                      <el-dropdown-item @click="stopAction(scope.row.id)">停止</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </el-col>
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Plus" class="bg-blue" @click="goReports(scope.row.id, scope.row.name)" v-permiss="1">
+                  报告
+                </el-button>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Refresh" class="bg-blue" @click="openChartDialog(scope.row.id)" v-permiss="1">
+                  曲线
+                </el-button>
+              </el-col>
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
+                  删除
+                </el-button>
+              </el-col>
+            </el-row>
           </template>
         </el-table-column>
+
+
       </el-table>
 
       <div class="pagination">
@@ -546,16 +569,25 @@
         </el-table-column>
       </el-table>
     </el-drawer>
+
+
+    <!-- 曲线图弹出框 -->
+    <el-dialog title="实时数据" v-model="chartDialogVisible" width="60%">
+      <schart class="bar-schart" canvasId="throughputChart" :options="throughputChart"></schart>
+      <schart class="bar-schart" canvasId="responseTimeChart" :options="responseTimeChart"></schart>
+
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts" name="baseTestCase">
+import Schart from 'vue-schart';
 import {ref, reactive, onUnmounted, onMounted, watch, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right, Upload } from '@element-plus/icons-vue';
 import {
   addTestCase, debugTestCase,
-  deleteTestCase, getFull,
+  deleteTestCase, getFull, getResult,
   getTestCaseList,
   startTestCase,
   stopTestCase,
@@ -572,7 +604,6 @@ const drawer = ref(false);
 const jmxDrawer = ref(false)
 const csvDrawer = ref(false)
 const onlineDrawer = ref(false)
-
 
 interface TestCaseItem {
   id: number;
@@ -1572,14 +1603,74 @@ const handleSave = async () => {
   await getFullTestCase(testCaseFullData.value.id);
 };
 
-
-
-
 const handleCheckboxChange = (field: string, value: boolean) => {
   onlineJmxItem.value.threadGroupVO[field] = value;
 };
 
 
+const chartDialogVisible = ref(false);
+
+// 打开弹窗并获取数据
+const openChartDialog = async (id: number) => {
+  chartDialogVisible.value = true;
+  const res = await getResult(id); // 获取后端数据
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+    return false;
+  }
+  console.log("res:", res.data.data);
+
+  // 提取 currentTime、throughput 和 avgResponseTime 列表
+  const resultData = res.data.data;
+  const labels = resultData.map(item => item.currentTime);
+  const throughputData = resultData.map(item => item.throughput);
+  const responseTimeData = resultData.map(item => item.avgResponseTime);
+
+  console.log("labels:", labels);
+  console.log("throughputData:", throughputData);
+  console.log("responseTimeData:", responseTimeData);
+  // 设置图表数据
+  throughputChart.labels = labels;
+  throughputChart.datasets[0].data = throughputData;
+
+  responseTimeChart.labels = labels;
+  responseTimeChart.datasets[0].data = responseTimeData;
+};
+
+// 绘制吞吐量曲线图
+
+const throughputChart = reactive({
+  type: 'line',
+  title: {
+    text: '吞吐量'
+  },
+  bgColor: '#ffffff',
+  labels: [],
+  xRorate: 45,
+  datasets: [
+    {
+      label: '单位：/s',
+      data: []
+    }
+  ]
+});
+
+const responseTimeChart = reactive({
+  type: 'line',
+  title: {
+    text: '响应时间'
+  },
+  bgColor: '#ffffff',
+  labels: [],
+  xRorate: 45,
+  datasets: [
+    {
+      label: '单位：ms',
+      data: []
+    }
+  ]
+});
 
 </script>
 
@@ -1639,10 +1730,14 @@ const handleCheckboxChange = (field: string, value: boolean) => {
 .mr10 {
   margin-right: 10px;
 }
-.table-td-thumb {
-  display: block;
-  margin: auto;
-  width: 40px;
-  height: 40px;
+.bar-schart-box {
+  display: inline-block;
+  margin: 20px;
+  width: 100%;
+}
+.bar-schart {
+  width: 100%;
+  height: 30vh; /* 设置图表的高度为视口高度的45% */
+  margin-bottom: 20px; /* 图表之间的间距 */
 }
 </style>

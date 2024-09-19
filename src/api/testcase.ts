@@ -72,3 +72,11 @@ export const syncNode = (nodeId: number) => {
         method: 'get'
     });
 }
+
+
+export const getResult = (id: number) => {
+    return request({
+        url: '/testcase/getJMeterResult/' + id,
+        method: 'get'
+    });
+}
