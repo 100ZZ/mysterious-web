@@ -17,14 +17,6 @@
         <el-table-column prop="realName" label="姓名" align="center"></el-table-column>
         <el-table-column prop="effectTime" label="生效时间" align="center"></el-table-column>
         <el-table-column prop="expireTime" label="失效时间" align="center"></el-table-column>
-
-        <el-table-column label="操作" width="220" align="center">
-          <template #default="scope">
-            <el-button text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
       </el-table>
 
       <div class="pagination">
