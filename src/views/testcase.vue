@@ -1613,16 +1613,24 @@ const chartDialogVisible = ref(false);
 // 打开弹窗并获取数据
 const openChartDialog = async (id: number) => {
   chartDialogVisible.value = true;
+
   const res = await getResult(id); // 获取后端数据
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
     return false;
   }
-  console.log("res:", res.data.data);
+  // console.log("res:", res.data.data);
 
   // 提取 currentTime、throughput 和 avgResponseTime 列表
   const resultData = res.data.data;
+  console.log("resultData:", resultData);
+  if (resultData.length == 0) {
+    throughputChart.datasets[0].data = ["0"];
+
+    responseTimeChart.datasets[0].data = ["0"];
+    return;
+  }
   const labels = resultData.map(item => item.currentTime);
   const throughputData = resultData.map(item => item.throughput);
   const responseTimeData = resultData.map(item => item.avgResponseTime);
