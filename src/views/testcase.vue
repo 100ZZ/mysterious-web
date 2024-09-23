@@ -1114,7 +1114,6 @@ interface HttpVO {
   httpHeaderVOList: HttpHeaderVO[];
   httpParamVOList: HttpParamVO[];
   body: string;
-  assertionVO: AssertionVO;
 }
 
 // 在线编辑
