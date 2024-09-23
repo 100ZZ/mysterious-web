@@ -550,7 +550,7 @@
 
           <template v-else-if="jmeterSampleType === 'dubbo'">
             <el-form-item>
-              <el-input type="textarea" v-model="onlineJmxItem.dubboVO" :rows="10"></el-input>
+              <el-input v-model="onlineJmxItem.dubboVO.message" :rows="10"></el-input>
             </el-form-item>
           </template>
         </el-form>
@@ -1153,6 +1153,10 @@ interface JavaParamVO {
 }
 
 interface DubboVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  message: string;
 }
 
 interface AssertionVO {
@@ -1252,7 +1256,12 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     javaRequestClassPath: '',
     javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
   },
-  dubboVO: {},
+  dubboVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    message: '',
+  },
   assertionVO: {
     id: 0,
     testCaseId: 0,
@@ -1334,7 +1343,12 @@ const getOnlineJmxData = async (id: number | null) => {
       javaRequestClassPath: '',
       javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
     },
-    dubboVO: {},
+    dubboVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      message: '',
+    },
     assertionVO: {
       id: 0,
       testCaseId: 0,
