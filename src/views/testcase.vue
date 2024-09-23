@@ -474,6 +474,47 @@
 <!--                <el-input type="textarea" v-model="onlineJmxItem.httpVO.body" :rows="10"></el-input>-->
                 <el-input type="textarea" v-model="formattedJson" :rows="6" @blur="onJsonBlur" :disabled="isBodyDisabled"></el-input>
               </el-tab-pane>
+
+              <el-tab-pane label="Assertion" name="assertion">
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item label="Response Code">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.responseCode"
+                          size="small"
+                          placeholder="请输入期望的响应状态码，等于关系"
+                      ></el-input>
+                    </el-form-item>
+                    <el-form-item label="Response Message">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.responseMessage"
+                          type="textarea"
+                          rows="3"
+                          placeholder="请输入期望的响应消息内容，包含关系"
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="JSON Path">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.jsonPath"
+                          size="small"
+                          placeholder="请输入要提取结果的JSON Path表达式，比如：$.success"
+                      ></el-input>
+                    </el-form-item>
+                    <el-form-item label="Expected Value">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.expectedValue"
+                          type="textarea"
+                          rows="3"
+                          placeholder="请输入通过JSON Path表达式提取的预期结果，比如：true"
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-tab-pane>
+
+
             </el-tabs>
           </template>
 
@@ -1073,6 +1114,7 @@ interface HttpVO {
   httpHeaderVOList: HttpHeaderVO[];
   httpParamVOList: HttpParamVO[];
   body: string;
+  assertionVO: AssertionVO;
 }
 
 // 在线编辑
@@ -1114,6 +1156,16 @@ interface JavaParamVO {
 interface DubboVO {
 }
 
+interface AssertionVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  responseCode: string;
+  responseMessage: string;
+  jsonPath: string;
+  expectedValue: string;
+}
+
 interface OnlineJmxItem {
   id: number;
   srcName: string;
@@ -1129,6 +1181,7 @@ interface OnlineJmxItem {
   httpVO: HttpVO;
   javaVO: JavaVO;
   dubboVO: DubboVO;
+  assertionVO: AssertionVO;
 }
 
 const jmeterThreadsType = ref('threadGroup'); // 默认为 Thread Group
@@ -1200,7 +1253,16 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     javaRequestClassPath: '',
     javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
   },
-  dubboVO: {}
+  dubboVO: {},
+  assertionVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    responseCode: '',
+    responseMessage: '',
+    jsonPath: '',
+    expectedValue: ''
+  }
 });
 
 const getOnlineJmxData = async (id: number | null) => {
@@ -1273,7 +1335,16 @@ const getOnlineJmxData = async (id: number | null) => {
       javaRequestClassPath: '',
       javaParamVOList: [{ id: 0, testCaseId: 0, jmxId: 0, javaId: 0, paramKey: '', paramValue: '' }]
     },
-    dubboVO: {}
+    dubboVO: {},
+    assertionVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      responseCode: '',
+      responseMessage: '',
+      jsonPath: '',
+      expectedValue: ''
+    }
   };
 
   if (id) {
@@ -1382,7 +1453,16 @@ const getOnlineJmxData = async (id: number | null) => {
           paramValue: p.paramValue || ''
         }))
       },
-      dubboVO: onlineJmxData.dubboVO || {}
+      dubboVO: onlineJmxData.dubboVO || {},
+      assertionVO: {
+        id: onlineJmxData.assertionVO?.id || 0,
+        testCaseId: onlineJmxData.assertionVO?.testCaseId || 0,
+        jmxId: onlineJmxData.assertionVO?.jmxId || 0,
+        responseCode: onlineJmxData.assertionVO?.responseCode || '',
+        responseMessage: onlineJmxData.assertionVO?.responseMessage || '',
+        jsonPath: onlineJmxData.assertionVO?.jsonPath || '',
+        expectedValue: onlineJmxData.assertionVO?.expectedValue || ''
+      }
     };
     //根据 onlineJmxData 设置 jmeterThreadsType 和 jmeterSampleType
     jmeterThreadsType.value = getJmeterThreadsType(onlineJmxData.jmeterThreadsType);
@@ -1635,9 +1715,9 @@ const openChartDialog = async (id: number) => {
   const throughputData = resultData.map(item => item.throughput);
   const responseTimeData = resultData.map(item => item.avgResponseTime);
 
-  console.log("labels:", labels);
-  console.log("throughputData:", throughputData);
-  console.log("responseTimeData:", responseTimeData);
+  // console.log("labels:", labels);
+  // console.log("throughputData:", throughputData);
+  // console.log("responseTimeData:", responseTimeData);
   // 设置图表数据
   throughputChart.labels = labels;
   throughputChart.datasets[0].data = throughputData;
