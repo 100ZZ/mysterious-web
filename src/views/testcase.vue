@@ -131,7 +131,7 @@
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="名称">
-          <el-input v-model="editForm.name" placeholder="名称"></el-input>
+          <el-input v-model="editForm.name" placeholder="名称" disabled></el-input>
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="editForm.description" placeholder="描述"></el-input>
