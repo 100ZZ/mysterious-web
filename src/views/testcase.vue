@@ -221,9 +221,9 @@
 
           <el-divider>
             <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
-              <el-radio label="threadGroup">Thread Group</el-radio>
-              <el-radio label="steppingThreadGroup">Stepping Thread Group</el-radio>
-              <el-radio label="concurrencyThreadGroup">Concurrency Thread Group</el-radio>
+              <el-radio label="threadGroup">ThreadGroup</el-radio>
+              <el-radio label="steppingThreadGroup">SteppingThreadGroup</el-radio>
+              <el-radio label="concurrencyThreadGroup">ConcurrencyThreadGroup</el-radio>
             </el-radio-group>
           </el-divider>
 
@@ -373,9 +373,9 @@
 
           <el-divider>
             <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
-              <el-radio label="http">HTTP Request</el-radio>
-              <el-radio label="java">Java Request</el-radio>
-              <el-radio label="dubbo">Dubbo Request</el-radio>
+              <el-radio label="http">HttpRequest</el-radio>
+              <el-radio label="java">JavaRequest</el-radio>
+              <el-radio label="dubbo">DubboRequest</el-radio>
             </el-radio-group>
           </el-divider>
 
