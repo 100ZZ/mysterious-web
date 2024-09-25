@@ -19,12 +19,12 @@
         <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
         <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="120" align="center">
+        <el-table-column label="操作" width="220" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true,handleCsvView(scope.row.id)" v-permiss="1">
+            <el-button text :icon="Search" class="bg-blue" @click="drawer = true,handleCsvView(scope.row.id)" v-permiss="1">
               预览
             </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
+            <el-button text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">
               删除
             </el-button>
           </template>

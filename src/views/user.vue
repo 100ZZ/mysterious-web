@@ -7,7 +7,7 @@
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
         <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
-        <el-button type="primary" :icon="Plus" @click="handleInsert">新增</el-button>
+<!--        <el-button type="primary" :icon="Plus" @click="handleInsert">新增</el-button>-->
       </div>
 
       <el-table :data="userData" border class="table" ref="multipleTable" header-cell-class-name="table-header">

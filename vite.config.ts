@@ -20,7 +20,7 @@ export default defineConfig({
 		include: ['schart.js']
 	},
 	server: {
-		host: 'locahost',
+		host: 'localhost',
 		port: 1234,
 		open: true,
 		// 设置代理
