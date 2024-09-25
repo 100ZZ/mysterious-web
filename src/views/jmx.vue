@@ -19,7 +19,7 @@
         <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
         <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="120" align="center">
+        <el-table-column label="操作" width="220" align="center">
           <template #default="scope">
             <el-button text :icon="Search" class="bg-blue" @click="drawer = true,handleJmxView(scope.row.id)" v-permiss="1">
               预览
