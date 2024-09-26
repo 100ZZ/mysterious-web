@@ -38,10 +38,14 @@
                 <el-dropdown class="group-status" trigger="click">
                   <el-button text :icon="Right" class="bg-blue" v-permiss="1">操作</el-button>
                   <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>
-                      <el-dropdown-item @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
-                    </el-dropdown-menu>
+<!--                    <el-dropdown-menu>-->
+<!--                      <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>-->
+<!--                      <el-dropdown-item @click="disableAction(scope.row.id)">禁用</el-dropdown-item>-->
+<!--                    </el-dropdown-menu>-->
+                    <el-button-group>
+                      <el-button type="success" @click="enableAction(scope.row.id)">启用</el-button>
+                      <el-button type="danger" @click="disableAction(scope.row.id)">禁用</el-button>
+                    </el-button-group>
                   </template>
                 </el-dropdown>
               </el-col>

@@ -53,13 +53,15 @@
                 <el-dropdown class="group-status" trigger="click">
                   <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
                   <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item @click="debugAction(scope.row.id)">调试</el-dropdown-item>
-                      <el-dropdown-item @click="startAction(scope.row.id)">压测</el-dropdown-item>
-                      <el-dropdown-item @click="stopAction(scope.row.id)">停止</el-dropdown-item>
-                    </el-dropdown-menu>
+                    <el-button-group>
+                      <el-button type="warning" @click="debugAction(scope.row.id)">调试</el-button>
+                      <el-button type="danger" @click="startAction(scope.row.id)">压测</el-button>
+                      <el-button type="info" @click="stopAction(scope.row.id)">停止</el-button>
+                    </el-button-group>
                   </template>
                 </el-dropdown>
+
+
               </el-col>
               <el-col :span="12">
                 <el-button style="margin-left: 0" text :icon="Plus" class="bg-blue" @click="goReports(scope.row.id, scope.row.name)" v-permiss="1">
@@ -741,7 +743,7 @@ const getList = () => {
 let interval: ReturnType<typeof setInterval>;
 onMounted(() => {
   getList(); // 页面加载时获取一次数据
-  interval = setInterval(getList, 30000); // 每30秒刷新一次
+  interval = setInterval(getList, 10000); // 每10秒刷新一次
 });
 
 onUnmounted(() => {
