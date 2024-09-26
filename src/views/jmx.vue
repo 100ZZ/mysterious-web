@@ -11,7 +11,11 @@
 
       <el-table :data="jmxData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-        <el-table-column prop="srcName" label="脚本名称" align="center"></el-table-column>
+        <el-table-column prop="srcName" label="脚本名称" align="center">
+          <template #default="scope">
+            <div @click="handleJmxDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+          </template>
+        </el-table-column>
         <el-table-column prop="description" label="脚本描述" align="center"></el-table-column>
         <el-table-column prop="testCaseId" label="用例编号" align="center"></el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
@@ -55,8 +59,8 @@
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
-import {deleteJmx, downloadJmx, getJmxList} from "../api/jmx";
-import {downloadCsv} from "../api/csv";
+import {deleteJmx, viewJmx, getJmxList, downloadJmx} from "../api/jmx";
+import {viewCsv} from "../api/csv";
 import {JmxItem} from "../common/item";
 import {checkToLogin} from "../common/push";
 
@@ -103,6 +107,17 @@ const handlePageChange = (val: number) => {
   getList();
 };
 
+const handleJmxDownload = async (id: number, jmxName: string) => {
+  if (!jmxName) {
+    ElMessage.error("jmx脚本文件不存在");
+    return;
+  }
+  const res = await downloadJmx(id, jmxName);
+  if (!res.success) {
+    ElMessage.error("下载失败, 请重试");
+  }
+}
+
 // 删除操作
 const handleJmxDelete = async (id: number) => {
   await ElMessageBox.confirm('确定要删除吗？', '提示', {
@@ -121,7 +136,7 @@ const handleJmxDelete = async (id: number) => {
 // 预览操作
 const jmxFile = ref('');
 const handleJmxView = async (id: number) => {
-  const res = await downloadJmx(id);
+  const res = await viewJmx(id);
   jmxFile.value = res.data;
 };
 

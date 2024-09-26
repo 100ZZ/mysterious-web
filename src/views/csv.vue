@@ -11,8 +11,12 @@
 
       <el-table :data="csvData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-        <el-table-column prop="srcName" label="数据名称" align="center"></el-table-column>
-        <el-table-column prop="description" label="数据描述" align="center"></el-table-column>
+        <el-table-column prop="srcName" label="文件名称" align="center">
+          <template #default="scope">
+            <div @click="handleCsvDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="description" label="文件描述" align="center"></el-table-column>
         <el-table-column prop="testCaseId" label="用例编号" align="center"></el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
@@ -55,9 +59,9 @@
 import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
-import {deleteCsv, downloadCsv, getCsvList} from "../api/csv";
+import {deleteCsv, viewCsv, getCsvList, downloadCsv} from "../api/csv";
 import {CsvItem} from "../common/item";
-import {downloadJmx} from "../api/jmx";
+import {viewJmx} from "../api/jmx";
 import {checkToLogin} from "../common/push";
 
 const drawer = ref(false);
@@ -118,10 +122,21 @@ const handleCsvDelete = async (id: number) => {
   }
 };
 
+const handleCsvDownload = async (id: number, csvName: string) => {
+  if (!csvName) {
+    ElMessage.error("csv数据文件不存在");
+    return;
+  }
+  const res = await downloadCsv(id, csvName);
+  if (!res.success) {
+    ElMessage.error("下载失败, 请重试");
+  }
+}
+
 // 预览操作
 const csvFile = ref('');
 const handleCsvView = async (id: number) => {
-  const res = await downloadCsv(id);
+  const res = await viewCsv(id);
   csvFile.value = res.data;
 };
 

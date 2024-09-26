@@ -187,7 +187,11 @@
         </el-divider>
         <el-table :data="jmxFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-          <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
+          <el-table-column prop="dstName" label="名称" align="center">
+            <template #default="scope">
+              <div @click="handleJmxDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
@@ -208,7 +212,11 @@
         </el-divider>
         <el-table :data="csvFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-          <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
+          <el-table-column prop="dstName" label="名称" align="center">
+            <template #default="scope">
+              <div @click="handleCsvDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
@@ -229,7 +237,11 @@
         </el-divider>
         <el-table :data="jarFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-          <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
+          <el-table-column prop="dstName" label="名称" align="center">
+            <template #default="scope">
+              <div @click="handleJarDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
@@ -646,9 +658,9 @@ import {
   updateTestCase
 } from "../api/testcase";
 import {CsvItem, JarItem, JmxItem} from "../common/item";
-import {deleteCsv, downloadCsv, uploadCsv} from "../api/csv";
-import {addOnlineJmx, deleteJmx, downloadJmx, getOnlineJmx, updateOnlineJmx, uploadJmx} from "../api/jmx";
-import {deleteJar, uploadJar} from "../api/jar";
+import {deleteCsv, viewCsv, uploadCsv, downloadCsv} from "../api/csv";
+import {addOnlineJmx, deleteJmx, viewJmx, getOnlineJmx, updateOnlineJmx, uploadJmx, downloadJmx} from "../api/jmx";
+import {deleteJar, downloadJar, uploadJar} from "../api/jar";
 import router from "../router";
 import {checkToLogin} from "../common/push";
 
@@ -1043,17 +1055,51 @@ const handleJarUpload = async (uploadRequestOptions) => {
   }
 }
 
+
+const handleJmxDownload = async (id: number, jmxName: string) => {
+  if (!jmxName) {
+    ElMessage.error("jmx脚本文件不存在");
+    return;
+  }
+  const res = await downloadJmx(id, jmxName);
+  if (!res.success) {
+    ElMessage.error("下载失败, 请重试");
+  }
+}
+
+const handleCsvDownload = async (id: number, csvName: string) => {
+  if (!csvName) {
+    ElMessage.error("csv数据文件不存在");
+    return;
+  }
+  const res = await downloadCsv(id, csvName);
+  if (!res.success) {
+    ElMessage.error("下载失败, 请重试");
+  }
+}
+
+const handleJarDownload = async (id: number, jarName: string) => {
+  if (!jarName) {
+    ElMessage.error("jar依赖文件不存在");
+    return;
+  }
+  const res = await downloadJar(id, jarName);
+  if (!res.success) {
+    ElMessage.error("下载失败, 请重试");
+  }
+}
+
 // 预览jmx
 const jmxFile = ref('');
 const handleJmxView = async (id: number) => {
-  const res = await downloadJmx(id);
+  const res = await viewJmx(id);
   jmxFile.value = res.data;
 };
 
 // 预览csv
 const csvFile = ref('');
 const handleCsvView = async (id: number) => {
-  const res = await downloadCsv(id);
+  const res = await viewCsv(id);
   csvFile.value = res.data;
 };
 
