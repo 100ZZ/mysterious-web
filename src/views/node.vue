@@ -31,30 +31,38 @@
         <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
         <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
 
-        <el-table-column label="操作" width="120" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template #default="scope">
-<!--            <el-button style="margin-left: 0" text :icon="Top" @click="handleButtonClick(scope.$index)" v-permiss="1">-->
-<!--              {{buttonText}}-->
-<!--            </el-button>-->
-            <el-dropdown class="group-status" trigger="click">
-              <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">操作</el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>
-                  <el-dropdown-item @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-
-            <el-button style="margin-left: 0" text :icon="Refresh" class="bg-blue" @click="syncAction(scope.row.id)" v-permiss="1">
-              同步
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
-              编辑
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
-              删除
-            </el-button>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-dropdown class="group-status" trigger="click">
+                  <el-button text :icon="Right" class="bg-blue" v-permiss="1">操作</el-button>
+                  <template #dropdown>
+                    <el-dropdown-menu>
+                      <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>
+                      <el-dropdown-item @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </template>
+                </el-dropdown>
+              </el-col>
+              <el-col :span="12">
+                <el-button text :icon="Refresh" class="bg-blue" @click="syncAction(scope.row.id)" v-permiss="1">
+                  同步
+                </el-button>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-button text :icon="Edit" class="bg-blue" @click="handleEdit(scope.row)" v-permiss="1">
+                  编辑
+                </el-button>
+              </el-col>
+              <el-col :span="12">
+                <el-button text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
+                  删除
+                </el-button>
+              </el-col>
+            </el-row>
           </template>
         </el-table-column>
       </el-table>
