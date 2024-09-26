@@ -72,7 +72,7 @@
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="配置字段">
-          <el-input v-model="editForm.configKey"></el-input>
+          <el-input v-model="editForm.configKey" disabled></el-input>
         </el-form-item>
         <el-form-item label="字段值">
           <el-input v-model="editForm.configValue"></el-input>

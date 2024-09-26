@@ -175,7 +175,7 @@
             </el-upload>
           </el-col>
           <el-col :span="12">
-            <el-button text :icon="Edit" class="blue" @click="onlineDrawer = true,getOnlineJmxData(jmxFullData[0] ? jmxFullData[0].id : null)">在线编写JMX脚本文件</el-button>
+            <el-button text :icon="Edit" class="blue" @click="onlineDrawer = true,getOnlineJmxData(jmxFullData[0] ? jmxFullData[0].id : null)">在线编写JMX脚本文件(测试版)</el-button>
           </el-col>
         </el-row>
       </el-divider>
