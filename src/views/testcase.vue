@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="query.id" placeholder="ID" class="handle-input mr10"></el-input>
+        <el-input v-model="query.id" placeholder="编号" class="handle-input mr10"></el-input>
         <el-input v-model="query.name" placeholder="名称" class="handle-input mr10"></el-input>
         <el-input v-model="query.biz" placeholder="产品线" class="handle-input mr10"></el-input>
         <el-input v-model="query.biz" placeholder="服务" class="handle-input mr10"></el-input>
@@ -13,7 +13,7 @@
       </div>
 
       <el-table :data="testCaseData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
         <el-table-column prop="name" label="名称" align="center"></el-table-column>
         <el-table-column prop="description" label="描述" align="center"></el-table-column>
         <el-table-column prop="biz" label="产品" align="center"></el-table-column>
@@ -127,7 +127,7 @@
     <!-- 编辑弹出框 -->
     <el-dialog title="编辑用例" v-model="editVisible" width="30%">
       <el-form label-width="70px">
-        <el-form-item label="ID">
+        <el-form-item label="编号">
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="名称">
@@ -160,7 +160,7 @@
       <el-card shadow="hover" style="margin-bottom: 20px;">
 <!--        <el-divider>基础信息</el-divider>-->
         <el-descriptions direction="vertical" :column="3" border>
-          <el-descriptions-item label="ID" align="center">{{testCaseFullData.id}}</el-descriptions-item>
+          <el-descriptions-item label="编号" align="center">{{testCaseFullData.id}}</el-descriptions-item>
           <el-descriptions-item label="名称" align="center">{{testCaseFullData.name}}</el-descriptions-item>
           <el-descriptions-item label="描述" align="center">{{testCaseFullData.description}}</el-descriptions-item>
           <el-descriptions-item label="产品线" align="center">{{testCaseFullData.biz}}</el-descriptions-item>
@@ -184,8 +184,7 @@
           </el-row>
         </el-divider>
         <el-table :data="jmxFullData" border style="width: 100%">
-          <el-table-column prop="type" label="JMX脚本" width="55" align="center"></el-table-column>
-          <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+          <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
@@ -206,7 +205,7 @@
           </el-upload>
         </el-divider>
         <el-table :data="csvFullData" border style="width: 100%">
-          <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+          <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
@@ -227,7 +226,7 @@
           </el-upload>
         </el-divider>
         <el-table :data="jarFullData" border style="width: 100%">
-          <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+          <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
@@ -245,7 +244,10 @@
 
     <!-- 子抽屉用于编辑 JMX 脚本 -->
     <el-drawer v-model="onlineDrawer" title="在线编写JMX脚本文件" :append-to-body="true" :size="'75%'">
+      <!-- 基础信息 -->
       <el-form :model="onlineJmxItem" label-width="150px" label-position="top">
+        <el-card shadow="hover" style="margin-bottom: 20px;">
+
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="脚本名称">
@@ -258,11 +260,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用例ID">
+            <el-form-item label="用例编号">
               <el-input v-model="onlineJmxItem.testCaseId" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+      </el-card>
+
+
+      <el-card shadow="hover" style="margin-bottom: 20px;">
 
         <el-divider>
           <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
@@ -414,8 +420,10 @@
             </el-col>
           </el-row>
         </template>
+        </el-card>
 
-
+        <!-- Sample类型模块 -->
+        <el-card shadow="hover">
         <el-divider>
           <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
             <el-radio label="http">HttpRequest</el-radio>
@@ -598,6 +606,7 @@
             <el-input v-model="onlineJmxItem.dubboVO.message" :rows="10"></el-input>
           </el-form-item>
         </template>
+        </el-card>
       </el-form>
       <el-button type="primary" @click="handleSave" style="margin-top: 20px;">保存</el-button>
     </el-drawer>

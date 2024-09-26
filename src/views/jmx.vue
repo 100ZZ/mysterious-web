@@ -3,17 +3,17 @@
     <div class="container">
       <div class="handle-box">
         <el-input v-model="query.srcName" placeholder="脚本名称" class="handle-input mr10"></el-input>
-        <el-input v-model="query.testCaseId" placeholder="用例ID" class="handle-input mr10"></el-input>
+        <el-input v-model="query.testCaseId" placeholder="用例编号" class="handle-input mr10"></el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
         <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
       </div>
 
       <el-table :data="jmxData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
         <el-table-column prop="srcName" label="脚本名称" align="center"></el-table-column>
         <el-table-column prop="description" label="脚本描述" align="center"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例ID" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例编号" align="center"></el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
         <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>

@@ -11,7 +11,7 @@
       </div>
 
       <el-table :data="nodeData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
         <el-table-column prop="name" label="节点名称" align="center"></el-table-column>
         <el-table-column prop="description" label="节点描述" align="center"></el-table-column>
         <el-table-column prop="type" label="节点类型" :formatter="nodeTypeFormat" align="center"></el-table-column>
@@ -119,7 +119,7 @@
     <!-- 编辑弹出框 -->
     <el-dialog title="编辑" v-model="editVisible" width="30%">
       <el-form label-width="70px">
-        <el-form-item label="ID">
+        <el-form-item label="编号">
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="节点名称">

@@ -10,7 +10,7 @@
       </div>
 
       <el-table :data="configData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
         <el-table-column prop="configKey" label="配置字段" align="center"></el-table-column>
         <el-table-column prop="configValue" label="字段值" align="center"></el-table-column>
         <el-table-column prop="description" label="字段描述" align="center"></el-table-column>
@@ -68,7 +68,7 @@
     <!-- 编辑弹出框 -->
     <el-dialog title="编辑" v-model="editVisible" width="30%">
       <el-form label-width="70px">
-        <el-form-item label="ID">
+        <el-form-item label="编号">
           <el-input v-model="editForm.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="配置字段">

@@ -11,7 +11,7 @@
       </div>
 
       <el-table :data="userData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-        <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+        <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
         <el-table-column prop="username" label="用户" align="center"></el-table-column>
         <el-table-column prop="password" label="密码" align="center"></el-table-column>
         <el-table-column prop="realName" label="姓名" align="center"></el-table-column>
