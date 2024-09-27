@@ -12,14 +12,14 @@
 
       <el-table :data="nodeData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-        <el-table-column prop="name" label="节点名称" align="center"></el-table-column>
-        <el-table-column prop="description" label="节点描述" align="center"></el-table-column>
-        <el-table-column prop="type" label="节点类型" :formatter="nodeTypeFormat" align="center"></el-table-column>
-        <el-table-column prop="host" label="登录地址" align="center"></el-table-column>
-        <el-table-column prop="port" label="登录端口" align="center"></el-table-column>
-        <el-table-column prop="username" label="登录用户" align="center"></el-table-column>
-        <el-table-column prop="password" label="登录密码" align="center"></el-table-column>
-        <el-table-column prop="status" label="节点状态" align="center">
+        <el-table-column prop="name" label="名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+        <el-table-column prop="type" label="类型" :formatter="nodeTypeFormat" align="center"></el-table-column>
+        <el-table-column prop="host" label="地址" align="center"></el-table-column>
+        <el-table-column prop="port" label="端口" align="center"></el-table-column>
+        <el-table-column prop="username" label="用户" align="center"></el-table-column>
+        <el-table-column prop="password" label="密码" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 0" type="warning">禁用中</el-tag>
             <el-tag v-if="scope.row.status === 1" type="success">启用中</el-tag>

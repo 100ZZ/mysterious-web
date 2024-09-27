@@ -238,9 +238,9 @@
         <el-table :data="jarFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center">
-            <template #default="scope">
-              <div @click="handleJarDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
-            </template>
+<!--            <template #default="scope">-->
+<!--              <div @click="handleJarDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>-->
+<!--            </template>-->
           </el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
@@ -274,7 +274,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用例编号">
+            <el-form-item label="用例">
               <el-input v-model="onlineJmxItem.testCaseId" disabled></el-input>
             </el-form-item>
           </el-col>

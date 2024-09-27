@@ -3,7 +3,7 @@
     <div class="container">
       <div class="handle-box">
         <el-input v-model="query.name" placeholder="报告名称" class="handle-input mr10"></el-input>
-        <el-input v-model="query.testCaseId" placeholder="用例编号" class="handle-input mr10"></el-input>
+        <el-input v-model="query.testCaseId" placeholder="用例" class="handle-input mr10"></el-input>
 
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
@@ -12,9 +12,9 @@
 
       <el-table :data="reportData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
         <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-        <el-table-column prop="name" label="报告名称" align="center"></el-table-column>
-        <el-table-column prop="description" label="报告描述" align="center"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例编号" align="center"></el-table-column>
+        <el-table-column prop="name" label="名称" align="center"></el-table-column>
+        <el-table-column prop="description" label="描述" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
         <el-table-column prop="execType" label="执行类型" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.execType === 1" type="success">调试</el-tag>
