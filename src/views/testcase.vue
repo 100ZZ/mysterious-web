@@ -54,7 +54,7 @@
                   <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
                   <template #dropdown>
                     <el-button-group>
-                      <el-button type="warning" @click="debugAction(scope.row.id)">调试</el-button>
+                      <el-button type="primary" @click="debugAction(scope.row.id)">调试</el-button>
                       <el-button type="danger" @click="startAction(scope.row.id)">压测</el-button>
                       <el-button type="info" @click="stopAction(scope.row.id)">停止</el-button>
                     </el-button-group>

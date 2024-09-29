@@ -15,13 +15,21 @@
         <el-table-column prop="name" label="名称" align="center"></el-table-column>
         <el-table-column prop="description" label="描述" align="center"></el-table-column>
         <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
-        <el-table-column prop="execType" label="执行类型" align="center">
+        <el-table-column prop="execType" label="类型" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.execType === 1" type="success">调试</el-tag>
+            <el-tag v-if="scope.row.execType === 1" type="primary">调试</el-tag>
             <el-tag v-if="scope.row.execType === 2" type="danger">压测</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="responseData" label="执行结果" align="center"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center">
+          <template #default="scope">
+            <el-tag v-if="scope.row.status === 0" type="info">没有执行</el-tag>
+            <el-tag v-if="scope.row.status === 1" type="warning">正在执行</el-tag>
+            <el-tag v-if="scope.row.status === 2" type="success">执行成功</el-tag>
+            <el-tag v-if="scope.row.status === 3" type="danger">执行异常</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="responseData" label="结果" align="center"></el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
         <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
@@ -81,6 +89,7 @@ interface ReportItem {
   description: string;
   testCaseId: number;
   execType: number;
+  status: number;
   responseData: string;
   creator: string;
   modifier: string;
