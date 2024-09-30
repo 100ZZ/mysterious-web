@@ -50,7 +50,7 @@
             </el-row>
             <el-row type="flex" justify="center">
               <el-col :span="12">
-                <el-dropdown class="group-status" trigger="click">
+                <el-dropdown ref="dropdownRef" class="group-status" trigger="click">
                   <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
                   <template #dropdown>
                     <el-button-group>
@@ -863,6 +863,14 @@ const saveEdit = async () => {
   }
 };
 
+const dropdownRef = ref(null);
+
+const closeDropdown = () => {
+  if (dropdownRef.value) {
+    dropdownRef.value.$emit('close'); // 手动触发关闭事件
+  }
+};
+
 const debugAction = async (id: number) => {
   const res = await debugTestCase(id);
   const code = res.data.code
@@ -871,6 +879,7 @@ const debugAction = async (id: number) => {
   } else {
     ElMessage.success("调试成功");
     await getList(); // 等待getList()执行完再继续
+    closeDropdown();
   }
 }
 
@@ -882,6 +891,7 @@ const startAction = async (id: number) => {
   } else {
     ElMessage.success("压测成功");
     await getList(); // 等待getList()执行完再继续
+    closeDropdown();
   }
 }
 
@@ -891,8 +901,9 @@ const stopAction = async (id: number) => {
   if (code != 0) {
     ElMessage.error(res.data.message);
   } else {
-    ElMessage.success("停止成功");
+    ElMessage.success("停止成功，请等待一会完成数据同步状态刷新，再进行其它操作");
     await getList(); // 等待getList()执行完再继续
+    closeDropdown();
   }
 }
 
