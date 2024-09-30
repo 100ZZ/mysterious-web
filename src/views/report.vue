@@ -39,20 +39,32 @@
 <!--        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>-->
 <!--        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>-->
 
-        <el-table-column label="操作" width="120" align="center">
+        <el-table-column label="操作" width="200" align="center">
           <template #default="scope">
-            <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true,handleJMeterLog(scope.row.id)" v-permiss="1">
-              查看日志
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Download" class="bg-blue" @click="handleDownload(scope.row.id)" v-permiss="1">
-              报告下载
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Top" class="bg-blue" @click="handleViewReport(scope.row.id)" v-permiss="1">
-              报告预览
-            </el-button>
-            <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
-              删除报告
-            </el-button>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Top" class="bg-blue" @click="handleViewReport(scope.row.id)" v-permiss="1">
+                  预览
+                </el-button>
+              </el-col>
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Download" class="bg-blue" @click="handleDownload(scope.row.id)" v-permiss="1">
+                  下载
+                </el-button>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="center">
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Search" class="bg-blue" @click="drawer = true,handleJMeterLog(scope.row.id)" v-permiss="1">
+                  日志
+                </el-button>
+              </el-col>
+              <el-col :span="12">
+                <el-button style="margin-left: 0" text :icon="Delete" class="red" @click="handleDelete(scope.row.id)" v-permiss="1">
+                  删除
+                </el-button>
+              </el-col>
+            </el-row>
           </template>
         </el-table-column>
       </el-table>
