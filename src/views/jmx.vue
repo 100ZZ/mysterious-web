@@ -17,7 +17,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="description" label="描述" align="center"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center">
+          <template #default="scope">
+            <span @click="handleTestCaseClick(scope.row.testCaseId)" style="cursor: pointer; color: blue;">{{ scope.row.testCaseId }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
 <!--        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>-->
@@ -62,7 +66,7 @@ import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vu
 import {deleteJmx, viewJmx, getJmxList, downloadJmx} from "../api/jmx";
 import {viewCsv} from "../api/csv";
 import {JmxItem} from "../common/item";
-import {checkToLogin} from "../common/push";
+import {checkToLogin, handleTestCaseClick} from "../common/push";
 
 const drawer = ref(false);
 

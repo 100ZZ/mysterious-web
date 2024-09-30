@@ -3,7 +3,8 @@
     <div class="container">
       <div class="handle-box">
         <el-input v-model="query.srcName" placeholder="依赖名称" class="handle-input mr10"></el-input>
-        <el-input v-model="query.testCaseId" placeholder="用例" class="handle-input mr10"></el-input>
+        <el-input v-model="query.testCaseId" placeholder="用例" class="handle-input mr10">
+        </el-input>
 
         <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
         <el-button type="primary" :icon="Refresh" @click="handleReset">重置</el-button>
@@ -17,7 +18,11 @@
 <!--          </template>-->
         </el-table-column>
         <el-table-column prop="description" label="描述" align="center"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center">
+          <template #default="scope">
+            <span @click="handleTestCaseClick(scope.row.testCaseId)" style="cursor: pointer; color: blue;">{{ scope.row.testCaseId }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
 <!--        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>-->
@@ -53,7 +58,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {deleteJar, downloadJar, getJarList} from "../api/jar";
 import {JarItem} from "../common/item";
-import {checkToLogin} from "../common/push";
+import {checkToLogin, handleTestCaseClick} from "../common/push";
 
 const query = reactive({
   srcName: null,

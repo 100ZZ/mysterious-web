@@ -6,3 +6,13 @@ export const checkToLogin = (message: String) => {
         return false;
     }
 }
+
+export const handleTestCaseClick = (testCaseId: number) => {
+    // 使用路由跳转到用例页面，并传递用例ID作为查询参数
+    router.push({
+        path: '/testcase',
+        query: {
+            id: testCaseId
+        }
+    });
+}

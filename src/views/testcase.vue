@@ -50,17 +50,26 @@
             </el-row>
             <el-row type="flex" justify="center">
               <el-col :span="12">
-                <el-dropdown ref="dropdownRef" class="group-status" trigger="click">
+<!--                <el-dropdown class="group-status" trigger="click">-->
+<!--                  <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>-->
+<!--                  <template #dropdown>-->
+<!--                    <el-button-group>-->
+<!--                      <el-button type="primary" @click="debugAction(scope.row.id)">调试</el-button>-->
+<!--                      <el-button type="danger" @click="startAction(scope.row.id)">压测</el-button>-->
+<!--                      <el-button type="info" @click="stopAction(scope.row.id)">停止</el-button>-->
+<!--                    </el-button-group>-->
+<!--                  </template>-->
+<!--                </el-dropdown>-->
+                <el-dropdown class="group-status" trigger="click">
                   <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
                   <template #dropdown>
-                    <el-button-group>
-                      <el-button type="primary" @click="debugAction(scope.row.id)">调试</el-button>
-                      <el-button type="danger" @click="startAction(scope.row.id)">压测</el-button>
-                      <el-button type="info" @click="stopAction(scope.row.id)">停止</el-button>
-                    </el-button-group>
+                    <el-dropdown-menu class="horizontal-dropdown-menu">
+                      <el-dropdown-item :style="{ backgroundColor: '#3B82F6', color: '#FFFFFF' }" @click="debugAction(scope.row.id)">调试</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#EF4444', color: '#FFFFFF' }" @click="startAction(scope.row.id)">压测</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#909399', color: '#FFFFFF' }" @click="stopAction(scope.row.id)">停止</el-dropdown-item>
+                    </el-dropdown-menu>
                   </template>
                 </el-dropdown>
-
 
               </el-col>
               <el-col :span="12">
@@ -663,6 +672,7 @@ import {addOnlineJmx, deleteJmx, viewJmx, getOnlineJmx, updateOnlineJmx, uploadJ
 import {deleteJar, downloadJar, uploadJar} from "../api/jar";
 import router from "../router";
 import {checkToLogin} from "../common/push";
+import {useRoute} from "vue-router";
 
 const drawer = ref(false);
 const jmxDrawer = ref(false)
@@ -684,8 +694,10 @@ interface TestCaseItem {
   modifyTime: string;
 }
 
+const route = useRoute();
+
 const query = reactive({
-  id: null,
+  id: route.query.id || null,  // 获取传递的testCaseId参数
   name: null,
   biz: null,
   service: null,
@@ -863,14 +875,6 @@ const saveEdit = async () => {
   }
 };
 
-const dropdownRef = ref(null);
-
-const closeDropdown = () => {
-  if (dropdownRef.value) {
-    dropdownRef.value.$emit('close'); // 手动触发关闭事件
-  }
-};
-
 const debugAction = async (id: number) => {
   const res = await debugTestCase(id);
   const code = res.data.code
@@ -879,7 +883,6 @@ const debugAction = async (id: number) => {
   } else {
     ElMessage.success("调试成功");
     await getList(); // 等待getList()执行完再继续
-    closeDropdown();
   }
 }
 
@@ -891,7 +894,6 @@ const startAction = async (id: number) => {
   } else {
     ElMessage.success("压测成功");
     await getList(); // 等待getList()执行完再继续
-    closeDropdown();
   }
 }
 
@@ -901,9 +903,8 @@ const stopAction = async (id: number) => {
   if (code != 0) {
     ElMessage.error(res.data.message);
   } else {
-    ElMessage.success("停止成功，请等待一会完成数据同步状态刷新，再进行其它操作");
+    ElMessage.success("停止成功");
     await getList(); // 等待getList()执行完再继续
-    closeDropdown();
   }
 }
 
@@ -1908,5 +1909,14 @@ const responseTimeChart = reactive({
   width: 100%;
   height: 30vh; /* 设置图表的高度为视口高度的45% */
   margin-bottom: 20px; /* 图表之间的间距 */
+}
+.horizontal-dropdown-menu {
+  display: flex; /* 使用 flexbox */
+  flex-direction: row; /* 横向排列 */
+  padding: 0; /* 去掉内边距（如果需要） */
+}
+
+.horizontal-dropdown-menu .el-dropdown-item {
+  padding: 10px 20px; /* 可以根据需要调整每个按钮的内边距 */
 }
 </style>

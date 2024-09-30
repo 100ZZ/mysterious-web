@@ -14,7 +14,11 @@
         <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
         <el-table-column prop="name" label="名称" align="center"></el-table-column>
         <el-table-column prop="description" label="描述" align="center"></el-table-column>
-        <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
+        <el-table-column prop="testCaseId" label="用例" align="center">
+          <template #default="scope">
+            <span @click="handleTestCaseClick(scope.row.testCaseId)" style="cursor: pointer; color: blue;">{{ scope.row.testCaseId }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="execType" label="类型" align="center">
           <template #default="scope">
             <el-tag v-if="scope.row.execType === 1" type="primary">调试</el-tag>
@@ -78,8 +82,9 @@ import {ref, reactive, computed} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import { Download, Search, Delete, Edit, Refresh, Top } from '@element-plus/icons-vue';
 import {cleanReport, downloadReport, getLog, getReportList, viewReport} from "../api/report";
-import {checkToLogin} from "../common/push";
+import {checkToLogin, handleTestCaseClick} from "../common/push";
 import {useRoute} from "vue-router";
+import router from "../router";
 
 const drawer = ref(false);
 

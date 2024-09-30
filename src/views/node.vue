@@ -38,14 +38,10 @@
                 <el-dropdown class="group-status" trigger="click">
                   <el-button text :icon="Right" class="bg-blue" v-permiss="1">操作</el-button>
                   <template #dropdown>
-<!--                    <el-dropdown-menu>-->
-<!--                      <el-dropdown-item @click="enableAction(scope.row.id)">启用</el-dropdown-item>-->
-<!--                      <el-dropdown-item @click="disableAction(scope.row.id)">禁用</el-dropdown-item>-->
-<!--                    </el-dropdown-menu>-->
-                    <el-button-group>
-                      <el-button type="success" @click="enableAction(scope.row.id)">启用</el-button>
-                      <el-button type="danger" @click="disableAction(scope.row.id)">禁用</el-button>
-                    </el-button-group>
+                    <el-dropdown-menu class="horizontal-dropdown-menu">
+                      <el-dropdown-item :style="{ backgroundColor: '#67C23A', color: '#FFFFFF' }" @click="enableAction(scope.row.id)">启用</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#EF4444', color: '#FFFFFF' }" @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
+                    </el-dropdown-menu>
                   </template>
                 </el-dropdown>
               </el-col>
@@ -414,5 +410,14 @@ const syncAction = async (nodeId: number) => {
   margin: auto;
   width: 40px;
   height: 40px;
+}
+.horizontal-dropdown-menu {
+  display: flex; /* 使用 flexbox */
+  flex-direction: row; /* 横向排列 */
+  padding: 0; /* 去掉内边距（如果需要） */
+}
+
+.horizontal-dropdown-menu .el-dropdown-item {
+  padding: 10px 20px; /* 可以根据需要调整每个按钮的内边距 */
 }
 </style>
