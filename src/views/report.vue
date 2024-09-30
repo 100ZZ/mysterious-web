@@ -32,8 +32,8 @@
         <el-table-column prop="responseData" label="结果" align="center"></el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
-        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>
-        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>
+<!--        <el-table-column prop="modifier" label="修改人" align="center"></el-table-column>-->
+<!--        <el-table-column prop="modifyTime" label="修改时间" align="center"></el-table-column>-->
 
         <el-table-column label="操作" width="120" align="center">
           <template #default="scope">
