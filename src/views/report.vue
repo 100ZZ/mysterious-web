@@ -27,10 +27,10 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.status === 0" type="info">没有执行</el-tag>
-            <el-tag v-if="scope.row.status === 1" type="warning">正在执行</el-tag>
-            <el-tag v-if="scope.row.status === 2" type="success">执行成功</el-tag>
-            <el-tag v-if="scope.row.status === 3" type="danger">执行异常</el-tag>
+            <el-tag v-if="scope.row.status === 0" class="status-not-executed">没有执行</el-tag>
+            <el-tag v-if="scope.row.status === 1" class="status-executing">正在执行</el-tag>
+            <el-tag v-if="scope.row.status === 2" class="status-success">执行成功</el-tag>
+            <el-tag v-if="scope.row.status === 3" class="status-error">执行异常</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="responseData" label="结果" align="center"></el-table-column>
@@ -240,5 +240,29 @@ const handleJMeterLog = async (id: number) => {
   margin: auto;
   width: 40px;
   height: 40px;
+}
+
+.status-not-executed {
+  background-color: #909399 !important;
+  color: #FFFFFF !important;
+  border-color: #909399 !important;
+}
+
+.status-executing {
+  background-color: #E6A23C !important;
+  color: #FFFFFF !important;
+  border-color: #E6A23C !important;
+}
+
+.status-success {
+  background-color: #67C23A !important;
+  color: #FFFFFF !important;
+  border-color: #67C23A !important;
+}
+
+.status-error {
+  background-color: #F56C6C !important;
+  color: #FFFFFF !important;
+  border-color: #F56C6C !important;
 }
 </style>

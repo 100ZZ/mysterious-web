@@ -21,9 +21,9 @@
         <el-table-column prop="password" label="密码" align="center"></el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.status === 0" type="warning">禁用中</el-tag>
-            <el-tag v-if="scope.row.status === 1" type="success">启用中</el-tag>
-            <el-tag v-if="scope.row.status === 2" type="danger">启动失败</el-tag>
+            <el-tag v-if="scope.row.status === 0" class="disabled">禁用中</el-tag>
+            <el-tag v-if="scope.row.status === 1" class="enabled">启用中</el-tag>
+            <el-tag v-if="scope.row.status === 2" class="failed">启动失败</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
@@ -419,5 +419,23 @@ const syncAction = async (nodeId: number) => {
 
 .horizontal-dropdown-menu .el-dropdown-item {
   padding: 10px 20px; /* 可以根据需要调整每个按钮的内边距 */
+}
+
+.disabled {
+  background-color: #909399 !important;
+  color: #FFFFFF !important;
+  border-color: #909399 !important;
+}
+
+.enabled {
+  background-color: #67C23A !important;
+  color: #FFFFFF !important;
+  border-color: #67C23A !important;
+}
+
+.failed {
+  background-color: #F56C6C !important;
+  color: #FFFFFF !important;
+  border-color: #F56C6C !important;
 }
 </style>

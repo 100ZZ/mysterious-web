@@ -21,12 +21,12 @@
         <el-table-column prop="version" label="版本" align="center"></el-table-column>
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
-              <el-tag v-if="scope.row.status === 0" type="info">没有执行</el-tag>
-              <el-tag v-if="scope.row.status === 1" type="warning">正在执行</el-tag>
-              <el-tag v-if="scope.row.status === 2" type="success">执行成功</el-tag>
-              <el-tag v-if="scope.row.status === 3" type="danger">执行异常</el-tag>
-              <el-tag v-if="scope.row.status === 4" type="primary">排队等待</el-tag>
-              <el-tag v-if="scope.row.status === 5" type="primary">排队取消</el-tag>
+            <el-tag v-if="scope.row.status === 0" class="status-not-executed">没有执行</el-tag>
+            <el-tag v-if="scope.row.status === 1" class="status-executing">正在执行</el-tag>
+            <el-tag v-if="scope.row.status === 2" class="status-success">执行成功</el-tag>
+            <el-tag v-if="scope.row.status === 3" class="status-error">执行异常</el-tag>
+            <el-tag v-if="scope.row.status === 4" class="status-waiting">排队等待</el-tag>
+            <el-tag v-if="scope.row.status === 5" class="status-canceled">排队取消</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
@@ -65,7 +65,7 @@
                   <template #dropdown>
                     <el-dropdown-menu class="horizontal-dropdown-menu">
                       <el-dropdown-item :style="{ backgroundColor: '#3B82F6', color: '#FFFFFF' }" @click="debugAction(scope.row.id)">调试</el-dropdown-item>
-                      <el-dropdown-item :style="{ backgroundColor: '#EF4444', color: '#FFFFFF' }" @click="startAction(scope.row.id)">压测</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#F59E0B', color: '#FFFFFF' }" @click="startAction(scope.row.id)">压测</el-dropdown-item>
                       <el-dropdown-item :style="{ backgroundColor: '#909399', color: '#FFFFFF' }" @click="stopAction(scope.row.id)">停止</el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
@@ -1918,5 +1918,42 @@ const responseTimeChart = reactive({
 
 .horizontal-dropdown-menu .el-dropdown-item {
   padding: 10px 20px; /* 可以根据需要调整每个按钮的内边距 */
+}
+
+/* 在样式表中定义六个类 */
+.status-not-executed {
+  background-color: #909399 !important;
+  color: #FFFFFF !important;
+  border-color: #909399 !important;
+}
+
+.status-executing {
+  background-color: #E6A23C !important;
+  color: #FFFFFF !important;
+  border-color: #E6A23C !important;
+}
+
+.status-success {
+  background-color: #67C23A !important;
+  color: #FFFFFF !important;
+  border-color: #67C23A !important;
+}
+
+.status-error {
+  background-color: #F56C6C !important;
+  color: #FFFFFF !important;
+  border-color: #F56C6C !important;
+}
+
+.status-waiting {
+  background-color: #409EFF !important;
+  color: #FFFFFF !important;
+  border-color: #409EFF !important;
+}
+
+.status-canceled {
+  background-color: #409EFF !important;
+  color: #FFFFFF !important;
+  border-color: #409EFF !important;
 }
 </style>
