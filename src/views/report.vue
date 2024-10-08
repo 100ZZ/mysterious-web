@@ -92,10 +92,21 @@
     </div>
 
     <!--    抽屉查看日志-->
-    <el-drawer v-model="drawer" title="jmeter.log日志" :show-close="true" :with-header="true" :size="'60%'">
-      <pre><div v-text="jmxLog"></div></pre>
+<!--    <el-drawer v-model="drawer" title="jmeter.log日志" :show-close="true" :with-header="true" :size="'60%'">-->
+<!--      <pre><div v-text="jmxLog"></div></pre>-->
+<!--    </el-drawer>-->
+    <el-drawer
+        v-model="drawer"
+        title="jmeter.log 日志"
+        :show-close="true"
+        :with-header="true"
+        :size="'60%'"
+        custom-class="log-drawer"
+    >
+      <div class="log-content">
+        <pre>{{ jmxLog }}</pre>
+      </div>
     </el-drawer>
-
   </div>
 </template>
 
@@ -298,10 +309,35 @@ const handleJMeterLog = async (id: number) => {
   //font-weight: 500; /* 字体加粗 */
 }
 
-/* 去除边框 */
-.el-tag {
-  border: none !important; /* 强制去除边框 */
+/* 优化日志抽屉的样式 */
+.log-drawer {
+  background-color: #f9f9f9; /* 背景色 */
 }
 
+/* 日志内容样式 */
+.log-content {
+  //max-height: 500px; /* 设置最大高度 */
+  overflow-y: auto; /* 允许垂直滚动 */
+  background-color: #1e1e1e; /* 日志背景色 */
+  color: #dcdcdc; /* 字体颜色 */
+  padding: 15px; /* 内边距 */
+  font-family: "Courier New", Courier, monospace; /* 等宽字体 */
+  font-size: 14px; /* 字体大小 */
+  border-radius: 4px; /* 边角圆滑 */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* 内部阴影 */
+}
 
+/* 优化滚动条样式 */
+.log-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.log-content::-webkit-scrollbar-thumb {
+  background-color: #888; /* 滚动条颜色 */
+  border-radius: 4px; /* 滚动条圆角 */
+}
+
+.log-content::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* 滚动条悬停颜色 */
+}
 </style>
