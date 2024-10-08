@@ -21,8 +21,18 @@
         </el-table-column>
         <el-table-column prop="execType" label="类型" align="center">
           <template #default="scope">
-            <el-tag v-if="scope.row.execType === 1" type="primary">调试</el-tag>
-            <el-tag v-if="scope.row.execType === 2" type="danger">压测</el-tag>
+<!--            <el-tag v-if="scope.row.execType === 1" type="primary">调试</el-tag>-->
+<!--            <el-tag v-if="scope.row.execType === 2" type="danger">压测</el-tag>-->
+            <el-tag
+                v-if="scope.row.execType === 1"
+                class="exec-type-debug"
+            >调试
+            </el-tag>
+            <el-tag
+                v-if="scope.row.execType === 2"
+                class="exec-type-load"
+            >压测
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="status" label="状态" align="center">
@@ -265,4 +275,33 @@ const handleJMeterLog = async (id: number) => {
   color: #FFFFFF !important;
   border-color: #F56C6C !important;
 }
+
+/* 调试类型样式 */
+.exec-type-debug {
+  background-color: #B3E5FC; /* 浅蓝色背景 */
+  color: #0277BD; /* 深蓝色文字 */
+  //padding: 4px 8px; /* 内边距 */
+  //border-radius: 4px; /* 圆角 */
+  //display: flex; /* 使用 flexbox */
+  align-items: center; /* 垂直居中 */
+  font-weight: 500; /* 字体加粗 */
+}
+
+/* 压测类型样式 */
+.exec-type-load {
+  background-color: #FFE0B2; /* 浅橙色背景 */
+  color: #EF6C00; /* 深橙色文字 */
+  //padding: 4px 8px; /* 内边距 */
+  //border-radius: 4px; /* 圆角 */
+  //display: flex; /* 使用 flexbox */
+  align-items: center; /* 垂直居中 */
+  font-weight: 500; /* 字体加粗 */
+}
+
+/* 去除边框 */
+.el-tag {
+  border: none !important; /* 强制去除边框 */
+}
+
+
 </style>
