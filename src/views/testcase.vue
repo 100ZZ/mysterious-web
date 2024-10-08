@@ -65,7 +65,7 @@
                   <template #dropdown>
                     <el-dropdown-menu class="horizontal-dropdown-menu">
                       <el-dropdown-item :style="{ backgroundColor: '#3B82F6', color: '#FFFFFF' }" @click="debugAction(scope.row.id)">调试</el-dropdown-item>
-                      <el-dropdown-item :style="{ backgroundColor: '#F59E0B', color: '#FFFFFF' }" @click="startAction(scope.row.id)">压测</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#EF4444', color: '#FFFFFF' }" @click="startAction(scope.row.id)">压测</el-dropdown-item>
                       <el-dropdown-item :style="{ backgroundColor: '#909399', color: '#FFFFFF' }" @click="stopAction(scope.row.id)">停止</el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
