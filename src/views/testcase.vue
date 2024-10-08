@@ -635,13 +635,29 @@
     </el-drawer>
 
     <!--    抽屉展示详情-->
-    <el-drawer v-model="jmxDrawer" title="脚本详情" :append-to-body="true" :size="'45%'">
-      <pre><div v-text="jmxFile"></div></pre>
+    <el-drawer
+        v-model="jmxDrawer"
+        title="脚本详情"
+        :show-close="true"
+        :with-header="true"
+        :size="'60%'"
+    >
+      <div class="log-content">
+        <pre>{{ jmxFile }}</pre>
+      </div>
     </el-drawer>
 
     <!--    抽屉展示详情-->
-    <el-drawer v-model="csvDrawer" title="数据详情" :append-to-body="true" :size="'45%'">
-      <pre><div v-text="csvFile"></div></pre>
+    <el-drawer
+        v-model="csvDrawer"
+        title="数据详情"
+        :show-close="true"
+        :with-header="true"
+        :size="'60%'"
+    >
+      <div class="log-content">
+        <pre>{{ csvFile }}</pre>
+      </div>
     </el-drawer>
 
     <!-- 曲线图弹出框 -->
@@ -1955,5 +1971,32 @@ const responseTimeChart = reactive({
   background-color: #409EFF !important;
   color: #FFFFFF !important;
   border-color: #409EFF !important;
+}
+
+/* 日志内容样式 */
+.log-content {
+//max-height: 500px; /* 设置最大高度 */
+  overflow-y: auto; /* 允许垂直滚动 */
+  background-color: #1e1e1e; /* 日志背景色 */
+  color: #dcdcdc; /* 字体颜色 */
+  padding: 15px; /* 内边距 */
+  font-family: "Courier New", Courier, monospace; /* 等宽字体 */
+  font-size: 14px; /* 字体大小 */
+  border-radius: 4px; /* 边角圆滑 */
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); /* 内部阴影 */
+}
+
+/* 优化滚动条样式 */
+.log-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.log-content::-webkit-scrollbar-thumb {
+  background-color: #888; /* 滚动条颜色 */
+  border-radius: 4px; /* 滚动条圆角 */
+}
+
+.log-content::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* 滚动条悬停颜色 */
 }
 </style>

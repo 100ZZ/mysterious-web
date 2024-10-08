@@ -97,11 +97,10 @@
 <!--    </el-drawer>-->
     <el-drawer
         v-model="drawer"
-        title="jmeter.log 日志"
+        title="执行日志"
         :show-close="true"
         :with-header="true"
         :size="'60%'"
-        custom-class="log-drawer"
     >
       <div class="log-content">
         <pre>{{ jmxLog }}</pre>
@@ -307,11 +306,6 @@ const handleJMeterLog = async (id: number) => {
   //display: flex; /* 使用 flexbox */
   align-items: center; /* 垂直居中 */
   //font-weight: 500; /* 字体加粗 */
-}
-
-/* 优化日志抽屉的样式 */
-.log-drawer {
-  background-color: #f9f9f9; /* 背景色 */
 }
 
 /* 日志内容样式 */
