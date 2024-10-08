@@ -284,7 +284,7 @@ const handleJMeterLog = async (id: number) => {
   //border-radius: 4px; /* 圆角 */
   //display: flex; /* 使用 flexbox */
   align-items: center; /* 垂直居中 */
-  font-weight: 500; /* 字体加粗 */
+  //font-weight: 500; /* 字体加粗 */
 }
 
 /* 压测类型样式 */
@@ -295,7 +295,7 @@ const handleJMeterLog = async (id: number) => {
   //border-radius: 4px; /* 圆角 */
   //display: flex; /* 使用 flexbox */
   align-items: center; /* 垂直居中 */
-  font-weight: 500; /* 字体加粗 */
+  //font-weight: 500; /* 字体加粗 */
 }
 
 /* 去除边框 */

@@ -39,8 +39,8 @@
                   <el-button text :icon="Right" class="bg-blue" v-permiss="1">操作</el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="horizontal-dropdown-menu">
-                      <el-dropdown-item :style="{ backgroundColor: '#67C23A', color: '#FFFFFF' }" @click="enableAction(scope.row.id)">启用</el-dropdown-item>
-                      <el-dropdown-item :style="{ backgroundColor: '#EF4444', color: '#FFFFFF' }" @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#D1E7DD', color: '#4CAF50' }" @click="enableAction(scope.row.id)">启用</el-dropdown-item>
+                      <el-dropdown-item :style="{ backgroundColor: '#FFCDD2', color: '#EF5350' }" @click="disableAction(scope.row.id)">禁用</el-dropdown-item>
                     </el-dropdown-menu>
                   </template>
                 </el-dropdown>
