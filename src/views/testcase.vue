@@ -270,39 +270,37 @@
       <!-- 基础信息 -->
       <el-form :model="onlineJmxItem" label-width="150px" label-position="top">
         <el-card shadow="hover" style="margin-bottom: 20px;">
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <el-form-item label="脚本名称">
+                <el-input v-model="onlineJmxItem.srcName" placeholder="请输入脚本名称, 以.jmx后缀结尾" :disabled="onlineJmxItem.id !== 0"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="脚本描述">
+                <el-input v-model="testCaseFullData.name" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="用例">
+                <el-input v-model="onlineJmxItem.testCaseId" disabled></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-card>
 
-        <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item label="脚本名称">
-              <el-input v-model="onlineJmxItem.srcName" placeholder="请输入脚本名称, 以.jmx后缀结尾" :disabled="onlineJmxItem.id !== 0"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="脚本描述">
-              <el-input v-model="testCaseFullData.name" disabled></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="用例">
-              <el-input v-model="onlineJmxItem.testCaseId" disabled></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-card>
 
+        <el-card shadow="hover" style="margin-bottom: 20px;">
+          <el-divider>
+            <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
+              <el-radio label="threadGroup">ThreadGroup</el-radio>
+              <el-radio label="steppingThreadGroup">SteppingThreadGroup</el-radio>
+              <el-radio label="concurrencyThreadGroup">ConcurrencyThreadGroup</el-radio>
+            </el-radio-group>
+          </el-divider>
 
-      <el-card shadow="hover" style="margin-bottom: 20px;">
-
-        <el-divider>
-          <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
-            <el-radio label="threadGroup">ThreadGroup</el-radio>
-            <el-radio label="steppingThreadGroup">SteppingThreadGroup</el-radio>
-            <el-radio label="concurrencyThreadGroup">ConcurrencyThreadGroup</el-radio>
-          </el-radio-group>
-        </el-divider>
-
-        <!-- 条件渲染不同的线程组输入框 -->
-        <template v-if="jmeterThreadsType === 'threadGroup'">
+          <!-- 条件渲染不同的线程组输入框 -->
+          <template v-if="jmeterThreadsType === 'threadGroup'">
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="Number of Threads (users)">
@@ -355,7 +353,7 @@
           </el-row>
         </template>
 
-        <template v-if="jmeterThreadsType === 'steppingThreadGroup'">
+          <template v-if="jmeterThreadsType === 'steppingThreadGroup'">
           <!-- Stepping Thread Group 输入框调整 -->
           <el-row :gutter="20">
             <el-col :span="8">
@@ -415,8 +413,7 @@
           </el-row>
         </template>
 
-
-        <template v-if="jmeterThreadsType === 'concurrencyThreadGroup'">
+          <template v-if="jmeterThreadsType === 'concurrencyThreadGroup'">
           <!-- 这里根据 Concurrency Thread Group 的需求添加输入框 -->
           <el-row :gutter="20">
             <el-col :span="12">
@@ -446,192 +443,272 @@
         </el-card>
 
         <!-- Sample类型模块 -->
-        <el-card shadow="hover">
-        <el-divider>
-          <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
-            <el-radio label="http">HttpRequest</el-radio>
-            <el-radio label="java">JavaRequest</el-radio>
-            <el-radio label="dubbo">DubboRequest</el-radio>
-          </el-radio-group>
-        </el-divider>
+        <el-card shadow="hover" style="margin-bottom: 20px;">
+          <el-divider>
+            <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
+              <el-radio label="http">HttpRequest</el-radio>
+              <el-radio label="java">JavaRequest</el-radio>
+              <el-radio label="dubbo">DubboRequest</el-radio>
+            </el-radio-group>
+          </el-divider>
+
+          <template v-if="jmeterSampleType === 'http'">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Protocol">
+                  <el-select v-model="onlineJmxItem.httpVO.protocol">
+                    <el-option label="HTTP" value="http"></el-option>
+                    <el-option label="HTTPS" value="https"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Host">
+                  <el-input v-model="onlineJmxItem.httpVO.domain"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Port">
+                  <el-input v-model="onlineJmxItem.httpVO.port"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Method">
+                  <el-select v-model="onlineJmxItem.httpVO.method">
+                    <el-option label="GET" value="GET"></el-option>
+                    <el-option label="POST" value="POST"></el-option>
+                    <el-option label="PUT" value="PUT"></el-option>
+                    <el-option label="DELETE" value="DELETE"></el-option>
+                    <el-option label="PATCH" value="PATCH"></el-option>
+                    <el-option label="TRACE" value="TRACE"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Path">
+                  <el-input v-model="onlineJmxItem.httpVO.path"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Encoding">
+                  <el-input v-model="onlineJmxItem.httpVO.contentEncoding" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-tabs v-model="activeTab">
+              <el-tab-pane label="Header" name="header">
+                <el-table :data="onlineJmxItem.httpVO.httpHeaderVOList" border style="width: 100%">
+                  <el-table-column prop="key" label="Key" width="180" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.headerKey"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="value" label="Value" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.headerValue"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="120" align="center">
+                    <template #default="scope">
+                      <el-button text :icon="Delete" class="red" @click="handleHttpHeaderDelete(scope.$index)">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-button type="primary" @click="handleHttpHeaderAdd">新增</el-button>
+              </el-tab-pane>
+              <el-tab-pane label="Param" name="param">
+                <el-table :data="onlineJmxItem.httpVO.httpParamVOList" border style="width: 100%">
+                  <el-table-column prop="key" label="Key" width="180" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.paramKey" :disabled="isParamDisabled"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="value" label="Value" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.paramValue" :disabled="isParamDisabled"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="120" align="center">
+                    <template #default="scope">
+                      <el-button text :icon="Delete" class="red" @click="handleHttpParamDelete(scope.$index)">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-button type="primary" @click="handleHttpParamAdd" :disabled="isParamDisabled">新增</el-button>
+              </el-tab-pane>
+              <el-tab-pane label="Body" name="body">
+                <!--                <el-input type="textarea" v-model="onlineJmxItem.httpVO.body" :rows="10"></el-input>-->
+                <el-input type="textarea" v-model="formattedJson" :rows="6" @blur="onJsonBlur" :disabled="isBodyDisabled"></el-input>
+              </el-tab-pane>
+
+              <el-tab-pane label="Assertion" name="assertion">
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item label="Response Code">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.responseCode"
+                          size="small"
+                          placeholder="请输入期望的响应状态码，等于关系"
+                      ></el-input>
+                    </el-form-item>
+                    <el-form-item label="Response Message">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.responseMessage"
+                          type="textarea"
+                          rows="3"
+                          placeholder="请输入期望的响应消息内容，包含关系"
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="JSON Path">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.jsonPath"
+                          size="small"
+                          placeholder="请输入要提取结果的JSON Path表达式，比如：$.success"
+                      ></el-input>
+                    </el-form-item>
+                    <el-form-item label="Expected Value">
+                      <el-input
+                          v-model="onlineJmxItem.assertionVO.expectedValue"
+                          type="textarea"
+                          rows="3"
+                          placeholder="请输入通过JSON Path表达式提取的预期结果，比如：true"
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-tab-pane>
 
 
-        <template v-if="jmeterSampleType === 'http'">
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="Protocol">
-                <el-select v-model="onlineJmxItem.httpVO.protocol">
-                  <el-option label="HTTP" value="http"></el-option>
-                  <el-option label="HTTPS" value="https"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="Host">
-                <el-input v-model="onlineJmxItem.httpVO.domain"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="Port">
-                <el-input v-model="onlineJmxItem.httpVO.port"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="Method">
-                <el-select v-model="onlineJmxItem.httpVO.method">
-                  <el-option label="GET" value="GET"></el-option>
-                  <el-option label="POST" value="POST"></el-option>
-                  <el-option label="PUT" value="PUT"></el-option>
-                  <el-option label="DELETE" value="DELETE"></el-option>
-                  <el-option label="PATCH" value="PATCH"></el-option>
-                  <el-option label="TRACE" value="TRACE"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="Path">
-                <el-input v-model="onlineJmxItem.httpVO.path"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="Encoding">
-                <el-input v-model="onlineJmxItem.httpVO.contentEncoding" disabled></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-tabs v-model="activeTab">
-            <el-tab-pane label="Header" name="header">
-              <el-table :data="onlineJmxItem.httpVO.httpHeaderVOList" border style="width: 100%">
-                <el-table-column prop="key" label="Key" width="180" align="center">
-                  <template #default="scope">
-                    <el-input v-model="scope.row.headerKey"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="value" label="Value" align="center">
-                  <template #default="scope">
-                    <el-input v-model="scope.row.headerValue"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="120" align="center">
-                  <template #default="scope">
-                    <el-button text :icon="Delete" class="red" @click="handleHttpHeaderDelete(scope.$index)">
-                      删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-button type="primary" @click="handleHttpHeaderAdd">新增</el-button>
-            </el-tab-pane>
-            <el-tab-pane label="Param" name="param">
-              <el-table :data="onlineJmxItem.httpVO.httpParamVOList" border style="width: 100%">
-                <el-table-column prop="key" label="Key" width="180" align="center">
-                  <template #default="scope">
-                    <el-input v-model="scope.row.paramKey" :disabled="isParamDisabled"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="value" label="Value" align="center">
-                  <template #default="scope">
-                    <el-input v-model="scope.row.paramValue" :disabled="isParamDisabled"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="120" align="center">
-                  <template #default="scope">
-                    <el-button text :icon="Delete" class="red" @click="handleHttpParamDelete(scope.$index)">
-                      删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-button type="primary" @click="handleHttpParamAdd" :disabled="isParamDisabled">新增</el-button>
-            </el-tab-pane>
-            <el-tab-pane label="Body" name="body">
-              <!--                <el-input type="textarea" v-model="onlineJmxItem.httpVO.body" :rows="10"></el-input>-->
-              <el-input type="textarea" v-model="formattedJson" :rows="6" @blur="onJsonBlur" :disabled="isBodyDisabled"></el-input>
-            </el-tab-pane>
+            </el-tabs>
+          </template>
 
-            <el-tab-pane label="Assertion" name="assertion">
-              <el-row :gutter="20">
-                <el-col :span="12">
-                  <el-form-item label="Response Code">
-                    <el-input
-                        v-model="onlineJmxItem.assertionVO.responseCode"
-                        size="small"
-                        placeholder="请输入期望的响应状态码，等于关系"
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="Response Message">
-                    <el-input
-                        v-model="onlineJmxItem.assertionVO.responseMessage"
-                        type="textarea"
-                        rows="3"
-                        placeholder="请输入期望的响应消息内容，包含关系"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="JSON Path">
-                    <el-input
-                        v-model="onlineJmxItem.assertionVO.jsonPath"
-                        size="small"
-                        placeholder="请输入要提取结果的JSON Path表达式，比如：$.success"
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="Expected Value">
-                    <el-input
-                        v-model="onlineJmxItem.assertionVO.expectedValue"
-                        type="textarea"
-                        rows="3"
-                        placeholder="请输入通过JSON Path表达式提取的预期结果，比如：true"
-                    ></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-tab-pane>
+          <template v-else-if="jmeterSampleType === 'java'">
+            <el-form-item label="ClassPath">
+              <el-input v-model="onlineJmxItem.javaVO.javaRequestClassPath"></el-input>
+            </el-form-item>
+            <el-tabs v-model="activeTab">
+              <el-tab-pane label="JavaParams" name="javaParams">
+                <el-table :data="onlineJmxItem.javaVO.javaParamVOList" border style="width: 100%">
+                  <el-table-column prop="key" label="Key" width="180" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.paramKey"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="value" label="Value" align="center">
+                    <template #default="scope">
+                      <el-input v-model="scope.row.paramValue"></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" width="120" align="center">
+                    <template #default="scope">
+                      <el-button text :icon="Delete" class="red" @click="handleJavaParamDelete(scope.$index)">
+                        删除
+                      </el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+                <el-button type="primary" @click="handleJavaParamAdd">新增</el-button>
+              </el-tab-pane>
+            </el-tabs>
+          </template>
 
-
-          </el-tabs>
-        </template>
-
-        <template v-else-if="jmeterSampleType === 'java'">
-          <el-form-item label="ClassPath">
-            <el-input v-model="onlineJmxItem.javaVO.javaRequestClassPath"></el-input>
-          </el-form-item>
-          <el-tabs v-model="activeTab">
-            <el-tab-pane label="JavaParams" name="javaParams">
-              <el-table :data="onlineJmxItem.javaVO.javaParamVOList" border style="width: 100%">
-                <el-table-column prop="key" label="Key" width="180" align="center">
-                  <template #default="scope">
-                    <el-input v-model="scope.row.paramKey"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="value" label="Value" align="center">
-                  <template #default="scope">
-                    <el-input v-model="scope.row.paramValue"></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作" width="120" align="center">
-                  <template #default="scope">
-                    <el-button text :icon="Delete" class="red" @click="handleJavaParamDelete(scope.$index)">
-                      删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <el-button type="primary" @click="handleJavaParamAdd">新增</el-button>
-            </el-tab-pane>
-          </el-tabs>
-        </template>
-
-        <template v-else-if="jmeterSampleType === 'dubbo'">
-          <el-form-item>
-            <el-input v-model="onlineJmxItem.dubboVO.message" :rows="10"></el-input>
-          </el-form-item>
-        </template>
+          <template v-else-if="jmeterSampleType === 'dubbo'">
+            <el-form-item>
+              <el-input v-model="onlineJmxItem.dubboVO.message" :rows="10"></el-input>
+            </el-form-item>
+          </template>
         </el-card>
+
+        <el-card shadow="hover" style="margin-bottom: 20px;">
+        <!-- CSV Config 模块 -->
+          <el-divider>
+  <!--            <el-radio-group v-model="activeCsvTab" @change="handleCsvConfigChange">-->
+  <!--              <el-radio label="csv">CSV文件配置</el-radio>-->
+  <!--            </el-radio-group>-->
+            <el-checkbox v-model="activeCsvTab" @change="handleCsvConfigChange">CSV文件配置</el-checkbox>
+
+          </el-divider>
+
+          <template v-if="activeCsvTab">
+            <!-- 固定字段显示 -->
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="Ignore first line ?">
+                  <el-checkbox v-model="onlineJmxItem.csvVO.ignoreFirstLine"></el-checkbox>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Recycle on EOF ?">
+                  <el-checkbox v-model="onlineJmxItem.csvVO.recycleOnEOF"></el-checkbox>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Stop thread on EOF ?">
+                  <el-checkbox v-model="onlineJmxItem.csvVO.stopThreadOnEOF"></el-checkbox>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="File encoding">
+                  <el-input v-model="onlineJmxItem.csvVO.fileEncoding" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Allow quoted data ?">
+                  <el-checkbox v-model="onlineJmxItem.csvVO.allowQuotedData"></el-checkbox>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="Sharing mode">
+                  <el-select v-model="onlineJmxItem.csvVO.sharingMode">
+                    <el-option label="All threads" value="All threads"></el-option>
+                    <el-option label="Current thread group" value="Current thread group"></el-option>
+                    <el-option label="Current thread" value="Current thread"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <!-- 新增表格 -->
+            <el-table :data="onlineJmxItem.csvVO.csvFileVOList" border style="width: 100%">
+              <el-table-column prop="filename" label="CSV Filename（eg：xxxx.csv）" align="center">
+                <template #default="scope">
+                  <el-input v-model="scope.row.filename" placeholder="请输入CSV文件名"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="variableNames" label="Variable names(comma-delimited)" align="center">
+                <template #default="scope">
+                  <el-input v-model="scope.row.variableNames" placeholder="请输入变量名，逗号分隔"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="delimiter" label="Delimiter(use '\t' for tab)" align="center">
+                <template #default="scope">
+                  <el-input v-model="scope.row.delimiter" placeholder="请输入分隔符"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120" align="center">
+                <template #default="scope">
+                  <el-button text :icon="Delete" class="red" @click="handleCsvFileDelete(scope.$index)">
+                    删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button type="primary" @click="handleAddCsvFile">新增CSV配置</el-button>
+          </template>
+        </el-card>
+        <el-button type="primary" @click="handleSave" style="margin-top: 20px;">保存</el-button>
+
       </el-form>
-      <el-button type="primary" @click="handleSave" style="margin-top: 20px;">保存</el-button>
     </el-drawer>
 
     <!--    抽屉展示详情-->
@@ -1254,6 +1331,25 @@ interface AssertionVO {
   expectedValue: string;
 }
 
+interface CsvVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  fileEncoding: string;
+  ignoreFirstLine: boolean;
+  allowQuotedData: boolean;
+  recycleOnEOF: boolean;
+  stopThreadOnEOF: boolean;
+  sharingMode: string;
+  csvFileVOList: CsvFileVO[];
+}
+
+interface CsvFileVO {
+  filename: string;
+  variableNames: string;
+  delimiter: string;
+}
+
 interface OnlineJmxItem {
   id: number;
   srcName: string;
@@ -1270,11 +1366,13 @@ interface OnlineJmxItem {
   javaVO: JavaVO;
   dubboVO: DubboVO;
   assertionVO: AssertionVO;
+  csvVO: CsvVO; // 用于存储 CSV 配置
 }
 
 const jmeterThreadsType = ref('threadGroup'); // 默认为 Thread Group
 const jmeterSampleType = ref('http');
 const activeTab = ref('header');
+const activeCsvTab = ref(false);
 const onlineJmxItem = ref<OnlineJmxItem>({
   id: 0,
   srcName: '',
@@ -1355,6 +1453,18 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     responseMessage: '',
     jsonPath: '',
     expectedValue: ''
+  },
+  csvVO: {
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    fileEncoding: 'UTF-8',
+    ignoreFirstLine: true,
+    allowQuotedData: false,
+    recycleOnEOF: true,
+    stopThreadOnEOF: false,
+    sharingMode: 'Current Thread group',
+    csvFileVOList: [] // 用于存储多个 CSV 文件配置
   }
 });
 
@@ -1442,6 +1552,18 @@ const getOnlineJmxData = async (id: number | null) => {
       responseMessage: '',
       jsonPath: '',
       expectedValue: ''
+    },
+    csvVO: {
+      id: 0,
+      testCaseId: 0,
+      jmxId: 0,
+      fileEncoding: 'UTF-8',
+      ignoreFirstLine: true,
+      allowQuotedData: false,
+      recycleOnEOF: true,
+      stopThreadOnEOF: false,
+      sharingMode: 'Current Thread group',
+      csvFileVOList: [] // 用于存储多个 CSV 文件配置
     }
   };
 
@@ -1459,7 +1581,7 @@ const getOnlineJmxData = async (id: number | null) => {
 
     // 判断 jmeterScriptType
     if (onlineJmxData.jmeterScriptType !== 1) {
-      ElMessage.warning("只支持在线编写的脚本");
+      ElMessage.warning("此操作只支持在线编写的脚本");
       return false;
     }
 
@@ -1560,6 +1682,22 @@ const getOnlineJmxData = async (id: number | null) => {
         responseMessage: onlineJmxData.assertionVO?.responseMessage || '',
         jsonPath: onlineJmxData.assertionVO?.jsonPath || '',
         expectedValue: onlineJmxData.assertionVO?.expectedValue || ''
+      },
+      csvVO: {
+        id: onlineJmxData.csvVO?.id || 0,
+        testCaseId: onlineJmxData.csvVO?.testCaseId || 0,
+        jmxId: onlineJmxData.csvVO?.jmxId || 0,
+        fileEncoding: onlineJmxData.csvVO?.fileEncoding || 'UTF-8',
+        ignoreFirstLine: numberToBoolean(onlineJmxData.csvVO?.ignoreFirstLine || 1),
+        allowQuotedData: numberToBoolean(onlineJmxData.csvVO?.allowQuotedData || 0),
+        recycleOnEOF: numberToBoolean(onlineJmxData.csvVO?.recycleOnEOF || 1),
+        stopThreadOnEOF: numberToBoolean(onlineJmxData.csvVO?.stopThreadOnEOF || 0),
+        sharingMode: onlineJmxData.csvVO?.sharingMode || 'Current Thread group',
+        csvFileVOList: (onlineJmxData.csvVO?.csvFileVOList || []).map(csvFile => ({
+          filename: csvFile.filename || '',
+          variableNames: csvFile.variableNames || '',
+          delimiter: csvFile.delimiter || ','
+        }))
       }
     };
     //根据 onlineJmxData 设置 jmeterThreadsType 和 jmeterSampleType
@@ -1728,6 +1866,25 @@ const convertBooleanToNumber = (item: OnlineJmxItem): OnlineJmxItemForApi => {
       ...restOfThreadGroupVO
     }
   };
+};
+
+const handleAddCsvFile = () => {
+  // 添加新的 CSV 文件配置
+  onlineJmxItem.value.csvVO.csvFileVOList.push({
+    filename: '',
+    variableNames: '',
+    delimiter: ','
+  });
+};
+
+const handleCsvFileDelete = (index: number) => {
+  // 删除指定的 CSV 文件配置
+  onlineJmxItem.value.csvVO.csvFileVOList.splice(index, 1);
+};
+
+const handleCsvConfigChange = (value: string) => {
+  // 处理 CSV Config 切换逻辑
+  console.log('CSV Config changed:', value);
 };
 
 // 添加在线 JMX 数据的函数
