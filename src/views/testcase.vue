@@ -1620,15 +1620,19 @@ const handleRequestTypeChange = (value: string) => {
   switch (value) {
     case 'http':
       onlineJmxItem.value.jmeterSampleType = 0;
+      activeTab.value = 'header'; // 切换到 HttpRequest 时展开 Header 标签
       break;
     case 'java':
       onlineJmxItem.value.jmeterSampleType = 1;
+      activeTab.value = 'javaParams'; // 切换到 JavaRequest 时展开 JavaParams 标签
       break;
     case 'dubbo':
       onlineJmxItem.value.jmeterSampleType = 2;
+      activeTab.value = ''; // DubboRequest 没有 tab，所以不展开任何 tab
       break;
     default:
       onlineJmxItem.value.jmeterSampleType = 0;
+      activeTab.value = 'header'; // 默认情况展开 HttpRequest 的 Header 标签
   }
 };
 

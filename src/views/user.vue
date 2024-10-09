@@ -15,7 +15,7 @@
         <el-table-column prop="username" label="用户" align="center"></el-table-column>
         <el-table-column prop="password" label="密码" align="center"></el-table-column>
         <el-table-column prop="realName" label="姓名" align="center"></el-table-column>
-        <el-table-column prop="effectTime" label="生效时间" align="center"></el-table-column>
+        <el-table-column prop="effectTime" label="登录时间" align="center"></el-table-column>
         <el-table-column prop="expireTime" label="失效时间" align="center"></el-table-column>
       </el-table>
 
