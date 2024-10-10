@@ -294,9 +294,9 @@
           <el-card shadow="hover" style="margin-bottom: 20px;">
             <el-divider>
               <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
-                <el-radio label="threadGroup">ThreadGroup</el-radio>
-                <el-radio label="steppingThreadGroup">SteppingThreadGroup</el-radio>
-                <el-radio label="concurrencyThreadGroup">ConcurrencyThreadGroup</el-radio>
+                <el-radio value="threadGroup">ThreadGroup</el-radio>
+                <el-radio value="steppingThreadGroup">SteppingThreadGroup</el-radio>
+                <el-radio value="concurrencyThreadGroup">ConcurrencyThreadGroup</el-radio>
               </el-radio-group>
             </el-divider>
 
@@ -459,9 +459,9 @@
           <el-card shadow="hover" style="margin-bottom: 20px;">
             <el-divider>
               <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
-                <el-radio label="http">HttpRequest</el-radio>
-                <el-radio label="java">JavaRequest</el-radio>
-                <el-radio label="dubbo">DubboRequest</el-radio>
+                <el-radio value="http">HttpRequest</el-radio>
+                <el-radio value="java">JavaRequest</el-radio>
+                <el-radio value="dubbo">DubboRequest</el-radio>
               </el-radio-group>
             </el-divider>
 
@@ -615,7 +615,7 @@
                     <el-input
                         v-model="onlineJmxItem.assertionVO.responseMessage"
                         type="textarea"
-                        rows="15"
+                        :rows="15"
                         placeholder="请输入期望的响应消息内容，包含关系"
                     ></el-input>
                   </el-form-item>
@@ -631,7 +631,7 @@
                     <el-input
                         v-model="onlineJmxItem.assertionVO.expectedValue"
                         type="textarea"
-                        rows="15"
+                        :rows="15"
                         placeholder="请输入通过JSON Path表达式提取的预期结果，比如：true"
                     ></el-input>
                   </el-form-item>
