@@ -509,7 +509,7 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <el-tabs v-model="activeSubTab" key="http-tabs">
+                <el-tabs v-model="activeHttpTab" key="http-tabs">
                   <el-tab-pane label="Header" name="header">
                     <el-table :data="onlineJmxItem.httpVO.httpHeaderVOList" border style="width: 100%">
                       <el-table-column prop="key" label="Key" width="300" align="center">
@@ -564,7 +564,7 @@
                 <el-form-item label="ClassPath">
                   <el-input v-model="onlineJmxItem.javaVO.javaRequestClassPath"></el-input>
                 </el-form-item>
-                <el-tabs v-model="activeSubTab" key="java-tabs">
+                <el-tabs v-model="activeJavaTab" key="java-tabs">
                   <el-tab-pane label="JavaParams" name="javaParams">
                     <el-table :data="onlineJmxItem.javaVO.javaParamVOList" border style="width: 100%">
                       <el-table-column prop="key" label="Key" width="300" align="center">
@@ -1381,7 +1381,8 @@ interface OnlineJmxItem {
 const jmeterThreadsType = ref('threadGroup'); // 默认为 Thread Group
 const jmeterSampleType = ref('http');
 const activeTab = ref('threads');
-const activeSubTab = ref('header');
+const activeHttpTab = ref('header');
+const activeJavaTab = ref('javaParam');
 const onlineJmxItem = ref<OnlineJmxItem>({
   id: 0,
   srcName: '',
@@ -1767,19 +1768,19 @@ const handleRequestTypeChange = (value: string) => {
   switch (value) {
     case 'http':
       onlineJmxItem.value.jmeterSampleType = 0;
-      activeSubTab.value = 'header'; // 切换到 HttpRequest 时展开 Header 标签
+      activeHttpTab.value = 'header'; // 切换到 HttpRequest 时展开 Header 标签
       break;
     case 'java':
       onlineJmxItem.value.jmeterSampleType = 1;
-      activeSubTab.value = 'javaParams'; // 切换到 JavaRequest 时展开 JavaParams 标签
+      activeJavaTab.value = 'javaParams'; // 切换到 JavaRequest 时展开 JavaParams 标签
       break;
     case 'dubbo':
       onlineJmxItem.value.jmeterSampleType = 2;
-      activeSubTab.value = ''; // DubboRequest 没有 tab，所以不展开任何 tab
+      // activeSubTab.value = ''; // DubboRequest 没有 tab，所以不展开任何 tab
       break;
     default:
       onlineJmxItem.value.jmeterSampleType = 0;
-      activeSubTab.value = 'header'; // 默认情况展开 HttpRequest 的 Header 标签
+      activeHttpTab.value = 'header'; // 默认情况展开 HttpRequest 的 Header 标签
   }
 };
 
