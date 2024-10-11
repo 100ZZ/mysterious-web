@@ -1092,7 +1092,7 @@ const getFullTestCase = async (id: number) => {
   } else {
     jmxFullData.value[0] = fullData.jmxVO;
   }
-  csvFullData.value = fullData.csvDataVOList;
+  csvFullData.value = fullData.csvVOList;
   jarFullData.value = fullData.jarVOList;
 }
 
