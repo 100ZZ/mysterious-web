@@ -666,36 +666,36 @@
               <el-row :gutter="20">
                 <el-col :span="12">
                   <el-form-item label="Ignore first line（only used if Variable Names is not empty）">
-                    <el-checkbox v-model="onlineJmxItem.csvVO.ignoreFirstLine"></el-checkbox>
+                    <el-checkbox v-model="onlineJmxItem.csvDataVO.ignoreFirstLine"></el-checkbox>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Recycle on EOF">
-                    <el-checkbox v-model="onlineJmxItem.csvVO.recycleOnEOF"></el-checkbox>
+                    <el-checkbox v-model="onlineJmxItem.csvDataVO.recycleOnEof"></el-checkbox>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row :gutter="20">
                 <el-col :span="12">
                   <el-form-item label="Stop thread on EOF">
-                    <el-checkbox v-model="onlineJmxItem.csvVO.stopThreadOnEOF"></el-checkbox>
+                    <el-checkbox v-model="onlineJmxItem.csvDataVO.stopThreadOnEof"></el-checkbox>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Allow quoted data">
-                    <el-checkbox v-model="onlineJmxItem.csvVO.allowQuotedData"></el-checkbox>
+                    <el-checkbox v-model="onlineJmxItem.csvDataVO.allowQuotedData"></el-checkbox>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row :gutter="20">
                 <el-col :span="12">
                   <el-form-item label="File encoding">
-                    <el-input v-model="onlineJmxItem.csvVO.fileEncoding" disabled></el-input>
+                    <el-input v-model="onlineJmxItem.csvDataVO.fileEncoding" disabled></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="Sharing mode">
-                    <el-select v-model="onlineJmxItem.csvVO.sharingMode">
+                    <el-select v-model="onlineJmxItem.csvDataVO.sharingMode">
                       <el-option label="All threads" value="All threads"></el-option>
                       <el-option label="Current thread group" value="Current thread group"></el-option>
                       <el-option label="Current thread" value="Current thread"></el-option>
@@ -705,7 +705,7 @@
               </el-row>
 
               <!-- 新增表格 -->
-              <el-table :data="onlineJmxItem.csvVO.csvFileVOList" border style="width: 100%">
+              <el-table :data="onlineJmxItem.csvDataVO.csvFileVOList" border style="width: 100%">
                 <el-table-column prop="filename" label="CSV Filename（eg：xxxx.csv）" align="center">
                   <template #default="scope">
                     <el-input v-model="scope.row.filename" placeholder="请输入CSV文件名"></el-input>
@@ -1092,7 +1092,7 @@ const getFullTestCase = async (id: number) => {
   } else {
     jmxFullData.value[0] = fullData.jmxVO;
   }
-  csvFullData.value = fullData.csvVOList;
+  csvFullData.value = fullData.csvDataVOList;
   jarFullData.value = fullData.jarVOList;
 }
 
@@ -1358,15 +1358,15 @@ interface AssertionVO {
   expectedValue: string;
 }
 
-interface CsvVO {
+interface CsvDataVO {
   id: number;
   testCaseId: number;
   jmxId: number;
   fileEncoding: string;
   ignoreFirstLine: boolean;
   allowQuotedData: boolean;
-  recycleOnEOF: boolean;
-  stopThreadOnEOF: boolean;
+  recycleOnEof: boolean;
+  stopThreadOnEof: boolean;
   sharingMode: string;
   csvFileVOList: CsvFileVO[];
 }
@@ -1393,7 +1393,7 @@ interface OnlineJmxItem {
   javaVO: JavaVO;
   dubboVO: DubboVO;
   assertionVO: AssertionVO;
-  csvVO: CsvVO; // 用于存储 CSV 配置
+  csvDataVO: CsvDataVO;
 }
 
 const jmeterThreadsType = ref('threadGroup'); // 默认为 Thread Group
@@ -1482,15 +1482,15 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     jsonPath: '',
     expectedValue: ''
   },
-  csvVO: {
+  csvDataVO: {
     id: 0,
     testCaseId: 0,
     jmxId: 0,
     fileEncoding: 'UTF-8',
     ignoreFirstLine: true,
     allowQuotedData: false,
-    recycleOnEOF: true,
-    stopThreadOnEOF: false,
+    recycleOnEof: true,
+    stopThreadOnEof: false,
     sharingMode: 'Current thread group',
     csvFileVOList: [] // 用于存储多个 CSV 文件配置
   }
@@ -1581,15 +1581,15 @@ const getOnlineJmxData = async (id: number | null) => {
       jsonPath: '',
       expectedValue: ''
     },
-    csvVO: {
+    csvDataVO: {
       id: 0,
       testCaseId: 0,
       jmxId: 0,
       fileEncoding: 'UTF-8',
       ignoreFirstLine: true,
       allowQuotedData: false,
-      recycleOnEOF: true,
-      stopThreadOnEOF: false,
+      recycleOnEof: true,
+      stopThreadOnEof: false,
       sharingMode: 'Current Thread group',
       csvFileVOList: [] // 用于存储多个 CSV 文件配置
     }
@@ -1711,17 +1711,17 @@ const getOnlineJmxData = async (id: number | null) => {
         jsonPath: onlineJmxData.assertionVO?.jsonPath || '',
         expectedValue: onlineJmxData.assertionVO?.expectedValue || ''
       },
-      csvVO: {
-        id: onlineJmxData.csvVO?.id || 0,
-        testCaseId: onlineJmxData.csvVO?.testCaseId || 0,
-        jmxId: onlineJmxData.csvVO?.jmxId || 0,
-        fileEncoding: onlineJmxData.csvVO?.fileEncoding || 'UTF-8',
-        ignoreFirstLine: numberToBoolean(onlineJmxData.csvVO?.ignoreFirstLine || 1),
-        allowQuotedData: numberToBoolean(onlineJmxData.csvVO?.allowQuotedData || 0),
-        recycleOnEOF: numberToBoolean(onlineJmxData.csvVO?.recycleOnEOF || 1),
-        stopThreadOnEOF: numberToBoolean(onlineJmxData.csvVO?.stopThreadOnEOF || 0),
-        sharingMode: onlineJmxData.csvVO?.sharingMode || 'Current thread group',
-        csvFileVOList: (onlineJmxData.csvVO?.csvFileVOList || []).map(csvFile => ({
+      csvDataVO: {
+        id: onlineJmxData.csvDataVO?.id || 0,
+        testCaseId: onlineJmxData.csvDataVO?.testCaseId || 0,
+        jmxId: onlineJmxData.csvDataVO?.jmxId || 0,
+        fileEncoding: onlineJmxData.csvDataVO?.fileEncoding || 'UTF-8',
+        ignoreFirstLine: numberToBoolean(onlineJmxData.csvDataVO?.ignoreFirstLine || 1),
+        allowQuotedData: numberToBoolean(onlineJmxData.csvDataVO?.allowQuotedData || 0),
+        recycleOnEof: numberToBoolean(onlineJmxData.csvDataVO?.recycleOnEof || 1),
+        stopThreadOnEof: numberToBoolean(onlineJmxData.csvDataVO?.stopThreadOnEof || 0),
+        sharingMode: onlineJmxData.csvDataVO?.sharingMode || 'Current thread group',
+        csvFileVOList: (onlineJmxData.csvDataVO?.csvFileVOList || []).map(csvFile => ({
           filename: csvFile.filename || '',
           variableNames: csvFile.variableNames || '',
           delimiter: csvFile.delimiter || ','
@@ -1904,7 +1904,7 @@ const handleJavaParamDelete = (index: number) => {
 };
 
 // 定义用于 API 的类型
-interface OnlineJmxItemForApi extends Omit<OnlineJmxItem, 'threadGroupVO'> {
+interface OnlineJmxItemForApi extends Omit<OnlineJmxItem, 'threadGroupVO' | 'csvDataVO'> {
   threadGroupVO: {
     sameUserOnNextIteration: number;
     delayedStart: number;
@@ -1918,11 +1918,23 @@ interface OnlineJmxItemForApi extends Omit<OnlineJmxItem, 'threadGroupVO'> {
     duration: string;
     delay: string;
   };
+  csvDataVO: {
+    ignoreFirstLine: number;
+    allowQuotedData: number;
+    recycleOnEof: number;
+    stopThreadOnEof: number;
+    id: number;
+    testCaseId: number;
+    jmxId: number;
+    fileEncoding: string;
+    sharingMode: string;
+  };
 }
 
 // 布尔值转数字的公共方法
 const convertBooleanToNumber = (item: OnlineJmxItem): OnlineJmxItemForApi => {
   const { sameUserOnNextIteration, delayedStart, scheduler, ...restOfThreadGroupVO } = item.threadGroupVO;
+  const { ignoreFirstLine, recycleOnEof, stopThreadOnEof, allowQuotedData, ...restOfCsvDataVO } = item.csvDataVO;
 
   return {
     ...item,
@@ -1932,13 +1944,21 @@ const convertBooleanToNumber = (item: OnlineJmxItem): OnlineJmxItemForApi => {
       scheduler: boolToNumber(scheduler),
       // 保留其他字段
       ...restOfThreadGroupVO
+    },
+    csvDataVO: {
+      ignoreFirstLine: boolToNumber(ignoreFirstLine),
+      recycleOnEof: boolToNumber(recycleOnEof),
+      stopThreadOnEof: boolToNumber(stopThreadOnEof),
+      allowQuotedData: boolToNumber(allowQuotedData),
+      // 保留其他字段
+      ...restOfCsvDataVO
     }
   };
 };
 
 const handleAddCsvFile = () => {
   // 添加新的 CSV 文件配置
-  onlineJmxItem.value.csvVO.csvFileVOList.push({
+  onlineJmxItem.value.csvDataVO.csvFileVOList.push({
     filename: '',
     variableNames: '',
     delimiter: ','
@@ -1947,7 +1967,7 @@ const handleAddCsvFile = () => {
 
 const handleCsvFileDelete = (index: number) => {
   // 删除指定的 CSV 文件配置
-  onlineJmxItem.value.csvVO.csvFileVOList.splice(index, 1);
+  onlineJmxItem.value.csvDataVO.csvFileVOList.splice(index, 1);
 };
 
 const handleCsvConfigChange = (value: string) => {
