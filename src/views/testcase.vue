@@ -514,7 +514,13 @@
                     <el-table :data="onlineJmxItem.httpVO.httpHeaderVOList" border style="width: 100%">
                       <el-table-column prop="key" label="Key" width="300" align="center">
                         <template #default="scope">
-                          <el-input v-model="scope.row.headerKey"></el-input>
+<!--                          <el-input v-model="scope.row.headerKey"></el-input>-->
+                          <el-input
+                              v-model="scope.row.headerKey"
+                              @input="checkHttpHeaderKeyUniqueness(scope.row, scope.$index)"
+                              :class="{ 'error-input': scope.row.headerKeyError }"
+                          ></el-input>
+                          <div v-if="scope.row.headerKeyError" class="error-message">headerKey不能重复</div>
                         </template>
                       </el-table-column>
                       <el-table-column prop="value" label="Value" align="center">
@@ -536,7 +542,13 @@
                     <el-table :data="onlineJmxItem.httpVO.httpParamVOList" border style="width: 100%">
                       <el-table-column prop="key" label="Key" width="300" align="center">
                         <template #default="scope">
-                          <el-input v-model="scope.row.paramKey" :disabled="isParamDisabled"></el-input>
+<!--                          <el-input v-model="scope.row.paramKey" :disabled="isParamDisabled"></el-input>-->
+                          <el-input
+                              v-model="scope.row.paramKey"
+                              @input="checkHttpParamKeyUniqueness(scope.row, scope.$index)"
+                              :class="{ 'error-input': scope.row.paramKeyError }"
+                          ></el-input>
+                          <div v-if="scope.row.paramKeyError" class="error-message">paramKey不能重复</div>
                         </template>
                       </el-table-column>
                       <el-table-column prop="value" label="Value" align="center">
@@ -564,12 +576,18 @@
                 <el-form-item label="ClassPath">
                   <el-input v-model="onlineJmxItem.javaVO.javaRequestClassPath"></el-input>
                 </el-form-item>
-                <el-tabs v-model="activeJavaTab" key="java-tabs">
-                  <el-tab-pane label="JavaParams" name="javaParams">
+<!--                <el-tabs v-model="activeJavaTab" key="java-tabs">-->
+<!--                  <el-tab-pane label="JavaParams" name="javaParams">-->
                     <el-table :data="onlineJmxItem.javaVO.javaParamVOList" border style="width: 100%">
                       <el-table-column prop="key" label="Key" width="300" align="center">
                         <template #default="scope">
-                          <el-input v-model="scope.row.paramKey"></el-input>
+<!--                          <el-input v-model="scope.row.paramKey"></el-input>-->
+                          <el-input
+                              v-model="scope.row.paramKey"
+                              @input="checkJavaParamKeyUniqueness(scope.row, scope.$index)"
+                              :class="{ 'error-input': scope.row.paramKeyError }"
+                          ></el-input>
+                          <div v-if="scope.row.paramKeyError" class="error-message">paramKey不能重复</div>
                         </template>
                       </el-table-column>
                       <el-table-column prop="value" label="Value" align="center">
@@ -586,8 +604,8 @@
                       </el-table-column>
                     </el-table>
                     <el-button type="primary" @click="handleJavaParamAdd">新增</el-button>
-                  </el-tab-pane>
-                </el-tabs>
+<!--                  </el-tab-pane>-->
+<!--                </el-tabs>-->
               </template>
 
               <template v-else-if="jmeterSampleType === 'dubbo'">
@@ -1473,7 +1491,7 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     allowQuotedData: false,
     recycleOnEOF: true,
     stopThreadOnEOF: false,
-    sharingMode: 'Current Thread group',
+    sharingMode: 'Current thread group',
     csvFileVOList: [] // 用于存储多个 CSV 文件配置
   }
 });
@@ -1702,7 +1720,7 @@ const getOnlineJmxData = async (id: number | null) => {
         allowQuotedData: numberToBoolean(onlineJmxData.csvVO?.allowQuotedData || 0),
         recycleOnEOF: numberToBoolean(onlineJmxData.csvVO?.recycleOnEOF || 1),
         stopThreadOnEOF: numberToBoolean(onlineJmxData.csvVO?.stopThreadOnEOF || 0),
-        sharingMode: onlineJmxData.csvVO?.sharingMode || 'Current Thread group',
+        sharingMode: onlineJmxData.csvVO?.sharingMode || 'Current thread group',
         csvFileVOList: (onlineJmxData.csvVO?.csvFileVOList || []).map(csvFile => ({
           filename: csvFile.filename || '',
           variableNames: csvFile.variableNames || '',
@@ -1840,6 +1858,46 @@ const handleJavaParamAdd = () => {
     paramValue: ''
   });
 };
+
+const checkHttpHeaderKeyUniqueness = (row, index) => {
+  const headerKey = row.headerKey;
+  let hasError = false;
+
+  onlineJmxItem.value.httpVO.httpHeaderVOList.forEach((item, i) => {
+    if (i !== index && item.headerKey === headerKey) {
+      hasError = true;
+    }
+  });
+
+  row.headerKeyError = hasError;
+}
+
+const checkHttpParamKeyUniqueness = (row, index) => {
+  const paramKey = row.paramKey;
+  let hasError = false;
+
+  onlineJmxItem.value.httpVO.httpParamVOList.forEach((item, i) => {
+    if (i !== index && item.paramKey === paramKey) {
+      hasError = true;
+    }
+  });
+
+  row.paramKeyError = hasError;
+}
+
+const checkJavaParamKeyUniqueness = (row, index) => {
+  const paramKey = row.paramKey;
+  let hasError = false;
+
+  onlineJmxItem.value.javaVO.javaParamVOList.forEach((item, i) => {
+    if (i !== index && item.paramKey === paramKey) {
+      hasError = true;
+    }
+  });
+
+  row.paramKeyError = hasError;
+}
+
 
 const handleJavaParamDelete = (index: number) => {
   deleteItemByIndex(onlineJmxItem.value.javaVO.javaParamVOList, index);
@@ -2175,5 +2233,14 @@ const responseTimeChart = reactive({
   position: absolute;
   bottom: 20px;
   left: 20px;
+}
+
+.error-input {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
 }
 </style>
