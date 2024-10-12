@@ -243,9 +243,6 @@
             📊 CSV 数据文件
           </div>
           <el-space direction="horizontal" alignment="center">
-            <el-button type="warning">
-              在线编写(测试中)
-            </el-button>
             <el-upload action="" :show-file-list="false" :http-request="handleCsvUpload" accept=".csv">
               <el-button type="primary">本地上传</el-button>
             </el-upload>
