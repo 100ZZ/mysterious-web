@@ -165,6 +165,12 @@
       </template>
     </el-dialog>
 
+    <!-- 曲线图弹出框 -->
+    <el-dialog title="实时数据" v-model="chartDialogVisible" width="60%">
+      <schart class="bar-schart" canvasId="throughputChart" :options="throughputChart"></schart>
+      <schart class="bar-schart" canvasId="responseTimeChart" :options="responseTimeChart"></schart>
+    </el-dialog>
+
 <!--    抽屉展示用例详情-->
     <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'80%'">
       <!-- 基础信息 -->
@@ -246,11 +252,7 @@
         </el-divider>
         <el-table :data="jarFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
-          <el-table-column prop="dstName" label="名称" align="center">
-<!--            <template #default="scope">-->
-<!--              <div @click="handleJarDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>-->
-<!--            </template>-->
-          </el-table-column>
+          <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
@@ -603,7 +605,7 @@
                         </template>
                       </el-table-column>
                     </el-table>
-                    <el-button type="primary" @click="handleJavaParamAdd">新增</el-button>
+                    <el-button type="primary" @click="handleJavaParamAdd" style="margin-top: 10px;">新增</el-button>
 <!--                  </el-tab-pane>-->
 <!--                </el-tabs>-->
               </template>
@@ -764,12 +766,6 @@
       </div>
     </el-drawer>
 
-    <!-- 曲线图弹出框 -->
-    <el-dialog title="实时数据" v-model="chartDialogVisible" width="60%">
-      <schart class="bar-schart" canvasId="throughputChart" :options="throughputChart"></schart>
-      <schart class="bar-schart" canvasId="responseTimeChart" :options="responseTimeChart"></schart>
-
-    </el-dialog>
   </div>
 </template>
 
