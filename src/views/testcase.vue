@@ -64,10 +64,26 @@
                   <el-button style="margin-left: 0" text :icon="Right" class="bg-blue" v-permiss="1">执行</el-button>
                   <template #dropdown>
                     <el-dropdown-menu class="horizontal-dropdown-menu">
-                      <el-dropdown-item :style="{ backgroundColor: '#B3E5FC', color: '#0277BD' }" @click="debugAction(scope.row.id)">调试</el-dropdown-item>
-                      <el-dropdown-item :style="{ backgroundColor: '#FFE0B2', color: '#EF6C00' }" @click="startAction(scope.row.id)">压测</el-dropdown-item>
-                      <el-dropdown-item :style="{ backgroundColor: '#FFCDD2', color: '#EF5350' }" @click="stopAction(scope.row.id)">停止</el-dropdown-item>
+                      <el-dropdown-item
+                          class="dropdown-button"
+                          style="background-color: #BBDEFB; color: #0D47A1;"
+                          @click="debugAction(scope.row.id)">
+                        调试
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                          class="dropdown-button"
+                          style="background-color: #FFE0B2; color: #E65100;"
+                          @click="startAction(scope.row.id)">
+                        压测
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                          class="dropdown-button"
+                          style="background-color: #FFABAB; color: #C62828;"
+                          @click="stopAction(scope.row.id)">
+                        停止
+                      </el-dropdown-item>
                     </el-dropdown-menu>
+
                   </template>
                 </el-dropdown>
 
@@ -173,9 +189,8 @@
 
 <!--    抽屉展示用例详情-->
     <el-drawer v-model="drawer" title="用例详情" :show-close="true" :size="'80%'">
-      <!-- 基础信息 -->
-      <el-card shadow="hover" style="margin-bottom: 20px;">
-<!--        <el-divider>基础信息</el-divider>-->
+      <!-- 基础信息模块 -->
+      <el-card shadow="hover" style="margin-bottom: 30px;">
         <el-descriptions direction="vertical" :column="3" border>
           <el-descriptions-item label="编号" align="center">{{testCaseFullData.id}}</el-descriptions-item>
           <el-descriptions-item label="名称" align="center">{{testCaseFullData.name}}</el-descriptions-item>
@@ -186,70 +201,89 @@
         </el-descriptions>
       </el-card>
 
-      <!-- 关联JMX脚本 -->
-      <el-card shadow="hover" style="margin-bottom: 20px;">
-        <el-divider>
-          <el-row :gutter="20" style="margin-bottom: 10px;">
-            <el-col :span="12">
-              <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload">
-                <el-button text :icon="Upload" class="blue">本地上传JMX脚本文件</el-button>
-              </el-upload>
-            </el-col>
-            <el-col :span="12">
-              <el-button text :icon="Edit" class="blue" @click="onlineDrawer = true,getOnlineJmxData(jmxFullData[0] ? jmxFullData[0].id : null)">在线编写JMX脚本文件(测试版)</el-button>
-            </el-col>
-          </el-row>
-        </el-divider>
+      <!-- JMX压测脚本模块 -->
+      <el-card shadow="hover" style="margin-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div style="font-weight: bold; font-size: 14px; border-bottom: 2px solid #409EFF; padding-bottom: 5px;">
+            💻 JMX 压测脚本
+          </div>
+          <el-space direction="horizontal" alignment="center">
+            <el-button type="warning" @click="onlineDrawer = true, getOnlineJmxData(jmxFullData[0] ? jmxFullData[0].id : null)">
+              在线编写(测试中)
+            </el-button>
+            <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload" accept=".jmx">
+              <el-button type="primary">本地上传</el-button>
+            </el-upload>
+          </el-space>
+        </div>
         <el-table :data="jmxFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center">
             <template #default="scope">
-              <div @click="handleJmxDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+              <div @click="handleJmxDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">
+                {{ scope.row.dstName }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template #default="scope">
-              <el-button text :icon="Search" class="bg-blue" @click="jmxDrawer = true,handleJmxView(scope.row.id)" v-permiss="1">预览</el-button>
-              <el-button text :icon="Delete" class="red" @click="handleJmxDelete(scope.row.id)" v-permiss="1">删除</el-button>
+              <el-button text type="primary" icon="el-icon-view" @click="jmxDrawer = true, handleJmxView(scope.row.id)" v-permiss="1">预览</el-button>
+              <el-button text type="danger" icon="el-icon-delete" @click="handleJmxDelete(scope.row.id)" v-permiss="1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-card>
 
-      <!-- 关联CSV文件 -->
-      <el-card shadow="hover" style="margin-bottom: 20px;">
-        <el-divider>
-          <el-upload action="" :show-file-list="false" :http-request="handleCsvUpload" style="margin-bottom: 10px;">
-            <el-button text :icon="Upload" class="blue">本地上传CSV数据文件</el-button>
-          </el-upload>
-        </el-divider>
+      <!-- CSV数据文件模块 -->
+      <el-card shadow="hover" style="margin-bottom: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div style="font-weight: bold; font-size: 14px; border-bottom: 2px solid #67C23A; padding-bottom: 5px;">
+            📊 CSV 数据文件
+          </div>
+          <el-space direction="horizontal" alignment="center">
+            <el-button type="warning">
+              在线编写(测试中)
+            </el-button>
+            <el-upload action="" :show-file-list="false" :http-request="handleCsvUpload" accept=".csv">
+              <el-button type="primary">本地上传</el-button>
+            </el-upload>
+          </el-space>
+        </div>
         <el-table :data="csvFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center">
             <template #default="scope">
-              <div @click="handleCsvDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">{{ scope.row.dstName }}</div>
+              <div @click="handleCsvDownload(scope.row.id, scope.row.dstName)" style="color: blue; cursor: pointer;">
+                {{ scope.row.dstName }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="description" label="描述" align="center"></el-table-column>
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template #default="scope">
-              <el-button text :icon="Search" class="bg-blue" @click="csvDrawer = true,handleCsvView(scope.row.id)" v-permiss="1">预览</el-button>
-              <el-button text :icon="Delete" class="red" @click="handleCsvDelete(scope.row.id)" v-permiss="1">删除</el-button>
+              <el-button text type="primary" icon="el-icon-view" @click="csvDrawer = true, handleCsvView(scope.row.id)" v-permiss="1">预览</el-button>
+              <el-button text type="danger" icon="el-icon-delete" @click="handleCsvDelete(scope.row.id)" v-permiss="1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-card>
 
-      <!-- 关联JAR依赖 -->
+      <!-- JAR依赖文件模块 -->
       <el-card shadow="hover">
-        <el-divider>
-          <el-upload action="" :show-file-list="false" :http-request="handleJarUpload" style="margin-bottom: 10px;">
-            <el-button text :icon="Upload" class="blue">本地上传JAR依赖文件</el-button>
-          </el-upload>
-        </el-divider>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div style="font-weight: bold; font-size: 14px; border-bottom: 2px solid #F56C6C; padding-bottom: 5px;">
+            📦 JAR 依赖文件
+          </div>
+
+          <el-space direction="horizontal" alignment="center">
+            <el-upload action="" :show-file-list="false" :http-request="handleJarUpload" accept=".jar">
+              <el-button type="primary">本地上传</el-button>
+            </el-upload>
+          </el-space>
+        </div>
         <el-table :data="jarFullData" border style="width: 100%">
           <el-table-column prop="id" label="编号" width="55" align="center"></el-table-column>
           <el-table-column prop="dstName" label="名称" align="center"></el-table-column>
@@ -257,12 +291,18 @@
           <el-table-column prop="testCaseId" label="用例" align="center"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template #default="scope">
-              <el-button text :icon="Delete" class="red" @click="handleJarDelete(scope.row.id)" v-permiss="1">删除</el-button>
+              <el-button text type="danger" icon="el-icon-delete" @click="handleJarDelete(scope.row.id)" v-permiss="1">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-card>
     </el-drawer>
+
+
+
+
+
+
 
     <!-- 子抽屉用于编辑 JMX 脚本 -->
     <el-drawer v-model="onlineDrawer" title="在线编写JMX脚本文件" :append-to-body="true" :size="'75%'">
@@ -292,7 +332,7 @@
       <!-- Tabs -->
       <el-tabs v-model="activeTab">
         <!-- Threads Tab -->
-        <el-tab-pane label="Threads" name="threads">
+        <el-tab-pane label="🧵 Threads" name="threads">
           <el-card shadow="hover" style="margin-bottom: 20px;">
             <el-divider>
               <el-radio-group v-model="jmeterThreadsType" @change="handleThreadGroupTypeChange">
@@ -457,7 +497,7 @@
         </el-tab-pane>
 
         <!-- Sampler Tab -->
-        <el-tab-pane label="Sampler" name="sampler">
+        <el-tab-pane label="🌐 Sampler" name="sampler">
           <el-card shadow="hover" style="margin-bottom: 20px;">
             <el-divider>
               <el-radio-group v-model="jmeterSampleType" @change="handleRequestTypeChange">
@@ -620,7 +660,7 @@
         </el-tab-pane>
 
         <!-- Assertions Tab -->
-        <el-tab-pane label="Assertions" name="assertions">
+        <el-tab-pane label="✔️ Assertions" name="assertions">
           <el-card shadow="hover" style="margin-bottom: 20px;">
             <el-form :model="onlineJmxItem" label-width="150px" label-position="top">
               <el-row :gutter="20">
@@ -662,7 +702,7 @@
         </el-tab-pane>
 
         <!-- CSV Tab -->
-        <el-tab-pane label="CSV" name="csv">
+        <el-tab-pane label="📄 CSV" name="csv">
           <el-card shadow="hover" style="margin-bottom: 20px;">
             <el-form :model="onlineJmxItem" label-width="150px" label-position="top">
               <el-row :gutter="20">
