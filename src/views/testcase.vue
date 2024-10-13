@@ -824,7 +824,7 @@ import {deleteCsv, viewCsv, uploadCsv, downloadCsv} from "../api/csv";
 import {addOnlineJmx, deleteJmx, viewJmx, getOnlineJmx, updateOnlineJmx, uploadJmx, downloadJmx} from "../api/jmx";
 import {deleteJar, downloadJar, uploadJar} from "../api/jar";
 import router from "../router";
-import {checkToLogin, checkUserExist} from "../common/push";
+import {checkToLogin} from "../common/push";
 import {useRoute} from "vue-router";
 
 const drawer = ref(false);
@@ -906,7 +906,6 @@ const total = ref(0);
 const getList = () => {
   getTestCaseList(query).then(res => {
     checkToLogin(res.data.message);
-    checkUserExist(res.data.message);
     const code = res.data.code
     if (code != 0) {
       ElMessage.error(res.data.message);

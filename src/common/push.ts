@@ -1,14 +1,7 @@
 import router from "../router";
 
 export const checkToLogin = (message: String) => {
-    if (message == '用户凭证失效') {
-        router.push({path: '/login'});
-        return false;
-    }
-}
-
-export const checkUserExist = (message: String) => {
-    if (message == '用户不存在') {
+    if (message == '用户凭证失效' || message == '用户不存在' || message == '用户未登录') {
         router.push({path: '/login'});
         return false;
     }
