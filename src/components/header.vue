@@ -6,10 +6,19 @@
 			<el-icon v-else><Fold /></el-icon>
 		</div>
 		<div class="logo">分布式压测平台v2.0</div>
-		<div class="header-right">
+
+
+    <div class="header-right">
 			<div class="header-user-con">
-        <!-- 用户头像 -->
-				<el-avatar class="user-avator" :size="30" :src="dmurl" />
+        <a class="custom-link" href="https://lihuia.com" target="_blank">
+          <i class="el-icon-lx-message"></i>
+        </a>
+        <a class="custom-link" href="https://github.com/100ZZ/mysterious" target="_blank">
+          <i class="el-icon-lx-likefill"></i>
+        </a>
+        <a class="custom-link">
+          <i class="el-icon-lx-profile user-icon"></i> <!-- 将用户头像替换为图标 -->
+        </a>
 				<!-- 用户名下拉菜单 -->
 				<el-dropdown class="user-name" trigger="click" @command="handleCommand">
 					<span class="el-dropdown-link">
@@ -33,7 +42,6 @@
 import { onMounted } from 'vue';
 import { useSidebarStore } from '../store/sidebar';
 import { useRouter } from 'vue-router';
-import dmurl from '../assets/img/jmeter.png';
 
 const username: string | null = localStorage.getItem('ms_username');
 const message: number = 2;
@@ -123,12 +131,6 @@ const handleCommand = (command: string) => {
 .btn-bell .el-icon-lx-notice {
 	color: #fff;
 }
-.user-name {
-	margin-left: 10px;
-}
-.user-avator {
-	margin-left: 20px;
-}
 .el-dropdown-link {
 	color: #fff;
 	cursor: pointer;
@@ -138,11 +140,29 @@ const handleCommand = (command: string) => {
 .el-dropdown-menu__item {
 	text-align: center;
 }
+
 .custom-link {
-  color: #f02d2d; /* 继承父元素的文本颜色 */
-  text-decoration: underline; /* 添加下划线 */
-  cursor: pointer; /* 添加鼠标指针样式 */
-  justify-content: center;
-  align-items: center;
+  color: #fff; /* 图标颜色 */
+  text-decoration: none; /* 去掉下划线 */
+  margin: 0 8px; /* 设置左右间距，减小为 8px */
+  transition: color 0.3s; /* 添加过渡效果 */
+}
+
+.custom-link:hover {
+  color: #f02d2d; /* 鼠标悬停时的颜色变化 */
+}
+
+.custom-link i {
+  font-size: 24px; /* 设置图标大小 */
+}
+
+.user-icon {
+  font-size: 30px; /* 调整用户图标大小 */
+  margin-right: 5px; /* 为用户图标增加右边距 */
+}
+
+.user-name {
+  display: inline-flex; /* 使用 inline-flex 使下拉菜单与头像在同一行 */
+  align-items: center; /* 垂直对齐 */
 }
 </style>
