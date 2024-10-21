@@ -648,10 +648,233 @@
               </template>
 
               <template v-else-if="jmeterSampleType === 'dubbo'">
-                <el-form-item>
-                  <el-input v-model="onlineJmxItem.dubboVO.message" :rows="10"></el-input>
-                </el-form-item>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item label="Name">
+                      <el-input v-model="onlineJmxItem.dubboVO.name"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="Comments">
+                      <el-input v-model="onlineJmxItem.dubboVO.comments"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-divider content-position="center">Config Center</el-divider>
+                <el-row :gutter="20">
+                  <el-col :span="3">
+                    <el-form-item label="Protocol">
+                      <el-select v-model="onlineJmxItem.dubboVO.configCenterProtocol">
+                        <el-option label="" value=""></el-option> <!-- 添加空白选项 -->
+                        <el-option label="zookeeper" value="zookeeper"></el-option>
+                        <el-option label="nacos" value="nacos"></el-option>
+                        <el-option label="apollo" value="apollo"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Group">
+                      <el-input v-model="onlineJmxItem.dubboVO.configCenterGroup"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Namespace">
+                      <el-input v-model="onlineJmxItem.dubboVO.configCenterNamespace"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="UserName">
+                      <el-input v-model="onlineJmxItem.dubboVO.configCenterUsername"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Password">
+                      <el-input v-model="onlineJmxItem.dubboVO.configCenterPassword"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Address">
+                      <el-input v-model="onlineJmxItem.dubboVO.configCenterAddress"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Timeout">
+                      <el-input v-model="onlineJmxItem.dubboVO.configCenterTimeout"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-divider content-position="center">Registry Center</el-divider>
+                <el-row :gutter="20">
+                  <el-col :span="3">
+                    <el-form-item label="Protocol">
+                      <el-select v-model="onlineJmxItem.dubboVO.registryProtocol">
+                        <el-option label="none" value="none"></el-option>
+                        <el-option label="zookeeper" value="zookeeper"></el-option>
+                        <el-option label="nacos" value="nacos"></el-option>
+                        <el-option label="multicast" value="multicast"></el-option>
+                        <el-option label="redis" value="redis"></el-option>
+                        <el-option label="simple" value="simple"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Group">
+                      <el-input v-model="onlineJmxItem.dubboVO.registryGroup"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="UserName">
+                      <el-input v-model="onlineJmxItem.dubboVO.registryUsername"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Password">
+                      <el-input v-model="onlineJmxItem.dubboVO.registryPassword"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Address">
+                      <el-input v-model="onlineJmxItem.dubboVO.registryAddress"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="3">
+                    <el-form-item label="Timeout">
+                      <el-input v-model="onlineJmxItem.dubboVO.registryTimeout"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-divider content-position="center">RPC Protocol</el-divider>
+                <el-row :gutter="20">
+                  <el-col :span="24">
+                    <el-form-item label="Protocol">
+                      <el-select v-model="onlineJmxItem.dubboVO.rpcProtocol">
+                        <el-option label="dubbo://" value="dubbo://"></el-option>
+                        <el-option label="rmi://" value="rmi://"></el-option>
+                        <el-option label="hessian://" value="hessian://"></el-option>
+                        <el-option label="webservice://" value="webservice://"></el-option>
+                        <el-option label="memcached://" value="memcached://"></el-option>
+                        <el-option label="redis://" value="redis://"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-divider content-position="center">Consumer & Service</el-divider>
+                <el-row :gutter="20">
+                  <el-col :span="6">
+                    <el-form-item label="Timeout">
+                      <el-input v-model="onlineJmxItem.dubboVO.timeout" placeholder="1000"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="Version">
+                      <el-input v-model="onlineJmxItem.dubboVO.version" placeholder="1.0"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="Retries">
+                      <el-input v-model="onlineJmxItem.dubboVO.retries" placeholder="0"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="Cluster">
+                      <el-input v-model="onlineJmxItem.dubboVO.cluster" placeholder="failfast"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                  <el-col :span="6">
+                    <el-form-item label="Group">
+                      <el-input v-model="onlineJmxItem.dubboVO.group"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="Connections">
+                      <el-input v-model="onlineJmxItem.dubboVO.connections" placeholder="1"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="Async">
+                      <el-input v-model="onlineJmxItem.dubboVO.async" placeholder="sync"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-form-item label="Loadbalance">
+                      <el-select v-model="onlineJmxItem.dubboVO.loadBalance">
+                        <el-option label="random" value="random"></el-option>
+                        <el-option label="roundrobin" value="roundrobin"></el-option>
+                        <el-option label="leastactive" value="leastactive"></el-option>
+                        <el-option label="consistenthash" value="consistenthash"></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-divider content-position="center">Interface</el-divider>
+                <el-row :gutter="20">
+                  <el-col :span="12">
+                    <el-form-item label="Interface">
+                      <el-input v-model="onlineJmxItem.dubboVO.interfaceName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="Method">
+                      <el-input v-model="onlineJmxItem.dubboVO.method"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+
+                <el-tabs v-model="activeDubboTab" key="dubbo-tabs">
+                  <el-tab-pane label="Args" name="args">
+                    <el-table :data="onlineJmxItem.dubboVO.dubboMethodArgsVOList" border style="width: 100%">
+                      <el-table-column prop="paramType" label="paramType" width="300" align="center">
+                        <template #default="scope">
+                          <el-input v-model="scope.row.paramType"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="paramValue" label="paramValue" align="center">
+                        <template #default="scope">
+                          <el-input v-model="scope.row.paramValue"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" width="120" align="center">
+                        <template #default="scope">
+                          <el-button text :icon="Delete" class="red" @click="handleDubboMethodArgsDelete(scope.$index)">
+                            删除
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-button type="primary" @click="handleDubboMethodArgsAdd" style="margin-top: 10px;">新增</el-button>
+                  </el-tab-pane>
+                  <el-tab-pane label="Attachment Args" name="attachmentArgs">
+                    <el-table :data="onlineJmxItem.dubboVO.dubboAttachmentArgsVOList" border style="width: 100%">
+                      <el-table-column prop="attachmentKey" label="Key" width="300" align="center">
+                        <template #default="scope">
+                          <el-input v-model="scope.row.attachmentKey"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="attachmentValue" label="Value" align="center">
+                        <template #default="scope">
+                          <el-input v-model="scope.row.attachmentValue"></el-input>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="操作" width="120" align="center">
+                        <template #default="scope">
+                          <el-button text :icon="Delete" class="red" @click="handleDubboAttachmentArgsDelete(scope.$index)">
+                            删除
+                          </el-button>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                    <el-button type="primary" @click="handleDubboAttachmentArgsAdd" style="margin-top: 10px;">新增</el-button>
+                  </el-tab-pane>
+                </el-tabs>
               </template>
+
             </el-form>
           </el-card>
         </el-tab-pane>
@@ -1378,7 +1601,54 @@ interface DubboVO {
   id: number;
   testCaseId: number;
   jmxId: number;
-  message: string;
+  name: string;
+  comments: string;
+  configCenterProtocol: string;
+  configCenterGroup: string;
+  configCenterNamespace: string;
+  configCenterUsername: string;
+  configCenterPassword: string;
+  configCenterAddress: string;
+  configCenterTimeout: string;
+  registryProtocol: string;
+  registryGroup: string;
+  registryUsername: string;
+  registryPassword: string;
+  registryAddress: string;
+  registryTimeout: string;
+  rpcProtocol: string;
+  timeout: string;
+  version: string;
+  retries: string;
+  cluster: string;
+  group: string;
+  connections: string;
+  async: string;
+  loadBalance: string;
+  interfaceName: string;
+  method: string;
+  methodArgsSize: number;
+  attachmentArgsSize: number;
+  dubboMethodArgsVOList: DubboMethodArgsVO[];
+  dubboAttachmentArgsVOList: DubboAttachmentArgsVO[];
+}
+
+interface DubboMethodArgsVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  dubboId: number;
+  paramType: string;
+  paramValue: string;
+}
+
+interface DubboAttachmentArgsVO {
+  id: number;
+  testCaseId: number;
+  jmxId: number;
+  dubboId: number;
+  attachmentKey: string;
+  attachmentValue: string;
 }
 
 interface AssertionVO {
@@ -1504,7 +1774,36 @@ const onlineJmxItem = ref<OnlineJmxItem>({
     id: 0,
     testCaseId: 0,
     jmxId: 0,
-    message: '',
+    name: '',
+    comments: '',
+    configCenterProtocol: '',
+    configCenterGroup: '',
+    configCenterNamespace: '',
+    configCenterUsername: '',
+    configCenterPassword: '',
+    configCenterAddress: '',
+    configCenterTimeout: '',
+    registryProtocol: '',
+    registryGroup: '',
+    registryUsername: '',
+    registryPassword: '',
+    registryAddress: '',
+    registryTimeout: '',
+    rpcProtocol: 'dubbo://',
+    timeout: '1000',
+    version: '1.0',
+    retries: '0',
+    cluster: 'failfast',
+    group: '',
+    connections: '1',
+    async: 'sync',
+    loadBalance: 'random',
+    interfaceName: '',
+    method: '',
+    methodArgsSize: 0,
+    attachmentArgsSize: 0,
+    dubboMethodArgsVOList: [],
+    dubboAttachmentArgsVOList: []
   },
   assertionVO: {
     id: 0,
@@ -1603,7 +1902,36 @@ const getOnlineJmxData = async (id: number | null) => {
       id: 0,
       testCaseId: 0,
       jmxId: 0,
-      message: '',
+      name: '',
+      comments: '',
+      configCenterProtocol: '',
+      configCenterGroup: '',
+      configCenterNamespace: '',
+      configCenterUsername: '',
+      configCenterPassword: '',
+      configCenterAddress: '',
+      configCenterTimeout: '',
+      registryProtocol: '',
+      registryGroup: '',
+      registryUsername: '',
+      registryPassword: '',
+      registryAddress: '',
+      registryTimeout: '',
+      rpcProtocol: 'dubbo://',
+      timeout: '1000',
+      version: '1.0',
+      retries: '0',
+      cluster: 'failfast',
+      group: '',
+      connections: '1',
+      async: 'sync',
+      loadBalance: 'random',
+      interfaceName: '',
+      method: '',
+      methodArgsSize: 0,
+      attachmentArgsSize: 0,
+      dubboMethodArgsVOList: [],
+      dubboAttachmentArgsVOList: []
     },
     assertionVO: {
       id: 0,
@@ -1734,7 +2062,55 @@ const getOnlineJmxData = async (id: number | null) => {
           paramValue: p.paramValue || ''
         }))
       },
-      dubboVO: onlineJmxData.dubboVO || {},
+      dubboVO: {
+        id: onlineJmxData.dubboVO?.id || 0,
+        testCaseId: onlineJmxData.dubboVO?.testCaseId || 0,
+        jmxId: onlineJmxData.dubboVO?.jmxId || 0,
+        name: onlineJmxData.dubboVO?.name || '',
+        comments: onlineJmxData.dubboVO?.comments || '',
+        configCenterProtocol: onlineJmxData.dubboVO?.configCenterProtocol || '',
+        configCenterGroup: onlineJmxData.dubboVO?.configCenterGroup || '',
+        configCenterNamespace: onlineJmxData.dubboVO?.configCenterNamespace || '',
+        configCenterUsername: onlineJmxData.dubboVO?.configCenterUsername || '',
+        configCenterPassword: onlineJmxData.dubboVO?.configCenterPassword || '',
+        configCenterAddress: onlineJmxData.dubboVO?.configCenterAddress || '',
+        configCenterTimeout: onlineJmxData.dubboVO?.configCenterTimeout || '',
+        registryProtocol: onlineJmxData.dubboVO?.registryProtocol || '',
+        registryGroup: onlineJmxData.dubboVO?.registryGroup || '',
+        registryUsername: onlineJmxData.dubboVO?.registryUsername || '',
+        registryPassword: onlineJmxData.dubboVO?.registryPassword || '',
+        registryAddress: onlineJmxData.dubboVO?.registryAddress || '',
+        registryTimeout: onlineJmxData.dubboVO?.registryTimeout || '',
+        rpcProtocol: onlineJmxData.dubboVO?.rpcProtocol || 'dubbo://',
+        timeout: onlineJmxData.dubboVO?.timeout || '1000',
+        version: onlineJmxData.dubboVO?.version || '1.0',
+        retries: onlineJmxData.dubboVO?.retries || '0',
+        cluster: onlineJmxData.dubboVO?.cluster || 'failfast',
+        group: onlineJmxData.dubboVO?.group || '',
+        connections: onlineJmxData.dubboVO?.connections || '1',
+        async: onlineJmxData.dubboVO?.async || 'sync',
+        loadBalance: onlineJmxData.dubboVO?.loadBalance || 'random',
+        interfaceName: onlineJmxData.dubboVO?.interfaceName || '',
+        method: onlineJmxData.dubboVO?.method || '',
+        methodArgsSize: onlineJmxData.dubboVO?.methodArgsSize || 0,
+        attachmentArgsSize: onlineJmxData.dubboVO?.attachmentArgsSize || 0,
+        dubboMethodArgsVOList: (onlineJmxData.dubboVO?.dubboMethodArgsVOList || []).map(m => ({
+          id: m.id || 0,
+          testCaseId: m.testCaseId || 0,
+          jmxId: m.jmxId || 0,
+          dubboId: m.dubboId || 0,
+          paramType: m.paramType || '',
+          paramValue: m.paramValue || ''
+        })),
+        dubboAttachmentArgsVOList: (onlineJmxData.dubboVO?.dubboAttachmentArgsVOList || []).map(a => ({
+          id: a.id || 0,
+          testCaseId: a.testCaseId || 0,
+          jmxId: a.jmxId || 0,
+          dubboId: a.dubboId || 0,
+          attachmentKey: a.attachmentKey || '',
+          attachmentValue: a.attachmentValue || ''
+        }))
+      },
       assertionVO: {
         id: onlineJmxData.assertionVO?.id || 0,
         testCaseId: onlineJmxData.assertionVO?.testCaseId || 0,
@@ -2006,6 +2382,38 @@ const handleCsvFileDelete = (index: number) => {
 const handleCsvConfigChange = (value: string) => {
   // 处理 CSV Config 切换逻辑
   console.log('CSV Config changed:', value);
+};
+
+const activeDubboTab = ref('args');
+
+const handleDubboMethodArgsAdd = () => {
+  onlineJmxItem.value.dubboVO.dubboMethodArgsVOList.push({
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    dubboId: 0,
+    paramType: '',
+    paramValue: ''
+  });
+};
+
+const handleDubboMethodArgsDelete = (index: number) => {
+  onlineJmxItem.value.dubboVO.dubboMethodArgsVOList.splice(index, 1);
+};
+
+const handleDubboAttachmentArgsAdd = () => {
+  onlineJmxItem.value.dubboVO.dubboAttachmentArgsVOList.push({
+    id: 0,
+    testCaseId: 0,
+    jmxId: 0,
+    dubboId: 0,
+    attachmentKey: '',
+    attachmentValue: ''
+  });
+};
+
+const handleDubboAttachmentArgsDelete = (index: number) => {
+  onlineJmxItem.value.dubboVO.dubboAttachmentArgsVOList.splice(index, 1);
 };
 
 // 添加在线 JMX 数据的函数
