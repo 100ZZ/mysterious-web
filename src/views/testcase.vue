@@ -734,7 +734,7 @@
                       <el-input v-model="onlineJmxItem.dubboVO.registryPassword"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="6">
                     <el-form-item label="Address">
                       <el-input v-model="onlineJmxItem.dubboVO.registryAddress"></el-input>
                     </el-form-item>
@@ -764,44 +764,42 @@
 
                 <el-divider content-position="center">Consumer & Service</el-divider>
                 <el-row :gutter="20">
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Timeout">
                       <el-input v-model="onlineJmxItem.dubboVO.timeout" placeholder="1000"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Version">
                       <el-input v-model="onlineJmxItem.dubboVO.version" placeholder="1.0"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Retries">
                       <el-input v-model="onlineJmxItem.dubboVO.retries" placeholder="0"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Cluster">
                       <el-input v-model="onlineJmxItem.dubboVO.cluster" placeholder="failfast"></el-input>
                     </el-form-item>
                   </el-col>
-                </el-row>
-                <el-row :gutter="20">
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Group">
                       <el-input v-model="onlineJmxItem.dubboVO.group"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Connections">
                       <el-input v-model="onlineJmxItem.dubboVO.connections" placeholder="1"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Async">
                       <el-input v-model="onlineJmxItem.dubboVO.async" placeholder="sync"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="3">
                     <el-form-item label="Loadbalance">
                       <el-select v-model="onlineJmxItem.dubboVO.loadBalance">
                         <el-option label="random" value="random"></el-option>
