@@ -332,19 +332,33 @@ const saveEdit = async () => {
 // };
 
 const enableAction = async (id: number) => {
+  await ElMessageBox.confirm('确定要启用吗？', '提示', {
+    type: 'warning'
+  });
   // 启动操作的代码
+  const warningMessage = ElMessage.warning("启用进行中，请稍等片刻......");
+  // 等待1秒，让warning提示信息显示一段时间
+  await sleep(1000);
+  // 关闭warning提示信息
+  warningMessage.close();
   const res = await enableNode(id);
   const code = res.data.code
   if (code != 0) {
     ElMessage.error(res.data.message);
   } else {
     ElMessage.success("启用成功");
+    await getList(); // 等待getList()执行完再继续
   }
-  await getList(); // 等待getList()执行完再继续
 };
 
 const disableAction = async (id: number) => {
   // 停止操作的代码
+  const warningMessage = ElMessage.warning("禁用进行中，请稍等片刻......");
+  // 等待1秒，让warning提示信息显示一段时间
+  await sleep(1000);
+  // 关闭warning提示信息
+  warningMessage.close();
+
   const res = await disableNode(id);
   const code = res.data.code
   if (code != 0) {
@@ -356,6 +370,14 @@ const disableAction = async (id: number) => {
 };
 
 const syncAction = async (nodeId: number) => {
+  await ElMessageBox.confirm('确定要同步数据吗？', '提示', {
+    type: 'warning'
+  });
+  const warningMessage = ElMessage.warning("开始同步数据，请稍等片刻......");
+  // 等待1秒，让warning提示信息显示一段时间
+  await sleep(1000);
+  // 关闭warning提示信息
+  warningMessage.close();
   const res = await syncNode(nodeId);
   const code = res.data.code
   if (code != 0) {
@@ -364,6 +386,11 @@ const syncAction = async (nodeId: number) => {
     ElMessage.success("同步成功");
     await getList(); // 等待getList()执行完再继续
   }
+}
+
+// 定义sleep函数
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 </script>
