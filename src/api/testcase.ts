@@ -80,3 +80,10 @@ export const getResult = (id: number) => {
         method: 'get'
     });
 }
+
+export const getGrafanaLink = () => {
+    return request({
+        url: '/testcase/getGrafanaLink',
+        method: 'get'
+    });
+}

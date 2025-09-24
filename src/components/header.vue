@@ -5,7 +5,7 @@
 			<el-icon v-if="sidebar.collapse"><Expand /></el-icon>
 			<el-icon v-else><Fold /></el-icon>
 		</div>
-		<div class="logo">分布式压测平台v2.0</div>
+		<div class="logo">分布式压测平台V3.0</div>
 
 
     <div class="header-right">

@@ -96,7 +96,7 @@
             </el-row>
             <el-row type="flex" justify="center">
               <el-col :span="12">
-                <el-button style="margin-left: 0" text :icon="Refresh" class="bg-blue" @click="openChartDialog(scope.row.id)" v-permiss="1">
+                <el-button style="margin-left: 0" text :icon="Refresh" class="bg-blue" @click="openGrafanaLink" v-permiss="1">
                   曲线
                 </el-button>
               </el-col>
@@ -209,7 +209,7 @@
           </div>
           <el-space direction="horizontal" alignment="center">
             <el-button type="warning" @click="onlineDrawer = true, getOnlineJmxData(jmxFullData[0] ? jmxFullData[0].id : null)">
-              在线编写(测试中)
+              在线编写
             </el-button>
             <el-upload action="" :show-file-list="false" :http-request="handleJmxUpload" accept=".jmx">
               <el-button type="primary">本地上传</el-button>
@@ -1034,7 +1034,7 @@ import {ElMessage, ElMessageBox} from 'element-plus';
 import { Plus, Search, Delete, Edit, Refresh, Right, Upload } from '@element-plus/icons-vue';
 import {
   addTestCase, debugTestCase,
-  deleteTestCase, getFull, getResult,
+  deleteTestCase, getFull, getGrafanaLink, getResult,
   getTestCaseList,
   startTestCase,
   stopTestCase,
@@ -1047,6 +1047,7 @@ import {deleteJar, downloadJar, uploadJar} from "../api/jar";
 import router from "../router";
 import {checkToLogin} from "../common/push";
 import {useRoute} from "vue-router";
+import {viewReport} from "../api/report";
 
 const drawer = ref(false);
 const jmxDrawer = ref(false)
@@ -2473,6 +2474,15 @@ const handleCheckboxChange = (field: string, value: boolean) => {
   onlineJmxItem.value.threadGroupVO[field] = value;
 };
 
+const openGrafanaLink = async () => {
+  const res = await getGrafanaLink();
+  const code = res.data.code
+  if (code != 0) {
+    ElMessage.error(res.data.message);
+  } else {
+    window.open(res.data.data, '_blank');
+  }
+}
 
 const chartDialogVisible = ref(false);
 
