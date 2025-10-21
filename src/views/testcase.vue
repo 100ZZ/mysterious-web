@@ -2,7 +2,14 @@
   <div>
     <div class="container">
       <div class="handle-box">
-        <el-input v-model="query.id" placeholder="编号" class="handle-input mr10"></el-input>
+        <!--        <el-input v-model="query.id" placeholder="编号" class="handle-input mr10"></el-input>-->
+        <el-input
+            v-model.number="query.id"
+            type="number"
+            placeholder="编号"
+            class="handle-input mr10"
+            @input="v => query.id = v.replace(/[^\d]/g, '')"
+        ></el-input>
         <el-input v-model="query.name" placeholder="名称" class="handle-input mr10"></el-input>
         <el-input v-model="query.biz" placeholder="产品线" class="handle-input mr10"></el-input>
         <el-input v-model="query.biz" placeholder="服务" class="handle-input mr10"></el-input>
